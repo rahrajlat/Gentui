@@ -10,6 +10,7 @@ drawn as live widgets in your terminal.
 [![Python](https://img.shields.io/badge/python-3.12%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org)
 [![Textual](https://img.shields.io/badge/built%20with-Textual-4FD6C8?style=flat-square)](https://textual.textualize.io)
 [![AG-UI](https://img.shields.io/badge/protocol-AG--UI-A78BFA?style=flat-square)](https://docs.ag-ui.com)
+[![Tested with Strands Agents](https://img.shields.io/badge/tested%20with-Strands%20Agents%20(AWS)-FF9900?style=flat-square)](https://strandsagents.com)
 [![uv](https://img.shields.io/badge/packaged%20with-uv-DE5FE9?style=flat-square)](https://docs.astral.sh/uv/)
 [![Status](https://img.shields.io/badge/status-alpha-F2C46D?style=flat-square)](#status)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-7BD88F?style=flat-square)](#contributing)
@@ -33,6 +34,10 @@ frontend code to write.
 Point Gentui at any backend that speaks AG-UI and you get a polished terminal interface with no
 frontend code to write. When the agent calls a tool, the **tool call becomes the UI**: a command to
 approve, a table, a chart, a live plan. Nothing risky runs until you click **Approve**.
+
+**Tested with the [Strands Agents](https://strandsagents.com) framework (AWS's open-source agent SDK) over
+AG-UI**: both on a custom backend (the [example backend](examples/strands-backend)) and on the official
+[`ag-ui-strands`](https://pypi.org/project/ag-ui-strands/) adapter.
 
 <div align="center">
 <img src="docs/assets/demo.gif" alt="Gentui demo: ask, review the proposed command, approve, see the output, chart it" width="860">
@@ -177,8 +182,9 @@ uses `messages`, `forwardedProps` and `resume`.
 
 Gentui is **alpha**. What has been verified, and what has not:
 
-- Built and tested against Strands Agents backends: the [example backend](examples/strands-backend) and
-  the official [`ag-ui-strands`](https://pypi.org/project/ag-ui-strands/) adapter (with `send_history = true`).
+- Built and tested against the **Strands Agents** framework (AWS) over AG-UI: the
+  [example backend](examples/strands-backend) and the official
+  [`ag-ui-strands`](https://pypi.org/project/ag-ui-strands/) adapter (with `send_history = true`).
 - Backends on other frameworks, the interrupt flow against a backend other than the example, other model
   providers than Ollama, and native Windows are **untested**.
 - The look relies on Unicode box-drawing and block characters. If glyphs are missing, try a terminal
