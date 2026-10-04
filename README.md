@@ -20,6 +20,16 @@ drawn as live widgets in your terminal.
 
 ---
 
+## Why Gentui?
+
+While developing agents locally, we end up spending our time on the frontend: a Streamlit or Chainlit
+app, or a React project, just to talk to the agent. Each one is a separate frontend to build and keep
+running.
+
+Gentui removes that step. Install it, point it at your agent's AG-UI endpoint, and you get a chat, the
+model's **chain of thought**, **human-in-the-loop (HITL)** and **approval** flows out of the box, with no
+frontend code to write.
+
 Point Gentui at any backend that speaks AG-UI and you get a polished terminal interface with no
 frontend code to write. When the agent calls a tool, the **tool call becomes the UI**: a command to
 approve, a table, a chart, a live plan. Nothing risky runs until you click **Approve**.
