@@ -5,6 +5,7 @@ import json
 import httpx
 import pytest
 from ag_ui.core import (
+    TextMessageContentEvent, TextMessageEndEvent, TextMessageStartEvent,
     ReasoningEndEvent, ReasoningMessageContentEvent, ReasoningMessageEndEvent,
     ReasoningMessageStartEvent, ReasoningStartEvent, RunFinishedEvent, RunStartedEvent,
     ToolCallArgsEvent, ToolCallEndEvent, ToolCallResultEvent, ToolCallStartEvent,
@@ -164,7 +165,7 @@ async def test_reasoning_renders_as_collapsed_thought_block():
         await pilot.press(*"q", "enter")
         await pilot.pause(0.5)
         box = app.query_one(Collapsible)
-        assert box.title == "Thought" and box.collapsed
+        assert box.title.startswith("◈ Thought for") and box.collapsed
         assert "let me think" in str(box.query_one(".thinking", Static).render())
 
 
@@ -362,3 +363,368 @@ async def test_bad_chart_spec_shows_message_not_crash(spec, message):
         await pilot.pause(0.5)
         assert not app.query_one(PlotextPlot).display
         assert any(message in str(s.render()) for s in app.query("#body"))
+
+
+# -- AG-UI interrupts (approval) --------------------------------------------------------------
+
+
+def interrupt_finish(*interrupts):
+    from ag_ui.core import Interrupt, RunFinishedInterruptOutcome
+
+    return RunFinishedEvent(
+        thread_id="t", run_id="r",
+        outcome=RunFinishedInterruptOutcome(interrupts=[Interrupt(**i) for i in interrupts]),
+    )
+
+
+def proposal_run(command="ls -la", *extra_interrupts):
+    yield RunStartedEvent(thread_id="t", run_id="r")
+    yield ToolCallStartEvent(tool_call_id="c1", tool_call_name="propose_command")
+    yield ToolCallArgsEvent(tool_call_id="c1", delta=json.dumps(
+        {"command": command, "explanation": "list", "risk": "safe"}))
+    yield ToolCallEndEvent(tool_call_id="c1")
+    yield interrupt_finish(
+        {"id": "int-1", "reason": "tool_call", "tool_call_id": "c1", "message": "Run it?"}, *extra_interrupts)
+
+
+class ResumeClient:
+    """Run 1 replays `first`; later runs replay `later`. Records (text, props, resume)."""
+
+    def __init__(self, first, later=()):
+        self.first, self.later, self.calls = first, later, []
+
+    async def run(self, thread_id, text, forwarded_props=None, resume=None):
+        self.calls.append((text, forwarded_props, resume))
+        for ev in (self.first if len(self.calls) == 1 else self.later):
+            yield ev
+
+
+async def test_approve_sends_resume_not_a_fake_message():
+    client = ResumeClient(proposal_run(), [RunStartedEvent(thread_id="t", run_id="r2"), RunFinishedEvent(thread_id="t", run_id="r2")])
+    app = GentuiApp(client)
+    async with app.run_test(size=(120, 50)) as pilot:
+        await pilot.press(*"go", "enter")
+        await pilot.pause(0.5)
+        await pilot.click("#approve")
+        await pilot.pause(0.5)
+    text, props, resume = client.calls[1]
+    assert resume == [{"interruptId": "int-1", "status": "resolved", "payload": {"approved": True}}]
+    assert not props  # no out-of-band forwardedProps hack
+
+
+async def test_edited_command_travels_in_the_resume_payload():
+    client = ResumeClient(proposal_run(), [RunStartedEvent(thread_id="t", run_id="r2"), RunFinishedEvent(thread_id="t", run_id="r2")])
+    app = GentuiApp(client)
+    async with app.run_test(size=(120, 50)) as pilot:
+        await pilot.press(*"go", "enter")
+        await pilot.pause(0.5)
+        await pilot.click("#edit")
+        await pilot.pause()
+        editor = app.query_one("#editor")
+        editor.value = "ls -l"
+        await pilot.click("#approve")
+        await pilot.pause(0.5)
+    assert client.calls[1][2] == [
+        {"interruptId": "int-1", "status": "resolved", "payload": {"approved": True, "command": "ls -l"}}]
+
+
+async def test_reject_cancels_the_interrupt():
+    client = ResumeClient(proposal_run(), [RunStartedEvent(thread_id="t", run_id="r2"), RunFinishedEvent(thread_id="t", run_id="r2")])
+    app = GentuiApp(client)
+    async with app.run_test(size=(120, 50)) as pilot:
+        await pilot.press(*"go", "enter")
+        await pilot.pause(0.5)
+        await pilot.click("#reject")
+        await pilot.pause(0.5)
+    assert client.calls[1][2] == [{"interruptId": "int-1", "status": "cancelled"}]
+
+
+async def test_unclaimed_interrupt_gets_a_generic_prompt_and_all_must_be_answered():
+    from gentui.tui.widgets.interrupt import InterruptWidget
+
+    run = [
+        RunStartedEvent(thread_id="t", run_id="r"),
+        interrupt_finish(
+            {"id": "a", "reason": "confirmation", "message": "Deploy to prod?"},
+            {"id": "b", "reason": "confirmation", "message": "Also restart?"},
+        ),
+    ]
+    client = ResumeClient(run, [RunStartedEvent(thread_id="t", run_id="r2"), RunFinishedEvent(thread_id="t", run_id="r2")])
+    app = GentuiApp(client)
+    async with app.run_test(size=(120, 50)) as pilot:
+        await pilot.press(*"go", "enter")
+        await pilot.pause(0.5)
+        first, second = list(app.query(InterruptWidget))
+        first.query_one("#approve").press()
+        await pilot.pause(0.3)
+        assert len(client.calls) == 1  # one of two answered: do not resume yet
+        second.query_one("#reject").press()
+        await pilot.pause(0.5)
+    assert client.calls[1][2] == [
+        {"interruptId": "a", "status": "resolved", "payload": {"approved": True}},
+        {"interruptId": "b", "status": "resolved", "payload": {"approved": False}},
+    ]
+
+
+async def test_unsupported_schema_only_offers_cancel():
+    from gentui.tui.widgets.interrupt import InterruptWidget
+
+    run = [RunStartedEvent(thread_id="t", run_id="r"), interrupt_finish(
+        {"id": "x", "reason": "input_required", "message": "Which region?",
+         "response_schema": {"type": "object", "properties": {"region": {"type": "string"}}, "required": ["region"]}})]
+    client = ResumeClient(run, [RunStartedEvent(thread_id="t", run_id="r2"), RunFinishedEvent(thread_id="t", run_id="r2")])
+    app = GentuiApp(client)
+    async with app.run_test(size=(120, 50)) as pilot:
+        await pilot.press(*"go", "enter")
+        await pilot.pause(0.5)
+        w = app.query_one(InterruptWidget)
+        assert not w.query("#approve") and w.query("#cancel")
+        w.query_one("#cancel").press()
+        await pilot.pause(0.5)
+    assert client.calls[1][2] == [{"interruptId": "x", "status": "cancelled"}]
+
+
+async def test_client_sends_resume_with_no_messages():
+    seen = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen.update(json.loads(request.content))
+        return httpx.Response(200, content=b"")
+
+    real = httpx.AsyncClient
+    transport = httpx.MockTransport(handler)
+    httpx.AsyncClient = lambda **kw: real(transport=transport, **kw)  # type: ignore[assignment]
+    try:
+        entries = [{"interruptId": "i1", "status": "resolved", "payload": {"approved": True}}]
+        [e async for e in AguiClient("http://x/agent").run("t", "", None, entries)]
+    finally:
+        httpx.AsyncClient = real  # type: ignore[assignment]
+    assert seen["messages"] == [] and seen["resume"] == entries
+
+
+# -- conversation history sent to the backend ---------------------------------------------------
+
+
+def _sse(*events):
+    return "".join(f"data: {json.dumps(e)}\n\n" for e in events).encode()
+
+
+async def _two_runs(send_history):
+    bodies = []
+    first = _sse(
+        {"type": "RUN_STARTED", "threadId": "t", "runId": "r1"},
+        {"type": "TOOL_CALL_START", "toolCallId": "c1", "toolCallName": "get_weather"},
+        {"type": "TOOL_CALL_ARGS", "toolCallId": "c1", "delta": '{"city": "Paris"}'},
+        {"type": "TOOL_CALL_END", "toolCallId": "c1"},
+        {"type": "TOOL_CALL_RESULT", "messageId": "tm1", "toolCallId": "c1", "content": "sunny", "role": "tool"},
+        {"type": "TEXT_MESSAGE_START", "messageId": "a1", "role": "assistant"},
+        {"type": "TEXT_MESSAGE_CONTENT", "messageId": "a1", "delta": "Sunny "},
+        {"type": "TEXT_MESSAGE_CONTENT", "messageId": "a1", "delta": "in Paris."},
+        {"type": "TEXT_MESSAGE_END", "messageId": "a1"},
+        {"type": "RUN_FINISHED", "threadId": "t", "runId": "r1"},
+    )
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        bodies.append(json.loads(request.content))
+        return httpx.Response(200, content=first if len(bodies) == 1 else b"")
+
+    real = httpx.AsyncClient
+    transport = httpx.MockTransport(handler)
+    httpx.AsyncClient = lambda **kw: real(transport=transport, **kw)  # type: ignore[assignment]
+    try:
+        kwargs = {} if send_history is None else {"send_history": send_history}
+        client = AguiClient("http://x/agent", **kwargs)
+        [e async for e in client.run("t", "weather in Paris?")]
+        [e async for e in client.run("t", "and tomorrow?")]
+    finally:
+        httpx.AsyncClient = real  # type: ignore[assignment]
+    return bodies
+
+
+async def test_client_sends_the_whole_conversation_when_send_history_is_on():
+    first, second = await _two_runs(send_history=True)
+    assert [m["role"] for m in first["messages"]] == ["user"]
+    msgs = second["messages"]
+    assert [m["role"] for m in msgs] == ["user", "assistant", "tool", "assistant", "user"]
+    assert msgs[0]["content"] == "weather in Paris?" and msgs[-1]["content"] == "and tomorrow?"
+    call = msgs[1]["toolCalls"][0]
+    assert call["id"] == "c1" and call["function"] == {"name": "get_weather", "arguments": '{"city": "Paris"}'}
+    assert msgs[2]["toolCallId"] == "c1" and msgs[2]["content"] == "sunny"
+    assert msgs[3]["content"] == "Sunny in Paris."
+
+
+async def test_by_default_only_the_newest_message_is_sent():
+    first, second = await _two_runs(send_history=None)
+    assert [m["content"] for m in second["messages"]] == ["and tomorrow?"]
+    assert AguiClient("http://x").send_history is False and Config().send_history is False
+
+
+async def test_a_new_thread_starts_with_empty_history():
+    bodies = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        bodies.append(json.loads(request.content))
+        return httpx.Response(200, content=b"")
+
+    real = httpx.AsyncClient
+    transport = httpx.MockTransport(handler)
+    httpx.AsyncClient = lambda **kw: real(transport=transport, **kw)  # type: ignore[assignment]
+    try:
+        client = AguiClient("http://x/agent", send_history=True)
+        [e async for e in client.run("one", "hello")]
+        [e async for e in client.run("two", "fresh")]
+    finally:
+        httpx.AsyncClient = real  # type: ignore[assignment]
+    assert [m["content"] for m in bodies[1]["messages"]] == ["fresh"]
+
+
+# -- chat look: timestamps and markers ------------------------------------------------------------
+
+
+async def test_every_message_shows_its_time_and_marker():
+    import re
+
+    run = [
+        RunStartedEvent(thread_id="t", run_id="r"),
+        TextMessageStartEvent(message_id="a", role="assistant"),
+        TextMessageContentEvent(message_id="a", delta="hello"),
+        TextMessageEndEvent(message_id="a"),
+        RunFinishedEvent(thread_id="t", run_id="r"),
+    ]
+    app = GentuiApp(ScriptClient(*run))
+    async with app.run_test(size=(100, 40)) as pilot:
+        await pilot.press(*"hi", "enter")
+        await pilot.pause(0.5)
+        times = [str(t.render()) for t in app.query(".time")]
+        assert len(times) == 2 and all(re.fullmatch(r"\d\d:\d\d", t) for t in times)  # you + the agent
+        marks = [str(m.render()) for m in app.query(".mark")]
+        assert [m.strip() for m in marks] == ["❯", "◈"]
+
+
+async def test_timestamps_can_be_turned_off():
+    app = GentuiApp(ScriptClient(), Config(show_time=False))
+    async with app.run_test() as pilot:
+        await pilot.press(*"hi", "enter")
+        await pilot.pause(0.3)
+        assert not app.query(".time")
+
+
+async def test_failed_proposal_card_is_disabled_not_live():
+    from textual.widgets import Button
+
+    err = "Error: Validation failed for input parameters: 1 validation error for Propose_commandTool"
+    run = [
+        RunStartedEvent(thread_id="t", run_id="r"),
+        ToolCallStartEvent(tool_call_id="bad", tool_call_name="propose_command"),
+        ToolCallArgsEvent(tool_call_id="bad", delta=json.dumps({"command": "date", "explanation": "x", "risk": "read-only"})),
+        ToolCallEndEvent(tool_call_id="bad"),
+        ToolCallResultEvent(message_id="m", tool_call_id="bad", content=err, role="tool"),
+        RunFinishedEvent(thread_id="t", run_id="r"),
+    ]
+    app = GentuiApp(ScriptClient(*run))
+    async with app.run_test(size=(120, 50)) as pilot:
+        await pilot.press(*"q", "enter")
+        await pilot.pause(0.5)
+        card = app.query_one("CommandWidget")
+        assert card.state == "failed"
+        assert all(b.disabled for b in card.query(Button))
+
+
+# -- branding and startup splash ----------------------------------------------------------------
+
+
+class SplashApp(GentuiApp):
+    SPLASH_IN_HEADLESS = True
+    SPLASH_SECONDS = 0.4
+
+
+async def test_splash_shows_on_start_then_closes_by_itself():
+    from gentui.tui.splash import SplashScreen
+
+    app = SplashApp(ScriptClient())
+    async with app.run_test(size=(100, 40)) as pilot:
+        await pilot.pause(0.1)
+        assert isinstance(app.screen, SplashScreen)
+        await pilot.pause(0.8)
+        assert not isinstance(app.screen, SplashScreen)
+        assert app.focused is app.query_one("#prompt")  # ready to type
+
+
+async def test_any_key_skips_the_splash_and_is_not_typed_into_the_prompt():
+    from gentui.tui.splash import SplashScreen
+
+    class LongSplash(SplashApp):
+        SPLASH_SECONDS = 30
+
+    app = LongSplash(ScriptClient())
+    async with app.run_test(size=(100, 40)) as pilot:
+        await pilot.pause(0.1)
+        assert isinstance(app.screen, SplashScreen)
+        await pilot.press("x")
+        await pilot.pause(0.2)
+        assert not isinstance(app.screen, SplashScreen)
+        assert app.query_one("#prompt").value == ""
+
+
+async def test_splash_can_be_disabled_in_config():
+    from gentui.tui.splash import SplashScreen
+
+    app = SplashApp(ScriptClient(), Config(splash=False))
+    async with app.run_test(size=(100, 40)) as pilot:
+        await pilot.pause(0.2)
+        assert not isinstance(app.screen, SplashScreen)
+
+
+def test_logo_animation_reveals_then_fills_and_sweeps():
+    from gentui.tui import branding
+
+    mark = branding.WORDMARK_BIG
+    assert branding.logo_frame(mark, 0.0).plain.strip() == ""  # nothing yet
+    half = branding.logo_frame(mark, 0.45).plain
+    full = branding.logo_frame(mark, 5.0).plain
+    assert 0 < len(half.replace(" ", "").replace("\n", "")) < len(full.replace(" ", "").replace("\n", ""))
+    assert full == mark  # the finished frame is exactly the wordmark
+    # the highlight moves between frames
+    assert branding.logo_frame(mark, 1.2).spans != branding.logo_frame(mark, 1.4).spans
+
+
+def test_branding_helpers():
+    from gentui.tui import branding
+
+    assert branding.blend("#000000", "#ffffff", 0.5) == "#808080"
+    assert branding.blend("#102030", "#102030", 0.7) == "#102030"
+    assert branding.wordmark_for(120) == branding.WORDMARK_BIG
+    assert branding.wordmark_for(40) == branding.WORDMARK_SMALL  # narrow terminals get the small one
+    label = branding.thinking_label(4.2, now=1.0)
+    assert "Thinking…" in label.plain and "(4s)" in label.plain
+    assert branding.thinking_label(1, now=1.0).spans != branding.thinking_label(1, now=1.3).spans  # animates
+
+
+async def test_logo_stays_after_the_splash_static_and_survives_clear():
+    from gentui.tui import branding
+
+    app = SplashApp(ScriptClient())
+    async with app.run_test(size=(100, 40)) as pilot:
+        await pilot.pause(1.0)  # splash is over
+        brand = app.query_one("#brand", Static)
+        before = str(brand.render())
+        assert "██" in before or "┏" in before  # the wordmark is on screen
+        await pilot.pause(0.5)
+        assert str(brand.render()) == before  # static: it does not animate or disappear
+        await pilot.press(*"/clear", "enter")
+        await pilot.pause(0.3)
+        assert app.query("#brand") and app.query("#welcome")  # /clear keeps the logo
+
+
+async def test_logo_can_be_turned_off():
+    app = GentuiApp(ScriptClient(), Config(logo=False))
+    async with app.run_test() as pilot:
+        await pilot.pause(0.2)
+        assert not app.query("#brand") and app.query("#welcome")
+
+
+def test_static_logo_is_the_full_wordmark_without_a_highlight_sweep():
+    from gentui.tui import branding
+
+    a, b = branding.logo_static(branding.WORDMARK_BIG), branding.logo_static(branding.WORDMARK_BIG)
+    assert a.plain == branding.WORDMARK_BIG and a.spans == b.spans

@@ -25,6 +25,7 @@ class ToolWidget(Vertical):
         on_args(args)      TOOL_CALL_ARGS    -> args parsed so far (may be called repeatedly)
         on_end(args)       TOOL_CALL_END     -> final args
         on_result(text)    TOOL_CALL_RESULT  -> what the tool returned
+        on_interrupt(i)    RUN_FINISHED      -> the run is waiting for a decision on this call
 
     Subclasses override what they need. To talk back to the agent (button clicks, forms),
     call `self.submit(text, props)`; the app sends it as the next user message.
@@ -36,9 +37,9 @@ class ToolWidget(Vertical):
     DEFAULT_CSS = """
     ToolWidget {
         height: auto;
-        margin: 1 0;
+        margin: 1 0 0 0;
         padding: 0 1;
-        border: round $primary 60%;
+        border: none; border-left: thick $primary 60%;
     }
     """
 
@@ -49,6 +50,15 @@ class ToolWidget(Vertical):
             super().__init__()
             self.text = text
             self.props = props or {}
+
+    class Answer(Message):
+        """Answer an open AG-UI interrupt (the app sends the `resume` run once all are answered)."""
+
+        def __init__(self, interrupt_id: str, status: str, payload: Any = None) -> None:
+            super().__init__()
+            self.interrupt_id = interrupt_id
+            self.status = status  # "resolved" | "cancelled"
+            self.payload = payload
 
     def __init__(self, call_id: str, tool_name: str) -> None:
         super().__init__()
@@ -66,6 +76,9 @@ class ToolWidget(Vertical):
     def submit(self, text: str, props: dict[str, Any] | None = None) -> None:
         self.post_message(self.Submit(text, props))
 
+    def answer(self, interrupt_id: str, status: str, payload: Any = None) -> None:
+        self.post_message(self.Answer(interrupt_id, status, payload))
+
     def on_start(self) -> None: ...
     def on_args(self, args: dict[str, Any]) -> None:
         self.args = args
@@ -74,3 +87,8 @@ class ToolWidget(Vertical):
         self.args = args
 
     def on_result(self, text: str) -> None: ...
+
+    def on_interrupt(self, interrupt: Any) -> bool:
+        """The run ended waiting on this tool call (RUN_FINISHED outcome "interrupt"). Return True
+        if this widget will answer it with `self.answer(...)`; False lets the app show a generic prompt."""
+        return False

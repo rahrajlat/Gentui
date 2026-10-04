@@ -16,7 +16,7 @@ from gentui.tui.widgets.registry import register_widget
 @register_widget("run_command")
 class OutputWidget(ToolWidget):
     DEFAULT_CSS = """
-    OutputWidget { border: round $success 60%; }
+    OutputWidget { border: none; border-left: thick $success 60%; }
     OutputWidget #scroll { height: auto; max-height: 16; }
     """
 
@@ -32,7 +32,7 @@ class OutputWidget(ToolWidget):
         return header + Text("  ") + badge if badge else header
 
     def on_start(self) -> None:
-        self.show(Text("⏳ Preparing to run…", style="dim italic"))
+        self.show(Text("◔ Preparing to run…", style="dim italic"))
 
     def on_args(self, args: dict[str, Any]) -> None:
         super().on_args(args)

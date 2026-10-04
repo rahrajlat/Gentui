@@ -1,20 +1,21 @@
 [project]
-name = "gentui"
+name = "strands-backend"
 version = "0.1.0"
-description = "Terminal client for AG-UI agent backends"
+description = "Example AG-UI backend for Gentui, built on the Strands Agents harness"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "ag-ui-protocol>=1.0.0",
-    "httpx>=0.28.1",
+    "fastapi>=0.142.2",
     "jsonpatch>=1.33",
-    "textual>=8.2.8",
-    "textual-plotext>=1.0.1",
+    "pydantic-settings>=2.15.0",
+    "strands-agents[ollama]>=1.57.2",
+    "strands-harness>=0.1.2",
+    "uvicorn>=0.54.0",
 ]
 
 [project.scripts]
-gentui = "gentui.cli:main"
-tui = "gentui.cli:main"
+server = "strands_backend.app:main"
 
 [build-system]
 requires = ["uv_build>=0.12.22,<0.13.0"]
@@ -22,10 +23,10 @@ build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
+    "httpx>=0.28.1",   # FastAPI's TestClient
     "pytest>=9.1.1",
     "pytest-asyncio>=1.4.0",
 ]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
-testpaths = ["tests"]  # the example backend has its own tests and environment

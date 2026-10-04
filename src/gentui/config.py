@@ -13,8 +13,10 @@ from pathlib import Path
 from typing import Any
 
 DEFAULT_WELCOME = (
-    "Connected to {url}\n"
-    "Type a message to talk to the agent.   /help for commands   [d] dev pane"
+    "◈ Welcome to Gentui!\n\n"
+    "  /help for commands · ctrl+q to quit · d for the dev pane\n"
+    "  backend: {url}\n"
+    "  cwd: {cwd}"
 )
 
 
@@ -25,6 +27,7 @@ class Config:
     headers: dict[str, str] = field(default_factory=dict)  # extra HTTP headers (auth etc.)
     token: str | None = None  # shortcut for "Authorization: Bearer <token>"
     forwarded_props: dict[str, Any] = field(default_factory=dict)  # sent with every run
+    send_history: bool = False  # True: send the whole conversation each run (stateless backends need it)
     timeout: float | None = None  # seconds between bytes; None = wait forever (agents are slow)
 
     # -- look & feel -------------------------------------------------------------------
@@ -32,7 +35,11 @@ class Config:
     subtitle: str = "Generative UI for your terminal"
     welcome: str = DEFAULT_WELCOME
     placeholder: str = "Ask anything…"
-    theme: str = "tokyo-night"  # any Textual theme name; /theme lists them
+    theme: str = "gentui"  # "gentui", "claude" or any Textual theme name; /theme lists them
+    splash: bool = True  # animated logo on startup (any key skips it)
+    logo: bool = True  # keep the finished logo at the top of the chat after the splash
+    show_time: bool = True  # a timestamp on every message
+    time_format: str = "%H:%M"  # strftime format for those timestamps
     css: str | None = None  # your own Textual CSS file, hot-reloaded while the app runs
     show_reasoning: bool = True  # render the model's chain of thought
     dev_pane: bool = False  # start with the AG-UI event inspector open
@@ -53,7 +60,7 @@ class Config:
 
     @property
     def welcome_text(self) -> str:
-        return self.welcome.replace("{url}", self.url)
+        return self.welcome.replace("{url}", self.url).replace("{cwd}", os.getcwd())
 
 
 def find_config(explicit: str | None = None) -> Path | None:

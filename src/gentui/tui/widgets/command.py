@@ -20,16 +20,17 @@ LEXER = "powershell" if platform.system() == "Windows" else "bash"
 @register_widget("propose_command")
 class CommandWidget(ToolWidget):
     DEFAULT_CSS = """
-    CommandWidget { border: round $accent; }
+    CommandWidget { border: none; border-left: thick $accent; }
     CommandWidget #editor { display: none; margin-top: 1; }
     CommandWidget #buttons { height: auto; margin-top: 1; }
     CommandWidget Button { margin-right: 1; }
-    CommandWidget #status { margin-top: 1; }
+    CommandWidget #status { margin-top: 1; display: none; }
     """
 
     # waiting (args streaming) -> ready (buttons live) -> approved | rejected | blocked
     state = "waiting"
     editing = False
+    interrupt: Any = None  # the AG-UI interrupt waiting on this proposal, once the run finishes
 
     def compose(self) -> ComposeResult:
         yield Static(id="body")
@@ -56,20 +57,26 @@ class CommandWidget(ToolWidget):
             self.state = "ready"
             self._set_buttons(disabled=False)
 
+    def on_interrupt(self, interrupt: Any) -> bool:
+        self.interrupt = interrupt  # decisions now go back as an AG-UI `resume`
+        return True
+
     def on_result(self, text: str) -> None:
         if text.startswith("BLOCKED"):  # the backend's safety policy refused the proposal
-            self._finish("blocked", Text(f"⛔ {text}", style="bold red"))
+            self._finish("blocked", Text(f"⊘ {text}", style="bold red"))
+        elif text.startswith("Error"):  # the tool call itself failed; the agent usually retries
+            self._finish("failed", Text("! This proposal failed; the agent will try again.", style="yellow"))
 
     # -- drawing ---------------------------------------------------------------------------
 
     def _draw(self) -> None:
         command = self.args.get("command")
         if not command:
-            self.show(Text("🐚 Proposing a command…", style="dim italic"))
+            self.show(Text("$ Proposing a command…", style="dim italic"))
             return
         risk = str(self.args.get("risk", "caution"))
         badge = Text(f" {risk.upper()} ", style=f"bold black on {RISK_COLOR.get(risk, 'yellow')}")
-        header = Text.assemble(("🐚 Proposed command  ", "bold"), badge)
+        header = Text.assemble(("$ Proposed command  ", "bold"), badge)
         body = Syntax(command, LEXER, theme="ansi_dark", word_wrap=True, background_color="default")
         explanation = Text(str(self.args.get("explanation", "")), style="italic")
         self.show(Group(header, body, explanation))
@@ -82,7 +89,9 @@ class CommandWidget(ToolWidget):
         self.state = state
         self._set_buttons(disabled=True)
         self.query_one("#editor", Input).display = False
-        self.query_one("#status", Static).update(status)
+        status_line = self.query_one("#status", Static)
+        status_line.update(status)
+        status_line.display = True
 
     # -- user decisions ------------------------------------------------------------------
 
@@ -92,6 +101,12 @@ class CommandWidget(ToolWidget):
         if not command:
             return
         self._finish("approved", Text("✔ Approved — running…", style="green"))
+        if self.interrupt is not None:  # AG-UI interrupt: the backend remembers the proposed command
+            payload: dict[str, Any] = {"approved": True}
+            if command != str(self.args.get("command", "")).strip():
+                payload["command"] = command  # only an edit travels back
+            self.answer(self.interrupt.id, "resolved", payload)
+            return
         self.submit(
             f"Approved (approval_id={self.call_id}). Call run_command with this approval_id.",
             {"approval": {"decision": "approve", "command": command, "toolCallId": self.call_id}},
@@ -105,6 +120,9 @@ class CommandWidget(ToolWidget):
             self._approve()
         elif event.button.id == "reject":
             self._finish("rejected", Text("✖ Rejected", style="red"))
+            if self.interrupt is not None:
+                self.answer(self.interrupt.id, "cancelled")
+                return
             self.submit(
                 "Rejected. Do not run it.",
                 {"approval": {"decision": "reject", "toolCallId": self.call_id}},

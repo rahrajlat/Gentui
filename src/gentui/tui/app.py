@@ -1,8 +1,9 @@
 """Textual app: streaming chat + generative UI widgets rendered from AG-UI events."""
 
-import argparse
+import time
 import uuid
 from collections import deque
+from datetime import datetime
 from typing import Any, Protocol
 
 import httpx
@@ -13,32 +14,87 @@ from textual import on
 from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical, VerticalScroll
-from textual.widgets import Collapsible, Footer, Header, Input, Markdown, RichLog, Static
+from textual.css.query import NoMatches
+from textual.theme import Theme
+from textual.widgets import Collapsible, Input, Markdown, RichLog, Static
 from textual.widgets._markdown import MarkdownStream
 
 from gentui import plugins
 from gentui.config import Config
-from gentui.tui import commands, widgets  # noqa: F401  (registers built-in widgets and commands)
+from gentui.tui import branding, commands, widgets  # noqa: F401  (registers built-in widgets and commands)
+from gentui.tui.splash import SplashScreen
 from gentui.tui.agui_client import AguiClient
 from gentui.tui.widgets.base import ToolWidget, parse_partial_json
+from gentui.tui.widgets.interrupt import InterruptWidget
 from gentui.tui.widgets.plan import PlanWidget
 from gentui.tui.widgets.registry import widget_for
 
+# Gentui's own look: teal and violet on near-black.
+GENTUI_THEME = Theme(
+    name="gentui",
+    primary="#4FD6C8",
+    secondary="#A78BFA",
+    accent="#7DD3FC",
+    foreground="#E6E9EF",
+    background="#14161B",
+    surface="#1D2027",
+    panel="#242832",
+    success="#7BD88F",
+    warning="#F2C46D",
+    error="#F27C86",
+    dark=True,
+)
+
+# Warm coral on near-black (the earlier look), still available with `/theme claude`.
+CLAUDE_THEME = Theme(
+    name="claude",
+    primary="#D97757",
+    secondary="#B8A99A",
+    accent="#E8A07F",
+    foreground="#ECE9E3",
+    background="#1B1A19",
+    surface="#262422",
+    panel="#2E2B29",
+    success="#8FB573",
+    warning="#E3B35C",
+    error="#E5736A",
+    dark=True,
+)
+
 
 class Client(Protocol):
-    def run(self, thread_id: str, text: str, forwarded_props: dict[str, Any] | None = ...) -> Any: ...
+    def run(self, thread_id: str, text: str, forwarded_props: dict[str, Any] | None = ..., resume: Any = ...) -> Any: ...
 
 
 class GentuiApp(App[None]):
+    SPLASH_IN_HEADLESS = False  # tests turn the splash off; the splash tests turn it back on
+    SPLASH_SECONDS = 2.4
+
     CSS = """
+    Screen { background: $background; }
     #chat { padding: 0 2; }
-    #prompt { margin: 0 1; }
-    .user { background: $primary 25%; padding: 0 1; margin: 1 0 0 10; }
-    .assistant { padding: 0 1; margin: 1 4 0 0; background: transparent; }
+    #brand { width: auto; height: auto; margin: 1 0 0 1; }
+    #welcome { border: round $primary 70%; padding: 0 2; margin: 1 0 0 0; color: $text; }
+    .welcome { color: $text-muted; margin: 1 0 0 0; }
+    .row { height: auto; margin: 1 0 0 0; }
+    .mark { width: 2; color: $primary; text-style: bold; }
+    .time { width: auto; padding: 0 0 0 2; color: $text-muted 70%; }
+    .user { width: 1fr; background: $surface; padding: 0 1; }
+    .assistant { width: 1fr; padding: 0; background: transparent; }
     .thinking { color: $text-muted; text-style: italic; }
-    Collapsible.thought { margin: 1 4 0 0; padding: 0; border: none; background: transparent; }
-    .error { color: $error; border: round $error; padding: 0 1; margin: 1 0; }
-    #welcome, .welcome { color: $text-muted; margin: 1 0; }
+    Collapsible.thought { margin: 1 0 0 0; padding: 0; border: none; background: transparent; }
+    Collapsible.thought > CollapsibleTitle { color: $text-muted; padding: 0; background: transparent; }
+    Collapsible.thought > Contents { padding: 0 0 0 2; }
+    .error { color: $error; border: none; border-left: thick $error; padding: 0 1; margin: 1 0 0 0; }
+    #busy { height: 1; margin: 0 3; color: $primary; }
+    #promptbox { height: 3; border: round $primary 50%; margin: 0 1; padding: 0 1; }
+    #promptbox:focus-within { border: round $primary; }
+    #promptmark { width: 2; color: $primary; text-style: bold; }
+    #prompt { border: none; background: transparent; padding: 0; height: 1; }
+    #prompt:focus { border: none; background: transparent; }
+    #statusbar { height: 1; margin: 0 3; color: $text-muted; }
+    #statusbar .left { width: 1fr; }
+    #statusbar .right { width: auto; }
     #dev { display: none; width: 45%; border-left: tall $primary 40%; padding: 0 1; }
     #dev.-visible { display: block; }
     #events { height: 1fr; }
@@ -56,6 +112,8 @@ class GentuiApp(App[None]):
         super().__init__(css_path=self.config.css, watch_css=bool(self.config.css))
         self.title = self.config.title
         self.sub_title = self.config.subtitle
+        self.register_theme(GENTUI_THEME)
+        self.register_theme(CLAUDE_THEME)
         self.client = client
         if hasattr(client, "on_raw"):
             client.on_raw = self._log_raw
@@ -66,10 +124,13 @@ class GentuiApp(App[None]):
         self.thread_id = str(uuid.uuid4())
         self.state: dict[str, Any] = {}  # shared state mirrored from the backend
 
-        self._outbox: deque[tuple[str, dict[str, Any] | None]] = deque()
+        self._outbox: deque[tuple[str, dict[str, Any] | None, list[dict[str, Any]] | None]] = deque()
+        self._open_interrupts: dict[str, Any] = {}  # AG-UI interrupts waiting for an answer
+        self._answers: dict[str, dict[str, Any]] = {}
         self._busy = False
+        self._busy_since = 0.0
         self._text_streams: dict[str, MarkdownStream] = {}  # open assistant messages
-        self._thoughts: dict[str, tuple[Collapsible, Static, str]] = {}  # open reasoning blocks
+        self._thoughts: dict[str, tuple[Collapsible, Static, str, float]] = {}  # open reasoning blocks
         self._tool_widgets: dict[str, ToolWidget] = {}  # tool_call_id -> widget
         self._tool_arg_buf: dict[str, str] = {}  # tool_call_id -> raw args received so far
         self._singletons: dict[type, ToolWidget] = {}
@@ -77,17 +138,27 @@ class GentuiApp(App[None]):
     # -- layout --------------------------------------------------------------------------
 
     def compose(self) -> ComposeResult:
-        yield Header()
         with Horizontal():
             with Vertical():
+                brand = (
+                    [Static(branding.logo_static(branding.wordmark_for(self.size.width or 80)), id="brand")]
+                    if self.config.logo
+                    else []
+                )
                 yield VerticalScroll(
+                    *brand,
                     Static(Text(self.config.welcome_text), id="welcome"),
                     id="chat",
                 )
-                yield Input(placeholder=self.config.placeholder, id="prompt")
+                yield Static(id="busy")
+                with Horizontal(id="promptbox"):
+                    yield Static(branding.USER_MARK, id="promptmark")
+                    yield Input(placeholder=self.config.placeholder, id="prompt")
+                with Horizontal(id="statusbar"):
+                    yield Static("/help · ctrl+q quit · d dev pane", classes="left")
+                    yield Static(self.config.url, classes="right")
             with Vertical(id="dev"):
                 yield RichLog(id="events", wrap=True, markup=False, highlight=False)
-        yield Footer()
 
     async def on_mount(self) -> None:
         if self.config.theme in self.available_themes:
@@ -103,8 +174,11 @@ class GentuiApp(App[None]):
                 await plugins.call(setup, self)
             except Exception as exc:  # noqa: BLE001
                 self.notify(f"plugin setup failed: {exc!r}", severity="error")
+        self.set_interval(0.08, self._tick)  # fast enough for the spinner and shimmer
         self.query_one("#chat", VerticalScroll).anchor()  # stay scrolled to the newest content
         self.query_one("#prompt", Input).focus()
+        if self.config.splash and (not self.is_headless or self.SPLASH_IN_HEADLESS):
+            self.push_screen(SplashScreen(self.SPLASH_SECONDS), lambda _: self.query_one("#prompt", Input).focus())
 
     def action_toggle_dev(self) -> None:
         self.query_one("#dev").toggle_class("-visible")
@@ -122,7 +196,7 @@ class GentuiApp(App[None]):
             if name in plugins.COMMANDS:
                 await plugins.call(plugins.COMMANDS[name][0], self, args)
                 return
-        await self._mount(Static(Text(text), classes="user"))
+        await self._mount(self._row(f"{branding.USER_MARK} ", Static(Text(text), classes="user"), mark_class="user-mark"))
         self.send(text)
 
     @on(ToolWidget.Submit)
@@ -130,8 +204,24 @@ class GentuiApp(App[None]):
         """A widget (button, form...) wants to tell the agent something."""
         self.send(event.text, event.props)
 
-    def send(self, text: str, props: dict[str, Any] | None = None) -> None:
-        self._outbox.append((text, props))
+    @on(ToolWidget.Answer)
+    def _on_widget_answer(self, event: ToolWidget.Answer) -> None:
+        """A widget answered an interrupt; resume once every open interrupt has an answer."""
+        if event.interrupt_id not in self._open_interrupts:
+            return
+        entry: dict[str, Any] = {"interruptId": event.interrupt_id, "status": event.status}
+        if event.payload is not None:
+            entry["payload"] = event.payload
+        self._answers[event.interrupt_id] = entry
+        if set(self._answers) >= set(self._open_interrupts):  # the spec: answer ALL open interrupts
+            entries = [self._answers[i] for i in self._open_interrupts]
+            self._open_interrupts, self._answers = {}, {}
+            self.send("", resume=entries)
+
+    def send(
+        self, text: str, props: dict[str, Any] | None = None, resume: list[dict[str, Any]] | None = None
+    ) -> None:
+        self._outbox.append((text, props, resume))
         if not self._busy:  # one run at a time; extra messages wait their turn
             self._busy = True
             self.run_worker(self._drain(), group="agent")
@@ -139,12 +229,18 @@ class GentuiApp(App[None]):
     async def _drain(self) -> None:
         try:
             while self._outbox:
-                text, props = self._outbox.popleft()
+                text, props, resume = self._outbox.popleft()
                 if self.config.forwarded_props:
                     props = {**self.config.forwarded_props, **(props or {})}
+                self._busy_since = time.monotonic()
                 self.sub_title = "thinking…"
                 try:
-                    async for event in self.client.run(self.thread_id, text, props):
+                    stream = (
+                        self.client.run(self.thread_id, text, props, resume)
+                        if resume
+                        else self.client.run(self.thread_id, text, props)
+                    )
+                    async for event in stream:
                         await self._handle(event)
                 except httpx.HTTPError as exc:
                     await self._error(f"Cannot talk to the backend: {exc!r}. Is it running?")
@@ -159,7 +255,7 @@ class GentuiApp(App[None]):
         t = ev.type
         if t == EventType.TEXT_MESSAGE_START:
             message = Markdown(classes="assistant")
-            await self._mount(message)
+            await self._mount(self._row(branding.MARK, message))
             self._text_streams[ev.message_id] = Markdown.get_stream(message)
         elif t == EventType.TEXT_MESSAGE_CONTENT:
             await self._text_streams[ev.message_id].write(ev.delta)
@@ -167,19 +263,19 @@ class GentuiApp(App[None]):
             await self._text_streams.pop(ev.message_id).stop()
         elif t == EventType.REASONING_MESSAGE_START and self.show_reasoning:
             body = Static(classes="thinking")
-            box = Collapsible(body, title="Thinking…", collapsed=False, classes="thought")
+            box = Collapsible(body, title=f"{branding.MARK} Thinking…", collapsed=False, classes="thought")
             await self._mount(box)
-            self._thoughts[ev.message_id] = (box, body, "")
+            self._thoughts[ev.message_id] = (box, body, "", time.monotonic())
         elif t == EventType.REASONING_MESSAGE_CONTENT:
             if ev.message_id in self._thoughts:
-                box, body, text = self._thoughts[ev.message_id]
+                box, body, text, t0 = self._thoughts[ev.message_id]
                 text += ev.delta
-                self._thoughts[ev.message_id] = (box, body, text)
+                self._thoughts[ev.message_id] = (box, body, text, t0)
                 body.update(Text(text))
         elif t == EventType.REASONING_MESSAGE_END:
             if ev.message_id in self._thoughts:
-                box, _, _ = self._thoughts.pop(ev.message_id)
-                box.title = "Thought"
+                box, _, _, t0 = self._thoughts.pop(ev.message_id)
+                box.title = f"{branding.MARK} Thought for {max(1, round(time.monotonic() - t0))}s"
                 box.collapsed = True  # tuck it away once the answer starts
         elif t == EventType.TOOL_CALL_START:
             await self._tool_start(ev.tool_call_id, ev.tool_call_name)
@@ -203,6 +299,10 @@ class GentuiApp(App[None]):
             ops = [op.model_dump(by_alias=True, exclude_none=True) for op in ev.delta]
             self.state = jsonpatch.apply_patch(self.state, ops)
             await self._on_state_changed()
+        elif t == EventType.RUN_FINISHED:
+            outcome = getattr(ev, "outcome", None)
+            if outcome is not None and outcome.type == "interrupt":
+                await self._on_interrupts(outcome.interrupts)
         elif t == EventType.RUN_ERROR:
             await self._error(ev.message)
         await plugins.dispatch_event(self, ev)
@@ -219,6 +319,16 @@ class GentuiApp(App[None]):
         self._tool_widgets[call_id] = widget
         widget.on_start()
 
+    async def _on_interrupts(self, interrupts: list[Any]) -> None:
+        """The run ended waiting for decisions. A widget bound to the interrupt's tool call answers
+        it; anything unclaimed gets a generic Approve / Reject prompt."""
+        self._open_interrupts = {i.id: i for i in interrupts}
+        self._answers = {}
+        for interrupt in interrupts:
+            widget = self._tool_widgets.get(interrupt.tool_call_id or "")
+            if widget is None or not widget.on_interrupt(interrupt):
+                await self._mount(InterruptWidget(interrupt))
+
     async def _on_state_changed(self) -> None:
         plan = self.state.get("plan") or []
         widget = self._singletons.get(PlanWidget)
@@ -230,6 +340,24 @@ class GentuiApp(App[None]):
             widget.set_plan(plan)
 
     # -- helpers -----------------------------------------------------------------------------
+
+    def _row(self, mark: str, body: Any, mark_class: str = "bullet") -> Horizontal:
+        """One chat line: a marker (`>` you, `●` agent), the content, and the time it was sent."""
+        children: list[Any] = [Static(mark, classes=f"mark {mark_class}"), body]
+        if self.config.show_time:
+            children.append(Static(datetime.now().strftime(self.config.time_format), classes="time"))
+        return Horizontal(*children, classes="row")
+
+    def _tick(self) -> None:
+        """Animate the 'working' line above the prompt while a run is in flight."""
+        try:  # the main screen, even while the splash is on top; it may not be built yet at startup
+            busy = self.screen_stack[0].query_one("#busy", Static)
+        except NoMatches:
+            return
+        if not self._busy:
+            busy.update("")
+            return
+        busy.update(branding.thinking_label(time.monotonic() - self._busy_since))
 
     async def mount_chat(self, widget: Any) -> None:
         """Public: add any widget to the conversation (for plugins and widgets)."""
@@ -245,8 +373,9 @@ class GentuiApp(App[None]):
         self._tool_arg_buf.clear()
         self._singletons.clear()
         self._thoughts.clear()
+        self._open_interrupts, self._answers = {}, {}
         for child in list(self.query_one("#chat", VerticalScroll).children):
-            if child.id != "welcome":
+            if child.id not in ("brand", "welcome"):
                 await child.remove()
 
     async def _error(self, message: str) -> None:

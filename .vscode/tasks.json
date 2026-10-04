@@ -5,6 +5,7 @@
       "label": "Backend",
       "type": "shell",
       "command": "uv run server",
+      "options": { "cwd": "${workspaceFolder}/examples/strands-backend" },
       "isBackground": true,
       "problemMatcher": {
         "pattern": { "regexp": "^$" },

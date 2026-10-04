@@ -80,7 +80,7 @@ def draw_chart(plt: Any, spec: dict[str, Any]) -> None:
 @register_widget("show_chart")
 class ChartWidget(ToolWidget):
     DEFAULT_CSS = """
-    ChartWidget { border: round $success 60%; }
+    ChartWidget { border: none; border-left: thick $success 60%; }
     ChartWidget PlotextPlot { height: 18; }
     """
 
@@ -92,7 +92,7 @@ class ChartWidget(ToolWidget):
         self.query_one(PlotextPlot).display = False
 
     def on_start(self) -> None:
-        self.show(Text("📈 Drawing a chart…", style="dim italic"))  # skeleton
+        self.show(Text("▤ Drawing a chart…", style="dim italic"))  # skeleton
 
     def on_end(self, args: dict[str, Any]) -> None:
         super().on_end(args)
@@ -101,7 +101,7 @@ class ChartWidget(ToolWidget):
             draw_chart(plot.plt, args)
         except (ValueError, TypeError) as exc:
             plot.display = False
-            self.show(Text(f"📈 Could not draw chart: {exc}", style="red"))
+            self.show(Text(f"▤ Could not draw chart: {exc}", style="red"))
             return
         self.show(Text(""))
         self.query_one("#body").display = False

@@ -13,7 +13,7 @@ from gentui.tui.widgets.registry import register_widget
 @register_widget("show_table")
 class TableWidget(ToolWidget):
     DEFAULT_CSS = """
-    TableWidget { border: round $secondary 60%; }
+    TableWidget { border: none; border-left: thick $secondary 60%; }
     TableWidget DataTable { height: auto; max-height: 20; }
     """
 
@@ -22,11 +22,11 @@ class TableWidget(ToolWidget):
         yield DataTable(id="table", zebra_stripes=True, cursor_type="row")
 
     def on_start(self) -> None:
-        self.show(Text("📊 Building a table…", style="dim italic"))  # skeleton
+        self.show(Text("▦ Building a table…", style="dim italic"))  # skeleton
 
     def on_end(self, args: dict[str, Any]) -> None:
         super().on_end(args)
-        self.show(Text(f"📊 {args.get('title', 'Table')}", style="bold"))
+        self.show(Text(f"▦ {args.get('title', 'Table')}", style="bold"))
         table = self.query_one(DataTable)
         table.clear(columns=True)
         table.add_columns(*[str(c) for c in args.get("columns", [])])

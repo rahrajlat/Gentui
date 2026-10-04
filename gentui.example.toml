@@ -6,6 +6,8 @@ url = "http://localhost:8000/agent"        # any AG-UI endpoint
 # token = "sk-..."                         # sent as "Authorization: Bearer <token>"
 # headers = { "X-Org" = "acme" }           # any extra HTTP headers
 # forwarded_props = { model = "fast" }     # sent to the backend with every run
+# send_history = false                     # default: send only the newest message (the backend keeps history per thread).
+#                                          # Set true for stateless backends, e.g. the official ag-ui-strands adapter.
 # timeout = 600                            # seconds without data before giving up (default: never)
 
 # -- look & feel ----------------------------------------------------------------------
@@ -14,7 +16,9 @@ subtitle = "Generative UI for your terminal"
 placeholder = "Ask anything…"
 welcome = """Connected to {url}
 Type a message to talk to the agent.   /help for commands"""
-theme = "tokyo-night"                      # /theme lists all
+theme = "gentui"                            # or "claude", or any Textual theme; /theme lists all
+splash = true                              # animated logo on startup; any key skips it
+logo = true                                # keep the finished logo at the top of the chat
 # css = "my-theme.tcss"                    # your own Textual CSS, hot-reloaded while running
 show_reasoning = true                      # show the model's chain of thought
 dev_pane = false                           # open the AG-UI event inspector at start

@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  tui:
+    name: TUI tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv python install
+      - run: uv sync --locked
+      - run: uv run pytest -q
+
+  example-backend:
+    name: Example backend tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: examples/strands-backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv python install
+      - run: uv sync --locked
+      - run: uv run pytest -q

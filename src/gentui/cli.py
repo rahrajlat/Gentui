@@ -54,7 +54,7 @@ def main(argv: list[str] | None = None) -> None:
     from gentui.tui.agui_client import AguiClient
     from gentui.tui.app import GentuiApp
 
-    client = AguiClient(config.url, config.request_headers, config.timeout)
+    client = AguiClient(config.url, config.request_headers, config.timeout, config.send_history)
     GentuiApp(client, config).run()
 
 

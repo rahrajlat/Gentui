@@ -4,9 +4,9 @@ import json
 from typing import Any
 
 from rich.console import Group
-from rich.json import JSON
 from rich.text import Text
 
+from gentui.tui.branding import RESULT_MARK, TOOL_MARK
 from gentui.tui.widgets.base import ToolWidget
 from gentui.tui.widgets.registry import register_widget
 
@@ -29,10 +29,16 @@ class GenericToolWidget(ToolWidget):
         self._draw(text)
 
     def _draw(self, result: str | None) -> None:
-        parts: list[Any] = [Text(f"⚙ {self.tool_name}", style="bold")]
-        parts.append(JSON(json.dumps(self.args)) if self.args else Text("…", style="dim"))
+        head = Text.assemble((f"{TOOL_MARK} ", "bold"), (self.tool_name, "bold"))
+        if self.args:
+            summary = ", ".join(f"{k}={json.dumps(v, ensure_ascii=False)}" for k, v in self.args.items())
+            head.append(f"({summary[:90] + '…' if len(summary) > 90 else summary})", style="dim")
+        parts: list[Any] = [head]
         if result is not None:
-            parts.append(Text(result[:600], style="dim"))
+            first = next((line for line in result.strip().splitlines() if line.strip()), "(no output)")
+            more = len(result.strip().splitlines()) - 1
+            tail = f"  (+{more} lines)" if more > 0 else ""
+            parts.append(Text(f"  {RESULT_MARK}  {first[:110]}{tail}", style="dim"))
         self.show(Group(*parts))
 
 
@@ -45,10 +51,10 @@ class ActivityWidget(ToolWidget):
     """
 
     def on_start(self) -> None:
-        self.show(Text("🐚 asking the shell agent…", style="dim italic"))
+        self.show(Text("$ asking the shell agent…", style="dim italic"))
 
     def on_result(self, text: str) -> None:
-        self.show(Text(f"🐚 {text.strip()}", style="dim"))
+        self.show(Text(f"$ {text.strip()}", style="dim"))
 
 
 @register_widget("search_memory")
@@ -63,12 +69,12 @@ class MemoryWidget(ToolWidget):
         return str(self.args.get("query", "")).strip()
 
     def on_start(self) -> None:
-        self.show(Text("🧠 recalling…", style="dim italic"))
+        self.show(Text("◌ recalling…", style="dim italic"))
 
     def on_end(self, args: dict[str, Any]) -> None:
         super().on_end(args)
-        self.show(Text(f"🧠 recalling “{self._query()}”…", style="dim italic"))
+        self.show(Text(f"◌ recalling “{self._query()}”…", style="dim italic"))
 
     def on_result(self, text: str) -> None:
         found = bool(text.strip()) and text.strip() not in ("[]", "{}", "null")
-        self.show(Text(f"🧠 recalled “{self._query()}”" if found else f"🧠 nothing remembered for “{self._query()}”", style="dim"))
+        self.show(Text(f"◌ recalled “{self._query()}”" if found else f"◌ nothing remembered for “{self._query()}”", style="dim"))
