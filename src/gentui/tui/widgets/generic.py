@@ -49,3 +49,26 @@ class ActivityWidget(ToolWidget):
 
     def on_result(self, text: str) -> None:
         self.show(Text(f"🐚 {text.strip()}", style="dim"))
+
+
+@register_widget("search_memory")
+class MemoryWidget(ToolWidget):
+    """The agent consulting its long-term memory: a dim one-liner instead of a JSON card."""
+
+    DEFAULT_CSS = """
+    MemoryWidget { border: none; margin: 0; padding: 0 1; color: $text-muted; }
+    """
+
+    def _query(self) -> str:
+        return str(self.args.get("query", "")).strip()
+
+    def on_start(self) -> None:
+        self.show(Text("🧠 recalling…", style="dim italic"))
+
+    def on_end(self, args: dict[str, Any]) -> None:
+        super().on_end(args)
+        self.show(Text(f"🧠 recalling “{self._query()}”…", style="dim italic"))
+
+    def on_result(self, text: str) -> None:
+        found = bool(text.strip()) and text.strip() not in ("[]", "{}", "null")
+        self.show(Text(f"🧠 recalled “{self._query()}”" if found else f"🧠 nothing remembered for “{self._query()}”", style="dim"))

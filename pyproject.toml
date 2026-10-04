@@ -17,9 +17,9 @@ dependencies = [
 ]
 
 [project.scripts]
-gentui = "gentui:main"
+gentui = "gentui.cli:main"
 server = "gentui.backend.app:main"
-tui = "gentui.tui.app:main"
+tui = "gentui.cli:main"
 
 [build-system]
 requires = ["uv_build>=0.12.22,<0.13.0"]

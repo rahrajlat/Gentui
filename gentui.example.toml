@@ -1,0 +1,28 @@
+# Copy to ./gentui.toml (or ~/.config/gentui/config.toml). Every option is optional.
+# CLI flags override this file; GENTUI_URL / GENTUI_TOKEN override the file too.
+
+# -- backend --------------------------------------------------------------------------
+url = "http://localhost:8000/agent"        # any AG-UI endpoint
+# token = "sk-..."                         # sent as "Authorization: Bearer <token>"
+# headers = { "X-Org" = "acme" }           # any extra HTTP headers
+# forwarded_props = { model = "fast" }     # sent to the backend with every run
+# timeout = 600                            # seconds without data before giving up (default: never)
+
+# -- look & feel ----------------------------------------------------------------------
+title = "Gentui"
+subtitle = "Generative UI for your terminal"
+placeholder = "Ask anything…"
+welcome = """Connected to {url}
+Type a message to talk to the agent.   /help for commands"""
+theme = "tokyo-night"                      # /theme lists all
+# css = "my-theme.tcss"                    # your own Textual CSS, hot-reloaded while running
+show_reasoning = true                      # show the model's chain of thought
+dev_pane = false                           # open the AG-UI event inspector at start
+
+# -- extending ------------------------------------------------------------------------
+# plugins = ["my_plugins/weather.py", "some_installed_module"]
+# default_widget = "my_plugins.cards:MyCard"        # replaces the JSON card for unknown tools
+
+# Map a backend tool name to your own widget class (no plugin file needed):
+# [widgets]
+# show_chart = "my_plugins.charts:ChartWidget"

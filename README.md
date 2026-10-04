@@ -7,105 +7,114 @@ Built with the [Strands Agents harness](https://strandsagents.com/docs/user-guid
 the [AG-UI protocol](https://docs.ag-ui.com), FastAPI and [Textual](https://textual.textualize.io).
 
 ```
- tui (Textual) ── POST /agent (RunAgentInput) ──▶ FastAPI ──▶ Orchestrator (Strands harness)
-      ▲                                                          ├─ tools        (registry)
-      │◀──────────── SSE: AG-UI events ─────────────────────────┤─ sub-agents   (agents as tools)
-                                                                 └─ any model    (GENTUI_MODEL)
+ tui (Textual) ── POST /agent (RunAgentInput) ──▶ any AG-UI backend
+      ▲                                                  │
+      │◀──────────── SSE: AG-UI events ─────────────────┘
 
- Approve ▸ forwardedProps.approval ──▶ backend records {approval_id: command} ──▶ run_command(approval_id)
+ Approve ▸ forwardedProps.approval ──▶ backend (your own) ──▶ runs the approved command
 ```
 
-## Setup
+This repo contains **only the terminal client**. It speaks the open AG-UI protocol, so it works with
+any backend that serves an AG-UI endpoint (default `http://localhost:8000/agent`). The reference
+backend (Strands harness + FastAPI) is kept out of version control.
 
-Requires [uv](https://docs.astral.sh/uv/) (Python 3.12 is pinned in `.python-version`).
+## Quick start
+
+Requires [uv](https://docs.astral.sh/uv/) (Python 3.12).
 
 ```bash
 uv sync
-cp .env.example .env     # defaults work if Ollama is installed and signed in (`ollama signin`)
+uv run gentui http://localhost:8000/agent                  # point at any AG-UI backend
+uv run gentui https://my.host/agent --token sk-...         # with auth (Bearer)
+uv run gentui URL -H "X-Org: acme" --theme nord --dev      # headers, theme, event inspector
 ```
 
-`.env` — the model is a single `<provider>/<model>` string; the harness reads provider
-credentials from the environment:
+Streaming text, the model's chain of thought, tool calls (as widgets or a JSON card), shared
+state and errors work with **any** AG-UI backend, with no setup. Keys: `Enter` send ·
+`d` / `Ctrl+D` event inspector · `Ctrl+Q` quit. Type `/help` for slash commands
+(`/theme`, `/clear`, `/reasoning`, `/dev`, `/quit`).
 
-| Provider | Example |
-|---|---|
-| Ollama (local host proxying cloud models) | `GENTUI_MODEL=ollama/gpt-oss:120b-cloud` |
-| Ollama Cloud direct | `OLLAMA_HOST=https://ollama.com`, `OLLAMA_API_KEY=...` |
-| OpenAI / Anthropic / Google / Bedrock | `GENTUI_MODEL=openai/<model>` + the provider's usual API key env var |
+## Configure
 
-Shell limits: `GENTUI_SHELL_CWD` (default `.`), `GENTUI_SHELL_TIMEOUT` (30 s), `GENTUI_SHELL_MAX_OUTPUT` (8000 chars).
+Put options in `./gentui.toml` or `~/.config/gentui/config.toml`; flags and `GENTUI_URL` /
+`GENTUI_TOKEN` override them. Every option is documented in
+[`gentui.example.toml`](gentui.example.toml): backend URL, token and headers, props sent with every
+run, title, welcome text, prompt placeholder, theme, reasoning on/off, plugins, widget mapping.
 
-## Run
+## Customise the UI
 
-VS Code: **Terminal ▸ Run Task…** → `Backend`, then `Frontend`. Or in two terminals:
+- **Theme:** `theme = "nord"` or `/theme <name>`.
+- **Your own styling:** `css = "my.tcss"` loads a [Textual CSS](https://textual.textualize.io/guide/CSS/)
+  file on top of the defaults and **hot-reloads while the app runs**. Useful selectors: `.user`,
+  `.assistant`, `.thinking`, `.error`, `ToolWidget`, `#chat`, `#prompt`.
+- **Your own widget for a backend tool:** subclass `ToolWidget` (it is called with the tool's
+  streamed arguments and result), then map it without any plugin file:
 
-```bash
-uv run server                                    # backend on http://localhost:8000
-uv run tui --url http://localhost:8000/agent     # TUI
+  ```toml
+  [widgets]
+  show_chart = "my_widgets:ChartWidget"
+  ```
+
+## Add features (plugins)
+
+A plugin is a plain Python file. Drop it in `./gentui_plugins/`, `~/.config/gentui/plugins/`, list it
+in `plugins = [...]` / `--plugin`, or ship it as a pip package using the `gentui.plugins` entry point.
+
+```python
+from gentui.plugins import on_event, register_command
+from gentui.tui.widgets.base import ToolWidget
+from gentui.tui.widgets.registry import register_widget
+
+@register_widget("weather")                  # render tool calls named "weather"
+class Weather(ToolWidget):
+    def on_end(self, args): self.show(f"☀ {args['city']}")
+
+@register_command("ping", "say pong")        # adds /ping
+def ping(app, args): app.notify("pong")
+
+@on_event("TOOL_CALL_RESULT")                # hook any AG-UI event
+async def audit(app, event): ...
+
+def setup(app): ...                          # optional, runs once the app is mounted
 ```
 
-Keys: `Enter` send · `d` / `Ctrl+D` toggle the dev pane (raw AG-UI events + shared state) · `Ctrl+Q` quit.
+Plugins can mount any Textual widget into the conversation with `await app.mount_chat(widget)`.
+A broken plugin is reported in a toast; it never stops the app.
+
+## Built-in widgets (the tool contract)
+
+A backend gets these widgets by naming its tools like this; anything else shows a JSON card (or your
+`default_widget`).
+
+| Tool name | Arguments / result | Renders |
+|---|---|---|
+| `propose_command` | `{command, explanation, risk: safe\|caution\|danger}` | command card with Approve / Edit / Reject (the click is sent back as the next message, with `forwardedProps.approval`) |
+| `run_command` | result JSON `{command, exit_code, timed_out, truncated, output}` | output card |
+| `show_table` | `{title, columns, rows}` | table |
+| `search_memory` | `{query}` | quiet "🧠 recalled …" line |
+| `todo_write` + state `plan` | state `{"plan": [{content, status}]}` | live checklist |
 
 ## How it works
 
 | Piece | File |
 |---|---|
-| Strands event → AG-UI event translation (the core idea) | [`agui_adapter.py`](src/gentui/backend/agui_adapter.py) |
-| SSE endpoint, per-thread agents, approval hook | [`app.py`](src/gentui/backend/app.py) |
-| Plugin registry (`@register_tool`, `@register_agent`) | [`registry.py`](src/gentui/backend/registry.py) |
-| Orchestrator (harness) built from the registry | [`orchestrator.py`](src/gentui/backend/orchestrator.py) |
-| Shell flow: propose → approve → run, with safety denylist | [`tools/shell.py`](src/gentui/backend/tools/shell.py), [`tools/shell_safety.py`](src/gentui/backend/tools/shell_safety.py) |
+| SSE client (RunAgentInput in, typed events out) | [`tui/agui_client.py`](src/gentui/tui/agui_client.py) |
 | TUI: event → widget dispatch | [`tui/app.py`](src/gentui/tui/app.py) |
 | Widgets + tool-name registry | [`tui/widgets/`](src/gentui/tui/widgets) |
 
 AG-UI events used: `RUN_STARTED/FINISHED/ERROR`, `TEXT_MESSAGE_START/CONTENT/END`,
+`REASONING_*` (chain of thought, shown as a collapsible "Thought" block),
 `TOOL_CALL_START/ARGS/END/RESULT`, `STATE_SNAPSHOT`, `STATE_DELTA`.
-
-### Safety model
-
-- **No execution without approval.** The harness's built-in `shell` tool is disabled. The only
-  path is `shell_agent` → `propose_command` (records only) → *you click Approve* → `run_command`.
-- **The model can't approve itself or alter a command.** Approvals travel out-of-band
-  (`forwardedProps`), are stored server-side as `{approval_id: command}`, and the model only
-  passes the id. One approval = one run.
-- **Denylist** (recursive delete of root/home/drives, disk formatting, shutdown/reboot, registry
-  edits, fork bombs, interactive programs) is enforced at proposal, at approval *and* right before
-  execution — approval cannot override it. It's a safety net, not a sandbox.
-- 30 s timeout, output cap, configurable working directory, stdin closed.
-- Every proposed / approved / executed command is logged to the console and `.agent/commands.log`.
 
 ### Design notes
 
 - *Generative UI = the tool call is the UI.* The widget spec is the tool's arguments; the TUI renders
   from `TOOL_CALL_*` events and shows a skeleton on `TOOL_CALL_START`.
-- *Own adapter vs `ag-ui-strands`.* The official package (~12k lines) also covers interrupts, frontend
-  tools, citations and A2UI. Ours is ~150 readable lines focused on this project's flow.
-- *Clicks go back as the next user message* — simplest option; see
-  [`examples/add_a_tool.md`](examples/add_a_tool.md) for the trade-off vs AG-UI frontend tools.
-- Conversation history lives in the backend per `thread_id` (in memory; lost on restart).
-
-## Extend it
-
-Add a tool, sub-agent or widget with one file and one decorator: **[examples/add_a_tool.md](examples/add_a_tool.md)**.
+- *Clicks go back as the next user message* (plus out-of-band `forwardedProps`), the simplest option.
+- Widgets are chosen by tool name (`tui/widgets/registry.py`); unknown tools fall back to a generic JSON card.
 
 ## Develop
 
 ```bash
-uv run pytest -q     # adapter, safety rules, headless TUI tests (no LLM needed)
+uv run pytest -q     # headless TUI tests (no LLM or backend needed)
 ```
-
-## Demo script (screen recording, ~90 s)
-
-Start both tasks; press `d` once to show the dev pane, then:
-
-1. **Ask:** `what are the 5 largest files in this folder?`
-   → skeleton appears, then the command card with a green **SAFE** badge. Point at the dev pane
-   streaming `TOOL_CALL_START → ARGS → END`.
-2. Click **Edit**, change `head -n 5` to `head -n 3`, click **Approve edit**
-   → output card with exit code; the log line in `.agent/commands.log`.
-3. **Ask a multi-step task:** `plan how to check the python version and disk usage, then do the first step`
-   → the **Plan** checklist appears and ticks in place (dev pane: `STATE_DELTA`).
-4. **Show the table widget:** `get the system info and show it as a table`.
-5. **Show safety:** `delete everything in my home folder with rm -rf ~`
-   → refused (by the model, or blocked by the policy even if it were proposed).
-6. **Show extensibility:** open `examples/add_a_tool.md`; `system_info.py` is the whole tool.

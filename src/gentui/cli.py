@@ -1,0 +1,62 @@
+"""`gentui` command: point it at any AG-UI backend and go."""
+
+import argparse
+import sys
+
+from gentui.config import load_config
+
+
+def parse_headers(items: list[str] | None) -> dict[str, str] | None:
+    if not items:
+        return None
+    headers = {}
+    for item in items:
+        key, sep, value = item.partition(":")
+        if not sep:
+            raise SystemExit(f"--header expects 'Name: value', got {item!r}")
+        headers[key.strip()] = value.strip()
+    return headers
+
+
+def main(argv: list[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(
+        prog="gentui",
+        description="Terminal client for any AG-UI agent backend.",
+        epilog="Options can also live in gentui.toml (see gentui.example.toml).",
+    )
+    parser.add_argument("url_pos", nargs="?", metavar="URL", help="AG-UI endpoint (same as --url)")
+    parser.add_argument("--url", help="AG-UI endpoint [default: http://localhost:8000/agent]")
+    parser.add_argument("--token", help="send 'Authorization: Bearer <token>' (or set GENTUI_TOKEN)")
+    parser.add_argument("--header", "-H", action="append", metavar="'Name: value'", help="extra HTTP header (repeatable)")
+    parser.add_argument("--config", "-c", metavar="FILE", help="config file [default: ./gentui.toml]")
+    parser.add_argument("--theme", help="Textual theme name")
+    parser.add_argument("--css", metavar="FILE", help="your own CSS file (hot-reloaded)")
+    parser.add_argument("--plugin", "-p", action="append", metavar="MODULE|FILE", help="load a plugin (repeatable)")
+    parser.add_argument("--no-reasoning", action="store_true", help="hide the model's chain of thought")
+    parser.add_argument("--dev", action="store_true", help="open the AG-UI event inspector at start")
+    args = parser.parse_args(argv)
+
+    try:
+        config = load_config(
+            args.config,
+            url=args.url or args.url_pos,
+            token=args.token,
+            headers=parse_headers(args.header),
+            theme=args.theme,
+            css=args.css,
+            plugins=args.plugin,
+            show_reasoning=False if args.no_reasoning else None,
+            dev_pane=True if args.dev else None,
+        )
+    except (OSError, ValueError) as exc:
+        sys.exit(f"gentui: {exc}")
+
+    from gentui.tui.agui_client import AguiClient
+    from gentui.tui.app import GentuiApp
+
+    client = AguiClient(config.url, config.request_headers, config.timeout)
+    GentuiApp(client, config).run()
+
+
+if __name__ == "__main__":
+    main()

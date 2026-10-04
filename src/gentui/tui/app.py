@@ -1,7 +1,6 @@
 """Textual app: streaming chat + generative UI widgets rendered from AG-UI events."""
 
 import argparse
-import json
 import uuid
 from collections import deque
 from typing import Any, Protocol
@@ -9,24 +8,21 @@ from typing import Any, Protocol
 import httpx
 import jsonpatch
 from ag_ui.core import BaseEvent, EventType
-from rich.json import JSON
 from rich.text import Text
 from textual import on
 from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical, VerticalScroll
-from textual.widgets import Footer, Header, Input, Markdown, RichLog, Static
+from textual.widgets import Collapsible, Footer, Header, Input, Markdown, RichLog, Static
 from textual.widgets._markdown import MarkdownStream
 
-from gentui.tui import widgets  # noqa: F401  (registers the built-in widgets)
+from gentui import plugins
+from gentui.config import Config
+from gentui.tui import commands, widgets  # noqa: F401  (registers built-in widgets and commands)
 from gentui.tui.agui_client import AguiClient
 from gentui.tui.widgets.base import ToolWidget, parse_partial_json
 from gentui.tui.widgets.plan import PlanWidget
 from gentui.tui.widgets.registry import widget_for
-
-EVENT_COLOR = {
-    "RUN": "magenta", "TEXT": "cyan", "TOOL": "yellow", "STATE": "green",
-}
 
 
 class Client(Protocol):
@@ -34,20 +30,18 @@ class Client(Protocol):
 
 
 class GentuiApp(App[None]):
-    TITLE = "Gentui"
-    SUB_TITLE = "Generative UI for your terminal"
-
     CSS = """
     #chat { padding: 0 2; }
     #prompt { margin: 0 1; }
     .user { background: $primary 25%; padding: 0 1; margin: 1 0 0 10; }
     .assistant { padding: 0 1; margin: 1 4 0 0; background: transparent; }
+    .thinking { color: $text-muted; text-style: italic; }
+    Collapsible.thought { margin: 1 4 0 0; padding: 0; border: none; background: transparent; }
     .error { color: $error; border: round $error; padding: 0 1; margin: 1 0; }
-    #welcome { color: $text-muted; margin: 1 0; }
+    #welcome, .welcome { color: $text-muted; margin: 1 0; }
     #dev { display: none; width: 45%; border-left: tall $primary 40%; padding: 0 1; }
     #dev.-visible { display: block; }
     #events { height: 1fr; }
-    #state { height: auto; max-height: 40%; border-top: solid $primary 40%; }
     """
 
     BINDINGS = [
@@ -56,15 +50,26 @@ class GentuiApp(App[None]):
         Binding("ctrl+q", "quit", "Quit"),
     ]
 
-    def __init__(self, client: Client) -> None:
-        super().__init__()
+    def __init__(self, client: Client, config: Config | None = None) -> None:
+        self.config = config or Config()
+        # a user CSS file is hot-reloaded: edit it while the app runs
+        super().__init__(css_path=self.config.css, watch_css=bool(self.config.css))
+        self.title = self.config.title
+        self.sub_title = self.config.subtitle
         self.client = client
+        if hasattr(client, "on_raw"):
+            client.on_raw = self._log_raw
+        self.show_reasoning = self.config.show_reasoning
+        self._plugin_errors = plugins.load_all(
+            self.config.plugins, self.config.widgets, self.config.default_widget
+        )
         self.thread_id = str(uuid.uuid4())
         self.state: dict[str, Any] = {}  # shared state mirrored from the backend
 
         self._outbox: deque[tuple[str, dict[str, Any] | None]] = deque()
         self._busy = False
         self._text_streams: dict[str, MarkdownStream] = {}  # open assistant messages
+        self._thoughts: dict[str, tuple[Collapsible, Static, str]] = {}  # open reasoning blocks
         self._tool_widgets: dict[str, ToolWidget] = {}  # tool_call_id -> widget
         self._tool_arg_buf: dict[str, str] = {}  # tool_call_id -> raw args received so far
         self._singletons: dict[type, ToolWidget] = {}
@@ -76,25 +81,30 @@ class GentuiApp(App[None]):
         with Horizontal():
             with Vertical():
                 yield VerticalScroll(
-                    Static(
-                        "Ask for something to do in your shell, e.g.\n"
-                        "  “what are the 5 biggest files here?”\n"
-                        "Nothing runs until you approve it.   [d] dev pane",
-                        id="welcome",
-                    ),
+                    Static(Text(self.config.welcome_text), id="welcome"),
                     id="chat",
                 )
-                yield Input(placeholder="Ask anything…", id="prompt")
+                yield Input(placeholder=self.config.placeholder, id="prompt")
             with Vertical(id="dev"):
                 yield RichLog(id="events", wrap=True, markup=False, highlight=False)
-                yield Static(id="state")
         yield Footer()
 
-    def on_mount(self) -> None:
-        self.theme = "tokyo-night"
+    async def on_mount(self) -> None:
+        if self.config.theme in self.available_themes:
+            self.theme = self.config.theme
+        else:
+            self.notify(f"unknown theme {self.config.theme!r}", severity="warning")
+        if self.config.dev_pane:
+            self.query_one("#dev").add_class("-visible")
+        for message in self._plugin_errors:
+            self.notify(message, severity="error", timeout=15)
+        for setup in plugins.SETUPS:
+            try:
+                await plugins.call(setup, self)
+            except Exception as exc:  # noqa: BLE001
+                self.notify(f"plugin setup failed: {exc!r}", severity="error")
         self.query_one("#chat", VerticalScroll).anchor()  # stay scrolled to the newest content
         self.query_one("#prompt", Input).focus()
-        self._draw_state()
 
     def action_toggle_dev(self) -> None:
         self.query_one("#dev").toggle_class("-visible")
@@ -107,6 +117,11 @@ class GentuiApp(App[None]):
         if not text:
             return
         event.input.clear()
+        if text.startswith("/"):
+            name, _, args = text[1:].partition(" ")
+            if name in plugins.COMMANDS:
+                await plugins.call(plugins.COMMANDS[name][0], self, args)
+                return
         await self._mount(Static(Text(text), classes="user"))
         self.send(text)
 
@@ -125,6 +140,8 @@ class GentuiApp(App[None]):
         try:
             while self._outbox:
                 text, props = self._outbox.popleft()
+                if self.config.forwarded_props:
+                    props = {**self.config.forwarded_props, **(props or {})}
                 self.sub_title = "thinking…"
                 try:
                     async for event in self.client.run(self.thread_id, text, props):
@@ -133,7 +150,7 @@ class GentuiApp(App[None]):
                     await self._error(f"Cannot talk to the backend: {exc!r}. Is it running?")
         finally:
             self._busy = False
-            self.sub_title = "Generative UI for your terminal"
+            self.sub_title = self.config.subtitle
 
     # -- AG-UI event -> UI --------------------------------------------------------------------
 
@@ -148,6 +165,22 @@ class GentuiApp(App[None]):
             await self._text_streams[ev.message_id].write(ev.delta)
         elif t == EventType.TEXT_MESSAGE_END:
             await self._text_streams.pop(ev.message_id).stop()
+        elif t == EventType.REASONING_MESSAGE_START and self.show_reasoning:
+            body = Static(classes="thinking")
+            box = Collapsible(body, title="Thinking…", collapsed=False, classes="thought")
+            await self._mount(box)
+            self._thoughts[ev.message_id] = (box, body, "")
+        elif t == EventType.REASONING_MESSAGE_CONTENT:
+            if ev.message_id in self._thoughts:
+                box, body, text = self._thoughts[ev.message_id]
+                text += ev.delta
+                self._thoughts[ev.message_id] = (box, body, text)
+                body.update(Text(text))
+        elif t == EventType.REASONING_MESSAGE_END:
+            if ev.message_id in self._thoughts:
+                box, _, _ = self._thoughts.pop(ev.message_id)
+                box.title = "Thought"
+                box.collapsed = True  # tuck it away once the answer starts
         elif t == EventType.TOOL_CALL_START:
             await self._tool_start(ev.tool_call_id, ev.tool_call_name)
         elif t == EventType.TOOL_CALL_ARGS:
@@ -172,6 +205,7 @@ class GentuiApp(App[None]):
             await self._on_state_changed()
         elif t == EventType.RUN_ERROR:
             await self._error(ev.message)
+        await plugins.dispatch_event(self, ev)
 
     async def _tool_start(self, call_id: str, name: str) -> None:
         widget = widget_for(call_id, name)
@@ -186,7 +220,6 @@ class GentuiApp(App[None]):
         widget.on_start()
 
     async def _on_state_changed(self) -> None:
-        self._draw_state()
         plan = self.state.get("plan") or []
         widget = self._singletons.get(PlanWidget)
         if plan and widget is None:  # a plan appeared without a todo_write widget: show one
@@ -198,30 +231,41 @@ class GentuiApp(App[None]):
 
     # -- helpers -----------------------------------------------------------------------------
 
-    async def _mount(self, widget: Any) -> None:
+    async def mount_chat(self, widget: Any) -> None:
+        """Public: add any widget to the conversation (for plugins and widgets)."""
         await self.query_one("#chat", VerticalScroll).mount(widget)
+
+    _mount = mount_chat
+
+    async def new_thread(self) -> None:
+        """Clear the screen and start a fresh conversation (new thread id, empty state)."""
+        self.thread_id = str(uuid.uuid4())
+        self.state = {}
+        self._tool_widgets.clear()
+        self._tool_arg_buf.clear()
+        self._singletons.clear()
+        self._thoughts.clear()
+        for child in list(self.query_one("#chat", VerticalScroll).children):
+            if child.id != "welcome":
+                await child.remove()
 
     async def _error(self, message: str) -> None:
         await self._mount(Static(Text(f"✖ {message}"), classes="error"))
 
-    def _draw_state(self) -> None:
-        self.query_one("#state", Static).update(
-            JSON(json.dumps({"state": self.state, "thread": self.thread_id[:8]}))
-        )
+    def _log_raw(self, payload: str) -> None:
+        """Dev pane: the backend's SSE payloads exactly as received."""
+        self.query_one("#events", RichLog).write(Text(payload))
 
     def _log_event(self, ev: BaseEvent) -> None:
-        data = ev.model_dump(by_alias=True, exclude_none=True)
-        kind = data.pop("type")
-        data.pop("timestamp", None)
-        color = EVENT_COLOR.get(kind.split("_")[0], "red" if "ERROR" in kind else "white")
-        line = Text.assemble((f"{kind:<22}", f"bold {color}"), (json.dumps(data)[:200], "dim"))
-        self.query_one("#events", RichLog).write(line)
+        # fallback for clients that cannot expose the raw stream
+        if not hasattr(self.client, "on_raw"):
+            self._log_raw(ev.model_dump_json(by_alias=True, exclude_none=True))
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(prog="tui", description="Gentui terminal client")
-    parser.add_argument("--url", default="http://localhost:8000/agent", help="AG-UI agent endpoint")
-    GentuiApp(AguiClient(parser.parse_args().url)).run()
+    from gentui.cli import main as cli_main
+
+    cli_main()
 
 
 if __name__ == "__main__":

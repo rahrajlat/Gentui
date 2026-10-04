@@ -221,3 +221,10 @@ __marimo__/
 
 # Strands harness runtime data
 .agent/
+
+# Backend is kept local: this repo ships only the TUI (works with any AG-UI backend)
+/src/gentui/backend/
+/tests/test_adapter.py
+/tests/test_registry.py
+/tests/test_shell_safety.py
+/examples/
