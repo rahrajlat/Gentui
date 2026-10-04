@@ -1,0 +1,26 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Backend",
+      "type": "shell",
+      "command": "uv run server",
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": { "regexp": "^$" },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Started server process",
+          "endsPattern": "Uvicorn running on"
+        }
+      },
+      "presentation": { "panel": "dedicated", "group": "gentui" }
+    },
+    {
+      "label": "Frontend",
+      "type": "shell",
+      "command": "uv run tui --url http://localhost:8000/agent",
+      "presentation": { "panel": "dedicated", "group": "gentui", "focus": true }
+    }
+  ]
+}
