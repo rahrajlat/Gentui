@@ -12,6 +12,7 @@ drawn as live widgets in your terminal.
 [![AG-UI](https://img.shields.io/badge/protocol-AG--UI-A78BFA?style=flat-square)](https://docs.ag-ui.com)
 [![Tested with Strands Agents](https://img.shields.io/badge/tested%20with-Strands%20Agents%20(AWS)-FF9900?style=flat-square)](https://strandsagents.com)
 [![uv](https://img.shields.io/badge/packaged%20with-uv-DE5FE9?style=flat-square)](https://docs.astral.sh/uv/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-7BD88F?style=flat-square)](LICENSE)
 [![Status](https://img.shields.io/badge/status-alpha-F2C46D?style=flat-square)](#status)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-7BD88F?style=flat-square)](#contributing)
 [![Stars](https://img.shields.io/github/stars/rahrajlat/Gentui?style=flat-square&color=4FD6C8)](https://github.com/rahrajlat/Gentui/stargazers)
@@ -230,3 +231,7 @@ The images above are generated from the app's own code:
 Issues and pull requests are welcome. Please run both test suites before opening a PR, and add a test
 with any behaviour change. Because Gentui is a client for an open protocol, changes that keep it
 backend-agnostic are the easiest to accept.
+
+## License
+
+[MIT](LICENSE). Free to use, modify and distribute, including the [example backend](examples/strands-backend).
