@@ -119,3 +119,4 @@ AG-UI events used: `RUN_STARTED/FINISHED/ERROR`, `TEXT_MESSAGE_START/CONTENT/END
 ```bash
 uv run pytest -q     # headless TUI tests (no LLM or backend needed)
 ```
+gentui http://localhost:8000/agent  
