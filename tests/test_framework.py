@@ -313,3 +313,52 @@ async def test_search_memory_renders_as_quiet_one_liner():
         w = [w for w in app.query(ToolWidget) if w.tool_name == "search_memory"][0]
         assert "recalled “editor”" in str(w.query_one("#body", Static).render())
 
+
+
+# -- charts ---------------------------------------------------------------------------------
+
+
+def chart_run(spec):
+    return [
+        RunStartedEvent(thread_id="t", run_id="r"),
+        ToolCallStartEvent(tool_call_id="ch", tool_call_name="show_chart"),
+        ToolCallArgsEvent(tool_call_id="ch", delta=json.dumps(spec)),
+        ToolCallEndEvent(tool_call_id="ch"),
+        RunFinishedEvent(thread_id="t", run_id="r"),
+    ]
+
+
+@pytest.mark.parametrize("spec", [
+    {"type": "line", "title": "T", "x": [1, 2, 3], "series": [{"name": "a", "values": [1, 4, 9]}]},
+    {"type": "line", "x": ["Mon", "Tue"], "series": [{"name": "a", "values": [1, 2]}, {"name": "b", "values": [2, 1]}]},
+    {"type": "bar", "x": ["a", "b", "c"], "series": [{"name": "n", "values": [3, 1, 2]}]},
+    {"type": "bar", "x": ["a", "b"], "series": [{"name": "p", "values": [1, 2]}, {"name": "q", "values": [2, 3]}]},
+    {"type": "scatter", "x": [1, 2, 3], "series": [{"name": "s", "values": [3, 1, 2]}]},
+    {"type": "histogram", "bins": 4, "series": [{"name": "h", "values": [1, 2, 2, 3, 3, 3, 4]}]},
+])
+async def test_chart_types_render(spec):
+    from textual_plotext import PlotextPlot
+
+    app = GentuiApp(ScriptClient(*chart_run(spec)))
+    async with app.run_test(size=(120, 50)) as pilot:
+        await pilot.press(*"c", "enter")
+        await pilot.pause(0.5)
+        plot = app.query_one(PlotextPlot)
+        assert plot.display, [str(s.render()) for s in app.query("#body")]
+
+
+@pytest.mark.parametrize("spec,message", [
+    ({"type": "pie", "series": [{"values": [1]}]}, "unknown chart type"),
+    ({"type": "line", "series": []}, "series is empty"),
+    ({"type": "line", "x": [1, 2], "series": [{"name": "a", "values": [1]}]}, "1 values for 2 x points"),
+    ({"type": "bar", "x": ["a"], "series": [{"name": "a", "values": ["many"]}]}, "must be numbers"),
+])
+async def test_bad_chart_spec_shows_message_not_crash(spec, message):
+    from textual_plotext import PlotextPlot
+
+    app = GentuiApp(ScriptClient(*chart_run(spec)))
+    async with app.run_test(size=(120, 50)) as pilot:
+        await pilot.press(*"c", "enter")
+        await pilot.pause(0.5)
+        assert not app.query_one(PlotextPlot).display
+        assert any(message in str(s.render()) for s in app.query("#body"))

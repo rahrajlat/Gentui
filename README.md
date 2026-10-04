@@ -52,7 +52,7 @@ run, title, welcome text, prompt placeholder, theme, reasoning on/off, plugins, 
 
   ```toml
   [widgets]
-  show_chart = "my_widgets:ChartWidget"
+  show_map = "my_widgets:MapWidget"
   ```
 
 ## Add features (plugins)
@@ -91,6 +91,7 @@ A backend gets these widgets by naming its tools like this; anything else shows 
 | `propose_command` | `{command, explanation, risk: safe\|caution\|danger}` | command card with Approve / Edit / Reject (the click is sent back as the next message, with `forwardedProps.approval`) |
 | `run_command` | result JSON `{command, exit_code, timed_out, truncated, output}` | output card |
 | `show_table` | `{title, columns, rows}` | table |
+| `show_chart` | `{type: line\|bar\|scatter\|histogram, title, x, series: [{name, values}], x_label, y_label, bins}` | terminal chart (plotext) |
 | `search_memory` | `{query}` | quiet "🧠 recalled …" line |
 | `todo_write` + state `plan` | state `{"plan": [{content, status}]}` | live checklist |
 

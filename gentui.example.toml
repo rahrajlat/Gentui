@@ -25,4 +25,4 @@ dev_pane = false                           # open the AG-UI event inspector at s
 
 # Map a backend tool name to your own widget class (no plugin file needed):
 # [widgets]
-# show_chart = "my_plugins.charts:ChartWidget"
+# show_map = "my_plugins.maps:MapWidget"

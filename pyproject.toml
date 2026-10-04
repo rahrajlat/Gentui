@@ -13,6 +13,7 @@ dependencies = [
     "strands-agents[ollama]>=1.57.2",
     "strands-harness>=0.1.2",
     "textual>=8.2.8",
+    "textual-plotext>=1.0.1",
     "uvicorn>=0.54.0",
 ]
 
