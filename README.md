@@ -2,9 +2,9 @@
 
 <img src="docs/assets/hero.gif" alt="Gentui: generative UI for your terminal" width="640">
 
-**A terminal client for [AG-UI](https://docs.ag-ui.com) agent backends.**<br>
-Streaming chat, the model's chain of thought, tables, charts and human approval,<br>
-drawn as live widgets in your terminal.
+**A terminal interface for prototyping agents really quickly.**<br>
+Point it at any [AG-UI](https://docs.ag-ui.com) backend and get streaming chat, the model's chain of thought,<br>
+tables, charts and human approval, with no frontend to build.
 
 [![CI](https://img.shields.io/github/actions/workflow/status/rahrajlat/Gentui/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/rahrajlat/Gentui/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.12%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org)
@@ -24,17 +24,18 @@ drawn as live widgets in your terminal.
 
 ## Why Gentui?
 
+**Gentui is a terminal interface for prototyping agents really quickly.**
+
 While developing agents locally, we end up spending our time on the frontend: a Streamlit or Chainlit
 app, or a React project, just to talk to the agent. Each one is a separate frontend to build and keep
-running.
+running, and it slows down the thing you actually want to iterate on: the agent.
 
 Gentui removes that step. Install it, point it at your agent's AG-UI endpoint, and you get a chat, the
 model's **chain of thought**, **human-in-the-loop (HITL)** and **approval** flows out of the box, with no
-frontend code to write.
+frontend code to write. Change your agent, restart it, and you're prototyping again in seconds.
 
-Point Gentui at any backend that speaks AG-UI and you get a polished terminal interface with no
-frontend code to write. When the agent calls a tool, the **tool call becomes the UI**: a command to
-approve, a table, a chart, a live plan. Nothing risky runs until you click **Approve**.
+When the agent calls a tool, the **tool call becomes the UI**: a command to approve, a table, a chart,
+a live plan. Nothing risky runs until you click **Approve**.
 
 **Tested with the [Strands Agents](https://strandsagents.com) framework (AWS's open-source agent SDK) over
 AG-UI**: both on a custom backend (the [example backend](examples/strands-backend)) and on the official
