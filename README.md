@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/assets/hero.gif" alt="Gentui: generative UI for your terminal" width="640">
+<img src="https://raw.githubusercontent.com/rahrajlat/Gentui/main/docs/assets/hero.gif" alt="Gentui: generative UI for your terminal" width="640">
 
 **A terminal interface for prototyping agents really quickly.**<br>
 Point it at any [AG-UI](https://docs.ag-ui.com) backend and get streaming chat, the model's chain of thought,<br>
@@ -12,7 +12,7 @@ tables, charts and human approval, with no frontend to build.
 [![AG-UI](https://img.shields.io/badge/protocol-AG--UI-A78BFA?style=flat-square)](https://docs.ag-ui.com)
 [![Tested with Strands Agents](https://img.shields.io/badge/tested%20with-Strands%20Agents%20(AWS)-FF9900?style=flat-square)](https://strandsagents.com)
 [![uv](https://img.shields.io/badge/packaged%20with-uv-DE5FE9?style=flat-square)](https://docs.astral.sh/uv/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-7BD88F?style=flat-square)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-7BD88F?style=flat-square)](https://github.com/rahrajlat/Gentui/blob/main/LICENSE)
 [![Status](https://img.shields.io/badge/status-alpha-F2C46D?style=flat-square)](#status)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-7BD88F?style=flat-square)](#contributing)
 [![Stars](https://img.shields.io/github/stars/rahrajlat/Gentui?style=flat-square&color=4FD6C8)](https://github.com/rahrajlat/Gentui/stargazers)
@@ -38,11 +38,11 @@ When the agent calls a tool, the **tool call becomes the UI**: a command to appr
 a live plan. Nothing risky runs until you click **Approve**.
 
 **Tested with the [Strands Agents](https://strandsagents.com) framework (AWS's open-source agent SDK) over
-AG-UI**: both on a custom backend (the [example backend](examples/strands-backend)) and on the official
+AG-UI**: both on a custom backend (the [example backend](https://github.com/rahrajlat/Gentui/tree/main/examples/strands-backend)) and on the official
 [`ag-ui-strands`](https://pypi.org/project/ag-ui-strands/) adapter.
 
 <div align="center">
-<img src="docs/assets/demo.gif" alt="Gentui demo: ask, review the proposed command, approve, see the output, chart it" width="860">
+<img src="https://raw.githubusercontent.com/rahrajlat/Gentui/main/docs/assets/demo.gif" alt="Gentui demo: ask, review the proposed command, approve, see the output, chart it" width="860">
 </div>
 
 ## Features
@@ -55,12 +55,12 @@ AG-UI**: both on a custom backend (the [example backend](examples/strands-backen
 - **Generative widgets from tool calls:** command card, command output, tables, terminal charts
   (line, bar, scatter, histogram), live plan checklist.
 - **Developer-friendly:** an event inspector (`d`) showing the raw SSE payloads exactly as sent, `/theme`,
-  `/clear`, `/reasoning`, and a clear [backend contract](docs/tool-contract.md).
+  `/clear`, `/reasoning`, and a clear [backend contract](https://github.com/rahrajlat/Gentui/blob/main/docs/tool-contract.md).
 - **Yours to customise:** TOML config, hot-reloaded CSS, your own themes, and Python plugins that add
   widgets, slash commands and event hooks.
 - **Runs agents on AWS too:** invoke agents hosted on Amazon Bedrock AgentCore Runtime (AG-UI protocol) via boto3.
 - **Backend-agnostic by design.** The client has no framework code; a complete example backend lives in
-  [`examples/strands-backend`](examples/strands-backend).
+  [`examples/strands-backend`](https://github.com/rahrajlat/Gentui/tree/main/examples/strands-backend).
 
 ## The sample agent: natural language → shell
 
@@ -80,8 +80,8 @@ until you approve it**.
 
 The same agent can also show results as a **table** or **chart**, lay out multi-step work as a live
 **plan**, explain what a command does (an explainer sub-agent), and keep **long-term memory** between
-conversations. It's a worked example of the [backend contract](docs/tool-contract.md): copy it, or add your
-own tools with [this guide](examples/strands-backend/docs/add_a_tool.md).
+conversations. It's a worked example of the [backend contract](https://github.com/rahrajlat/Gentui/blob/main/docs/tool-contract.md): copy it, or add your
+own tools with [this guide](https://github.com/rahrajlat/Gentui/blob/main/examples/strands-backend/docs/add_a_tool.md).
 
 ## Quick start
 
@@ -95,7 +95,7 @@ uv run gentui http://localhost:8000/agent        # your AG-UI endpoint
 
 No backend yet? Run the [sample natural-language-to-shell agent](#the-sample-agent-natural-language--shell)
 (Strands Agents + FastAPI) in another terminal. It uses a local
-[Ollama](https://ollama.com) by default; see its [README](examples/strands-backend/README.md) for other providers:
+[Ollama](https://ollama.com) by default; see its [README](https://github.com/rahrajlat/Gentui/blob/main/examples/strands-backend/README.md) for other providers:
 
 ```bash
 cd examples/strands-backend
@@ -133,14 +133,14 @@ uv run gentui ARN --qualifier prod                        # optional: a specific
 `aws_profile` and `region`.
 
 One conversation is one runtime session, errors come with fixes (missing credentials, denied access, wrong ARN), and
-busy sessions are retried. Details, IAM permissions and troubleshooting: **[docs/agentcore.md](docs/agentcore.md)**.
+busy sessions are retried. Details, IAM permissions and troubleshooting: **[docs/agentcore.md](https://github.com/rahrajlat/Gentui/blob/main/docs/agentcore.md)**.
 Both a runtime ARN and an endpoint ARN (`.../runtime-endpoint/DEFAULT`) work.
 
 ## Configure
 
 Put options in `./gentui.toml` or `~/.config/gentui/config.toml`. Flags, `GENTUI_URL` and
 `GENTUI_TOKEN` override the file. Every option is documented in
-[`gentui.example.toml`](gentui.example.toml): backend URL, token and headers, props sent with every run,
+[`gentui.example.toml`](https://github.com/rahrajlat/Gentui/blob/main/gentui.example.toml): backend URL, token and headers, props sent with every run,
 title, welcome text, theme, splash and logo, reasoning on/off, timestamps, plugins and widget mapping.
 
 > **Stateless backends** (ones that rebuild context from the message list, like the official
@@ -191,7 +191,7 @@ broken plugin is reported in a toast and never stops the app.
 
 Any language works: serve a `POST` endpoint that streams AG-UI events. To get the rich widgets, name
 your tools like this (anything else shows a JSON card). The full contract, including the approval
-flow and a checklist, is in **[docs/tool-contract.md](docs/tool-contract.md)**.
+flow and a checklist, is in **[docs/tool-contract.md](https://github.com/rahrajlat/Gentui/blob/main/docs/tool-contract.md)**.
 
 | Tool name | Arguments / result | Renders |
 |---|---|---|
@@ -214,11 +214,11 @@ flow and a checklist, is in **[docs/tool-contract.md](docs/tool-contract.md)**.
 
 | Piece | File |
 |---|---|
-| SSE client (RunAgentInput in, typed events out) | [`tui/agui_client.py`](src/gentui/tui/agui_client.py) |
-| Event → widget dispatch, interrupts, chat | [`tui/app.py`](src/gentui/tui/app.py) |
-| Widgets and the tool-name registry | [`tui/widgets/`](src/gentui/tui/widgets) |
-| Logo, splash and animation | [`tui/branding.py`](src/gentui/tui/branding.py), [`tui/splash.py`](src/gentui/tui/splash.py) |
-| Plugin API and config | [`plugins.py`](src/gentui/plugins.py), [`config.py`](src/gentui/config.py) |
+| SSE client (RunAgentInput in, typed events out) | [`tui/agui_client.py`](https://github.com/rahrajlat/Gentui/blob/main/src/gentui/tui/agui_client.py) |
+| Event → widget dispatch, interrupts, chat | [`tui/app.py`](https://github.com/rahrajlat/Gentui/blob/main/src/gentui/tui/app.py) |
+| Widgets and the tool-name registry | [`tui/widgets/`](https://github.com/rahrajlat/Gentui/tree/main/src/gentui/tui/widgets) |
+| Logo, splash and animation | [`tui/branding.py`](https://github.com/rahrajlat/Gentui/blob/main/src/gentui/tui/branding.py), [`tui/splash.py`](https://github.com/rahrajlat/Gentui/blob/main/src/gentui/tui/splash.py) |
+| Plugin API and config | [`plugins.py`](https://github.com/rahrajlat/Gentui/blob/main/src/gentui/plugins.py), [`config.py`](https://github.com/rahrajlat/Gentui/blob/main/src/gentui/config.py) |
 
 AG-UI events used: `RUN_STARTED/FINISHED/ERROR` (with `outcome: interrupt`), `TEXT_MESSAGE_*`,
 `REASONING_*`, `TOOL_CALL_START/ARGS/END/RESULT`, `STATE_SNAPSHOT`, `STATE_DELTA`. The request side
@@ -229,7 +229,7 @@ uses `messages`, `forwardedProps` and `resume`.
 Gentui is **alpha**. What has been verified, and what has not:
 
 - Built and tested against the **Strands Agents** framework (AWS) over AG-UI: the
-  [example backend](examples/strands-backend) and the official
+  [example backend](https://github.com/rahrajlat/Gentui/tree/main/examples/strands-backend) and the official
   [`ag-ui-strands`](https://pypi.org/project/ag-ui-strands/) adapter (with `send_history = true`).
 - AgentCore Runtime support works against a real runtime (confirmed by the author with a plain runtime ARN) and only
   covers runtimes using the AG-UI protocol. Other setups are covered by tests with a fake boto3 client and botocore's `Stubber`.
@@ -259,4 +259,4 @@ backend-agnostic are the easiest to accept.
 
 ## License
 
-[MIT](LICENSE). Free to use, modify and distribute, including the [example backend](examples/strands-backend).
+[MIT](https://github.com/rahrajlat/Gentui/blob/main/LICENSE). Free to use, modify and distribute, including the [example backend](https://github.com/rahrajlat/Gentui/tree/main/examples/strands-backend).
