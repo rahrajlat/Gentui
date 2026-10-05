@@ -23,7 +23,7 @@ from gentui import plugins
 from gentui.config import Config
 from gentui.tui import branding, commands, widgets  # noqa: F401  (registers built-in widgets and commands)
 from gentui.tui.splash import SplashScreen
-from gentui.tui.agui_client import AguiClient
+from gentui.tui.agui_client import AguiClient, BackendError
 from gentui.tui.widgets.base import ToolWidget, parse_partial_json
 from gentui.tui.widgets.interrupt import InterruptWidget
 from gentui.tui.widgets.plan import PlanWidget
@@ -156,7 +156,7 @@ class GentuiApp(App[None]):
                     yield Input(placeholder=self.config.placeholder, id="prompt")
                 with Horizontal(id="statusbar"):
                     yield Static("/help · ctrl+q quit · d dev pane", classes="left")
-                    yield Static(self.config.url, classes="right")
+                    yield Static(self.config.target, classes="right")
             with Vertical(id="dev"):
                 yield RichLog(id="events", wrap=True, markup=False, highlight=False)
 
@@ -244,6 +244,8 @@ class GentuiApp(App[None]):
                         await self._handle(event)
                 except httpx.HTTPError as exc:
                     await self._error(f"Cannot talk to the backend: {exc!r}. Is it running?")
+                except BackendError as exc:
+                    await self._error(str(exc))
         finally:
             self._busy = False
             self.sub_title = self.config.subtitle

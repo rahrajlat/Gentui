@@ -18,12 +18,18 @@ dependencies = [
 gentui = "gentui.cli:main"
 tui = "gentui.cli:main"
 
+[project.optional-dependencies]
+agentcore = [
+    "boto3>=1.40",
+]
+
 [build-system]
 requires = ["uv_build>=0.12.22,<0.13.0"]
 build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
+    "boto3>=1.43.108",
     "pytest>=9.1.1",
     "pytest-asyncio>=1.4.0",
 ]

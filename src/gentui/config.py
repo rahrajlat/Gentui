@@ -7,6 +7,7 @@ See `gentui.example.toml` for every option.
 """
 
 import os
+import re
 import tomllib
 from dataclasses import dataclass, field, fields
 from pathlib import Path
@@ -20,10 +21,32 @@ DEFAULT_WELCOME = (
 )
 
 
+_RUNTIME_ARN = re.compile(
+    r"^arn:aws[a-z-]*:bedrock-agentcore:(?P<region>[a-z0-9-]+):(?P<account>\d{12}):runtime/[^/\s]+$"
+)
+
+
+def parse_runtime_arn(arn: str) -> tuple[str, str]:
+    """(region, account id) of an AgentCore runtime ARN. Raises ValueError for anything else."""
+    match = _RUNTIME_ARN.match(arn.strip())
+    if not match:
+        raise ValueError(
+            f"not an AgentCore runtime ARN: {arn!r} "
+            "(expected arn:aws:bedrock-agentcore:<region>:<account>:runtime/<name>)"
+        )
+    return match["region"], match["account"]
+
+
 @dataclass
 class Config:
     # -- backend -----------------------------------------------------------------------
     url: str = "http://localhost:8000/agent"  # any AG-UI endpoint
+    # An agent hosted on Amazon Bedrock AgentCore Runtime (AG-UI protocol), invoked with boto3.
+    # When set it is used instead of `url`. Needs the optional dependency: gentui[agentcore].
+    agentcore_arn: str | None = None
+    region: str | None = None  # default: the region in the ARN
+    aws_profile: str | None = None  # default: the standard AWS credential chain
+    qualifier: str | None = None  # runtime endpoint name; default: the runtime's DEFAULT endpoint
     headers: dict[str, str] = field(default_factory=dict)  # extra HTTP headers (auth etc.)
     token: str | None = None  # shortcut for "Authorization: Bearer <token>"
     forwarded_props: dict[str, Any] = field(default_factory=dict)  # sent with every run
@@ -59,8 +82,13 @@ class Config:
         return headers
 
     @property
+    def target(self) -> str:
+        """What the client talks to: the AgentCore runtime ARN, or the URL."""
+        return self.agentcore_arn or self.url
+
+    @property
     def welcome_text(self) -> str:
-        return self.welcome.replace("{url}", self.url).replace("{cwd}", os.getcwd())
+        return self.welcome.replace("{url}", self.target).replace("{cwd}", os.getcwd())
 
 
 def find_config(explicit: str | None = None) -> Path | None:
@@ -94,10 +122,13 @@ def load_config(path: str | None = None, **overrides: Any) -> Config:
 
     cfg.url = os.environ.get("GENTUI_URL", cfg.url)
     cfg.token = os.environ.get("GENTUI_TOKEN", cfg.token)
+    cfg.agentcore_arn = os.environ.get("GENTUI_AGENTCORE_ARN", cfg.agentcore_arn)
 
     for key, value in overrides.items():
         if value is not None:
             if key not in known:
                 raise KeyError(key)
             setattr(cfg, key, value)
+    if cfg.agentcore_arn:
+        parse_runtime_arn(cfg.agentcore_arn)  # fail early with a clear message
     return cfg
