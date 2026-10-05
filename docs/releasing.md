@@ -26,10 +26,23 @@ Releases are published by [`.github/workflows/release.yml`](../.github/workflows
 GitHub → *Actions* → **Release** → *Run workflow* → choose `testpypi`. Then, in a clean directory:
 
 ```bash
+# with uv
 uvx --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ gentui --version
+
+# with pip (in a fresh virtual environment)
+pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ gentui
+gentui --version
 ```
 
-(The extra index is needed because Gentui's dependencies are not on TestPyPI.)
+**Always add the `--extra-index-url https://pypi.org/simple/` part.** Gentui's dependencies are not on TestPyPI, and the
+few that are there are junk placeholders. For example TestPyPI's `ag-ui-protocol` only has thousands of `0.0.0.devNNN`
+builds and nothing at `1.0.0`. Installing from TestPyPI alone fails with:
+
+```
+ERROR: Could not find a version that satisfies the requirement ag-ui-protocol>=1.0.0 (from versions: 0.0.0.dev...)
+```
+
+That error is a TestPyPI quirk, not a problem with the package. On the real PyPI, `pip install gentui` has no such issue.
 
 ## Real release
 
