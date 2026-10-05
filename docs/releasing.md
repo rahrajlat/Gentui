@@ -59,9 +59,11 @@ That error is a TestPyPI quirk, not a problem with the package. On the real PyPI
 **A published version can never be replaced or reused.** If something is wrong, fix it and release the next version
 (you can *yank* a bad release on PyPI so people stop installing it).
 
-## After the first release
+## After each release
 
-- Add the version badge to the README: `[![PyPI](https://img.shields.io/pypi/v/gentui?style=flat-square)](https://pypi.org/project/gentui/)`.
-- Change the README Quick start to lead with `uvx gentui <url>` or `pip install gentui`, and `pip install 'gentui[agentcore]'` for AWS.
-- Remove the words "(from PyPI, once published)" from the install hint in `src/gentui/cli.py` and "once it is published" in `docs/agentcore.md`, then release the next version (or leave them until then).
+- Check https://pypi.org/project/gentui/ renders correctly (the README shown there is the one from the release, so a
+  README fix only appears on PyPI with the next version).
 - Create a GitHub Release from the tag and paste the changelog entry.
+- Move the changelog's next entry to the top as "Unreleased".
+
+`0.1.0` was published to PyPI on 2026-10-05.

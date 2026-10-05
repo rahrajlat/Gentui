@@ -19,15 +19,16 @@ They do not speak AG-UI. If you point Gentui at one, it tells you so (see Troubl
 boto3 is an optional dependency, so everyone else keeps the small install:
 
 ```bash
+pip install 'gentui[agentcore]'      # from PyPI
+uv tool install 'gentui[agentcore]'  # or as a uv tool
 uv sync --extra agentcore            # from a clone
-pip install 'gentui[agentcore]'      # from PyPI, once it is published
 ```
 
 ## Run
 
 ```bash
-uv run gentui arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/my_agent-AbCdEfGhIj
-uv run gentui --agentcore-arn ARN --profile dev --region eu-west-1 --qualifier prod
+gentui arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/my_agent-AbCdEfGhIj
+gentui --agentcore-arn ARN --profile dev --region eu-west-1 --qualifier prod
 ```
 
 Or in `gentui.toml` (see [gentui.example.toml](../gentui.example.toml)):
@@ -72,7 +73,7 @@ boto3 signs requests with SigV4, which a runtime configured for OAuth will refus
 endpoint with the normal URL mode, as AWS documents: a bearer token plus a session id header.
 
 ```bash
-uv run gentui "https://bedrock-agentcore.<region>.amazonaws.com/runtimes/<URL-ENCODED-ARN>/invocations?qualifier=DEFAULT" \
+gentui "https://bedrock-agentcore.<region>.amazonaws.com/runtimes/<URL-ENCODED-ARN>/invocations?qualifier=DEFAULT" \
   --token "$ACCESS_TOKEN" -H "X-Amzn-Bedrock-AgentCore-Runtime-Session-Id: <a session id of 33+ characters>"
 ```
 
@@ -90,7 +91,7 @@ The session id header is fixed for the process in this mode. This path is **unte
 | `the ARN names endpoint ... but --qualifier is ...` | The ARN and `--qualifier` disagree. Use only one |
 | `This runtime did not return an AG-UI event stream` | The runtime uses the HTTP protocol (or returns JSON). Deploy it with the AG-UI protocol |
 | `The agent code failed while running` | Your agent raised an error; check the runtime's CloudWatch logs |
-| `AgentCore support needs boto3` | `uv sync --extra agentcore` |
+| `AgentCore support needs boto3` | `pip install "gentui[agentcore]"` (or `uv sync --extra agentcore` from a clone) |
 
 ## Status
 

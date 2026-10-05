@@ -88,8 +88,9 @@ def main(argv: list[str] | None = None) -> None:
         except ImportError:
             sys.exit(
                 "gentui: AgentCore support needs boto3. Install it with:\n"
-                "    uv sync --extra agentcore        (from a clone)\n"
-                "    pip install 'gentui[agentcore]'   (from PyPI, once published)"
+                "    pip install 'gentui[agentcore]'\n"
+                "    uv tool install 'gentui[agentcore]'\n"
+                "    uv sync --extra agentcore         (from a clone)"
             )
         except (BackendError, ValueError) as exc:
             sys.exit(f"gentui: {exc}")

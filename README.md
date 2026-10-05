@@ -7,6 +7,7 @@ Point it at any [AG-UI](https://docs.ag-ui.com) backend and get streaming chat, 
 tables, charts and human approval, with no frontend to build.
 
 [![CI](https://img.shields.io/github/actions/workflow/status/rahrajlat/Gentui/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/rahrajlat/Gentui/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/gentui?style=flat-square&color=4FD6C8)](https://pypi.org/project/gentui/)
 [![Python](https://img.shields.io/badge/python-3.12%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org)
 [![Textual](https://img.shields.io/badge/built%20with-Textual-4FD6C8?style=flat-square)](https://textual.textualize.io)
 [![AG-UI](https://img.shields.io/badge/protocol-AG--UI-A78BFA?style=flat-square)](https://docs.ag-ui.com)
@@ -85,28 +86,34 @@ own tools with [this guide](https://github.com/rahrajlat/Gentui/blob/main/exampl
 
 ## Quick start
 
-Requires [uv](https://docs.astral.sh/uv/) and Python 3.12.
+Requires Python 3.12 or newer. Gentui is on [PyPI](https://pypi.org/project/gentui/):
 
 ```bash
-git clone https://github.com/rahrajlat/Gentui.git && cd Gentui
-uv sync
-uv run gentui http://localhost:8000/agent        # your AG-UI endpoint
+pip install gentui                               # or: uv tool install gentui
+gentui http://localhost:8000/agent               # your AG-UI endpoint
 ```
 
+With [uv](https://docs.astral.sh/uv/) you can also run it without installing: `uvx gentui http://localhost:8000/agent`.
+
 No backend yet? Run the [sample natural-language-to-shell agent](#the-sample-agent-natural-language--shell)
-(Strands Agents + FastAPI) in another terminal. It uses a local
-[Ollama](https://ollama.com) by default; see its [README](https://github.com/rahrajlat/Gentui/blob/main/examples/strands-backend/README.md) for other providers:
+(Strands Agents + FastAPI). It lives in this repository, so clone it first, then start the backend in one terminal. It
+uses a local [Ollama](https://ollama.com) by default; see its [README](https://github.com/rahrajlat/Gentui/blob/main/examples/strands-backend/README.md) for other providers:
 
 ```bash
-cd examples/strands-backend
+git clone https://github.com/rahrajlat/Gentui.git
+cd Gentui/examples/strands-backend
 uv sync && cp .env.example .env
 uv run server                                     # http://localhost:8000/agent
 ```
 
+Then, in another terminal, start Gentui as above (`gentui http://localhost:8000/agent`).
+
 ```bash
-uv run gentui https://my.host/agent --token sk-...        # bearer auth
-uv run gentui URL -H "X-Org: acme" --theme nord --dev     # extra header, theme, event inspector
+gentui https://my.host/agent --token sk-...        # bearer auth
+gentui URL -H "X-Org: acme" --theme nord --dev     # extra header, theme, event inspector
 ```
+
+Working on Gentui itself? Run it from a clone with `uv sync` and `uv run gentui <url>`.
 
 | Key / command | Does |
 |---|---|
@@ -122,10 +129,10 @@ with boto3's `invoke_agent_runtime`, using your normal AWS credentials. The runt
 **AG-UI protocol**.
 
 ```bash
-uv sync --extra agentcore            # boto3 is an optional extra
-uv run gentui arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/my_agent-AbCdEfGhIj
-uv run gentui ARN --profile dev --region eu-west-1       # optional: AWS profile and region
-uv run gentui ARN --qualifier prod                        # optional: a specific runtime endpoint
+pip install "gentui[agentcore]"      # boto3 is an optional extra (uv: uv tool install "gentui[agentcore]")
+gentui arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/my_agent-AbCdEfGhIj
+gentui ARN --profile dev --region eu-west-1       # optional: AWS profile and region
+gentui ARN --qualifier prod                        # optional: a specific runtime endpoint
 ```
 
 `--profile` and `--region` are both **optional**. Without them, Gentui uses the standard AWS credential chain
