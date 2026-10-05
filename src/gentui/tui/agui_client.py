@@ -15,6 +15,10 @@ from pydantic import TypeAdapter, ValidationError
 _event_adapter: TypeAdapter[Event] = TypeAdapter(Event)
 
 
+class BackendError(Exception):
+    """The backend could not be reached or refused the request. The message is safe to show the user."""
+
+
 class AguiClient:
     def __init__(
         self,
@@ -68,22 +72,28 @@ class AguiClient:
             resume=[ResumeEntry.model_validate(r) for r in resume] if resume else None,
         ).model_dump(by_alias=True, exclude_none=True)
 
+        async for line in self._stream_lines(body):
+            if not line.startswith("data:"):
+                continue
+            if self.on_raw:
+                self.on_raw(line[5:].strip())
+            try:
+                event = _event_adapter.validate_python(json.loads(line[5:]))
+            except (ValidationError, json.JSONDecodeError):
+                continue  # unknown/malformed event: skip rather than crash the UI
+            if self.send_history:
+                self._record(history, event)
+            yield event
+
+    async def _stream_lines(self, body: dict[str, Any]) -> AsyncIterator[str]:
+        """The transport: POST the RunAgentInput and yield the response's SSE lines.
+        Subclasses replace this (see `AgentCoreClient`); everything else is shared."""
         headers = {"accept": "text/event-stream", **self.headers}
         async with httpx.AsyncClient(timeout=httpx.Timeout(self.timeout, connect=10)) as http:
             async with http.stream("POST", self.url, json=body, headers=headers) as resp:
                 resp.raise_for_status()
                 async for line in resp.aiter_lines():
-                    if not line.startswith("data:"):
-                        continue
-                    if self.on_raw:
-                        self.on_raw(line[5:].strip())
-                    try:
-                        event = _event_adapter.validate_python(json.loads(line[5:]))
-                    except (ValidationError, json.JSONDecodeError):
-                        continue  # unknown/malformed event: skip rather than crash the UI
-                    if self.send_history:
-                        self._record(history, event)
-                    yield event
+                    yield line
 
     def _record(self, history: list[Message], ev: Event) -> None:
         """Rebuild the assistant / tool side of the conversation from the event stream."""

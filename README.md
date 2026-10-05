@@ -58,6 +58,7 @@ AG-UI**: both on a custom backend (the [example backend](examples/strands-backen
   `/clear`, `/reasoning`, and a clear [backend contract](docs/tool-contract.md).
 - **Yours to customise:** TOML config, hot-reloaded CSS, your own themes, and Python plugins that add
   widgets, slash commands and event hooks.
+- **Runs agents on AWS too:** invoke agents hosted on Amazon Bedrock AgentCore Runtime (AG-UI protocol) via boto3.
 - **Backend-agnostic by design.** The client has no framework code; a complete example backend lives in
   [`examples/strands-backend`](examples/strands-backend).
 
@@ -113,6 +114,27 @@ uv run gentui URL -H "X-Org: acme" --theme nord --dev     # extra header, theme,
 | `d` or `Ctrl+D` | toggle the event inspector |
 | `Ctrl+Q` | quit |
 | `/help` `/theme <name>` `/clear` `/reasoning` `/dev` `/quit` | slash commands |
+
+## Agents on Amazon Bedrock AgentCore Runtime
+
+Gentui can also invoke an agent hosted on **[AgentCore Runtime](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/what-is-bedrock-agentcore.html)**
+with boto3's `invoke_agent_runtime`, using your normal AWS credentials. The runtime must be deployed with the
+**AG-UI protocol**.
+
+```bash
+uv sync --extra agentcore            # boto3 is an optional extra
+uv run gentui arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/my_agent-AbCdEfGhIj
+uv run gentui ARN --profile dev --region eu-west-1       # optional: AWS profile and region
+uv run gentui ARN --qualifier prod                        # optional: a specific runtime endpoint
+```
+
+`--profile` and `--region` are both **optional**. Without them, Gentui uses the standard AWS credential chain
+(`AWS_PROFILE`, SSO, environment variables) and the region in the ARN. They can also be set in `gentui.toml` as
+`aws_profile` and `region`.
+
+One conversation is one runtime session, errors come with fixes (missing credentials, denied access, wrong ARN), and
+busy sessions are retried. Details, IAM permissions and troubleshooting: **[docs/agentcore.md](docs/agentcore.md)**.
+Both a runtime ARN and an endpoint ARN (`.../runtime-endpoint/DEFAULT`) work.
 
 ## Configure
 
@@ -209,6 +231,8 @@ Gentui is **alpha**. What has been verified, and what has not:
 - Built and tested against the **Strands Agents** framework (AWS) over AG-UI: the
   [example backend](examples/strands-backend) and the official
   [`ag-ui-strands`](https://pypi.org/project/ag-ui-strands/) adapter (with `send_history = true`).
+- AgentCore Runtime support works against a real runtime (confirmed by the author with a plain runtime ARN) and only
+  covers runtimes using the AG-UI protocol. Other setups are covered by tests with a fake boto3 client and botocore's `Stubber`.
 - Backends on other frameworks, the interrupt flow against a backend other than the example, other model
   providers than Ollama, and native Windows are **untested**.
 - The look relies on Unicode box-drawing and block characters. If glyphs are missing, try a terminal
