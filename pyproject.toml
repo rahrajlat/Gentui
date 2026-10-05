@@ -5,6 +5,18 @@ description = "A terminal interface for prototyping agents really quickly, for a
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
+authors = [{ name = "rahrajlat" }]
+keywords = ["ag-ui", "agents", "ai-agents", "tui", "terminal", "textual", "llm", "human-in-the-loop", "strands", "agentcore"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development",
+    "Topic :: Terminals",
+]
 requires-python = ">=3.12"
 dependencies = [
     "ag-ui-protocol>=1.0.0",
@@ -13,6 +25,13 @@ dependencies = [
     "textual>=8.2.8",
     "textual-plotext>=1.0.1",
 ]
+
+[project.urls]
+Homepage = "https://github.com/rahrajlat/Gentui"
+Repository = "https://github.com/rahrajlat/Gentui"
+Documentation = "https://github.com/rahrajlat/Gentui#readme"
+Issues = "https://github.com/rahrajlat/Gentui/issues"
+Changelog = "https://github.com/rahrajlat/Gentui/blob/main/CHANGELOG.md"
 
 [project.scripts]
 gentui = "gentui.cli:main"

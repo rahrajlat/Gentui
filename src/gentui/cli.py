@@ -6,6 +6,15 @@ import sys
 from gentui.config import load_config
 
 
+def _version() -> str:
+    from importlib.metadata import PackageNotFoundError, version
+
+    try:
+        return version("gentui")
+    except PackageNotFoundError:  # running from a source tree that is not installed
+        return "unknown"
+
+
 def parse_headers(items: list[str] | None) -> dict[str, str] | None:
     if not items:
         return None
@@ -39,6 +48,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--theme", help="Textual theme name")
     parser.add_argument("--css", metavar="FILE", help="your own CSS file (hot-reloaded)")
     parser.add_argument("--plugin", "-p", action="append", metavar="MODULE|FILE", help="load a plugin (repeatable)")
+    parser.add_argument("--version", action="version", version=f"gentui {_version()}")
     parser.add_argument("--no-reasoning", action="store_true", help="hide the model's chain of thought")
     parser.add_argument("--dev", action="store_true", help="open the AG-UI event inspector at start")
     args = parser.parse_args(argv)

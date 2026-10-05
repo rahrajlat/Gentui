@@ -728,3 +728,10 @@ def test_static_logo_is_the_full_wordmark_without_a_highlight_sweep():
 
     a, b = branding.logo_static(branding.WORDMARK_BIG), branding.logo_static(branding.WORDMARK_BIG)
     assert a.plain == branding.WORDMARK_BIG and a.spans == b.spans
+
+
+def test_cli_version_flag(capsys):
+    with pytest.raises(SystemExit) as exc:
+        cli_main(["--version"])
+    assert exc.value.code == 0
+    assert capsys.readouterr().out.startswith("gentui ")
