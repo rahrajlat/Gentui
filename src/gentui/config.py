@@ -22,19 +22,33 @@ DEFAULT_WELCOME = (
 
 
 _RUNTIME_ARN = re.compile(
-    r"^arn:aws[a-z-]*:bedrock-agentcore:(?P<region>[a-z0-9-]+):(?P<account>\d{12}):runtime/[^/\s]+$"
+    r"^(?P<runtime>arn:aws[a-z-]*:bedrock-agentcore:(?P<region>[a-z0-9-]+):(?P<account>\d{12}):runtime/[^/\s]+)"
+    r"(?:/runtime-endpoint/(?P<endpoint>[^/\s]+))?$"
 )
 
 
-def parse_runtime_arn(arn: str) -> tuple[str, str]:
-    """(region, account id) of an AgentCore runtime ARN. Raises ValueError for anything else."""
+def _match_runtime_arn(arn: str) -> re.Match[str]:
     match = _RUNTIME_ARN.match(arn.strip())
     if not match:
         raise ValueError(
             f"not an AgentCore runtime ARN: {arn!r} "
-            "(expected arn:aws:bedrock-agentcore:<region>:<account>:runtime/<name>)"
+            "(expected arn:aws:bedrock-agentcore:<region>:<account>:runtime/<name>"
+            "[/runtime-endpoint/<endpoint>])"
         )
+    return match
+
+
+def parse_runtime_arn(arn: str) -> tuple[str, str]:
+    """(region, account id) of an AgentCore runtime ARN. Raises ValueError for anything else."""
+    match = _match_runtime_arn(arn)
     return match["region"], match["account"]
+
+
+def split_runtime_arn(arn: str) -> tuple[str, str | None]:
+    """(runtime ARN, endpoint name). An endpoint ARN (`.../runtime/<name>/runtime-endpoint/<endpoint>`) is
+    accepted: invoke_agent_runtime wants the plain runtime ARN, with the endpoint passed as its qualifier."""
+    match = _match_runtime_arn(arn)
+    return match["runtime"], match["endpoint"]
 
 
 @dataclass

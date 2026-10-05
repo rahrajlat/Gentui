@@ -134,7 +134,7 @@ uv run gentui ARN --qualifier prod                        # optional: a specific
 
 One conversation is one runtime session, errors come with fixes (missing credentials, denied access, wrong ARN), and
 busy sessions are retried. Details, IAM permissions and troubleshooting: **[docs/agentcore.md](docs/agentcore.md)**.
-Not yet run against a real runtime; see the Status section.
+Both a runtime ARN and an endpoint ARN (`.../runtime-endpoint/DEFAULT`) work.
 
 ## Configure
 
@@ -231,8 +231,8 @@ Gentui is **alpha**. What has been verified, and what has not:
 - Built and tested against the **Strands Agents** framework (AWS) over AG-UI: the
   [example backend](examples/strands-backend) and the official
   [`ag-ui-strands`](https://pypi.org/project/ag-ui-strands/) adapter (with `send_history = true`).
-- AgentCore Runtime support is verified with a fake boto3 client and botocore's `Stubber`, **not yet against a real
-  runtime**, and only covers runtimes using the AG-UI protocol.
+- AgentCore Runtime support works against a real runtime (confirmed by the author with a plain runtime ARN) and only
+  covers runtimes using the AG-UI protocol. Other setups are covered by tests with a fake boto3 client and botocore's `Stubber`.
 - Backends on other frameworks, the interrupt flow against a backend other than the example, other model
   providers than Ollama, and native Windows are **untested**.
 - The look relies on Unicode box-drawing and block characters. If glyphs are missing, try a terminal

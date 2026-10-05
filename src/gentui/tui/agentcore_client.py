@@ -16,7 +16,7 @@ import time
 from collections.abc import AsyncIterator, Iterator
 from typing import Any
 
-from gentui.config import parse_runtime_arn
+from gentui.config import parse_runtime_arn, split_runtime_arn
 from gentui.tui.agui_client import AguiClient, BackendError
 
 _DONE = object()
@@ -78,9 +78,12 @@ class AgentCoreClient(AguiClient):
         client: Any = None,
     ) -> None:
         arn_region, _ = parse_runtime_arn(arn)  # ValueError for a malformed ARN
-        super().__init__(arn, None, timeout, send_history)
-        self.arn = arn
-        self.qualifier = qualifier
+        runtime_arn, endpoint = split_runtime_arn(arn)
+        if qualifier and endpoint and qualifier != endpoint:
+            raise ValueError(f"the ARN names endpoint {endpoint!r} but --qualifier is {qualifier!r}; use only one")
+        super().__init__(runtime_arn, None, timeout, send_history)
+        self.arn = runtime_arn  # the API wants the plain runtime ARN ...
+        self.qualifier = qualifier or endpoint  # ... and the endpoint as `qualifier`
         self._client = client if client is not None else self._make_client(region or arn_region, profile, timeout)
 
     @staticmethod

@@ -339,3 +339,68 @@ def test_profile_and_region_are_optional(launched):
     cli_main([ARN])
     ((client, _),) = launched
     assert client._client == ("fake-client", "us-east-1", None)  # ARN region, default credential chain
+
+
+# -- endpoint ARNs (.../runtime-endpoint/DEFAULT) -----------------------------------------------------------
+
+
+ENDPOINT_ARN = ARN + "/runtime-endpoint/DEFAULT"
+
+
+def test_an_endpoint_arn_is_accepted_and_split_into_runtime_and_endpoint():
+    from gentui.config import split_runtime_arn
+
+    assert parse_runtime_arn(ENDPOINT_ARN) == ("us-east-1", "123456789012")
+    assert split_runtime_arn(ENDPOINT_ARN) == (ARN, "DEFAULT")
+    assert split_runtime_arn(ARN) == (ARN, None)
+    assert split_runtime_arn(ARN + "/runtime-endpoint/prod") == (ARN, "prod")
+    for bad in (ARN + "/runtime-endpoint/", ARN + "/runtime-endpoint/a/b", ARN + "/other/x"):
+        with pytest.raises(ValueError, match="AgentCore runtime ARN"):
+            parse_runtime_arn(bad)
+
+
+async def test_the_api_gets_the_plain_runtime_arn_and_the_endpoint_as_qualifier():
+    fake = FakeAgentCore()
+    await collect(AgentCoreClient(ENDPOINT_ARN, client=fake))
+    assert fake.calls[0]["agentRuntimeArn"] == ARN  # never the endpoint ARN: AWS rejects that
+    assert fake.calls[0]["qualifier"] == "DEFAULT"
+
+
+async def test_an_explicit_matching_qualifier_is_fine_and_a_conflicting_one_is_an_error():
+    fake = FakeAgentCore()
+    await collect(AgentCoreClient(ENDPOINT_ARN, qualifier="DEFAULT", client=fake))
+    assert fake.calls[0]["qualifier"] == "DEFAULT"
+    with pytest.raises(ValueError, match="names endpoint 'DEFAULT' but --qualifier is 'prod'"):
+        AgentCoreClient(ENDPOINT_ARN, qualifier="prod", client=FakeAgentCore())
+
+
+def test_cli_accepts_an_endpoint_arn(launched):
+    cli_main([ENDPOINT_ARN])
+    ((client, config),) = launched
+    assert client.arn == ARN and client.qualifier == "DEFAULT" and config.agentcore_arn == ENDPOINT_ARN
+
+
+def test_cli_reports_conflicting_endpoint_and_qualifier(launched):
+    with pytest.raises(SystemExit) as exc:
+        cli_main([ENDPOINT_ARN, "--qualifier", "prod"])
+    assert "use only one" in str(exc.value)
+
+
+async def test_the_request_validates_against_the_real_service_model_for_an_endpoint_arn(monkeypatch):
+    """Same as production: a real boto3 client, with botocore's Stubber checking the parameters."""
+    import io as _io
+    from botocore.stub import ANY, Stubber
+
+    monkeypatch.setenv("AWS_ACCESS_KEY_ID", "x")
+    monkeypatch.setenv("AWS_SECRET_ACCESS_KEY", "y")
+    client = AgentCoreClient(ENDPOINT_ARN)
+    data = sse({"type": "RUN_STARTED", "threadId": "t", "runId": "r"})
+    with Stubber(client._client) as stub:
+        stub.add_response(
+            "invoke_agent_runtime",
+            {"response": StreamingBody(_io.BytesIO(data), len(data)), "contentType": "text/event-stream", "statusCode": 200},
+            expected_params={"agentRuntimeArn": ARN, "qualifier": "DEFAULT", "runtimeSessionId": ANY,
+                             "contentType": "application/json", "accept": "text/event-stream", "payload": ANY},
+        )
+        assert [e.type.value async for e in client.run("t", "hi")] == ["RUN_STARTED"]
+        stub.assert_no_pending_responses()

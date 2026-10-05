@@ -41,6 +41,10 @@ agentcore_arn = "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/my_age
 
 `GENTUI_AGENTCORE_ARN` works too. When an ARN is set, `url` is ignored.
 
+**Endpoint ARNs are accepted too.** An ARN ending in `/runtime-endpoint/<name>` (for example
+`.../runtime/my_agent-AbCdEfGhIj/runtime-endpoint/DEFAULT`) is split for you: the API is called with the plain runtime ARN and
+the endpoint name as the `qualifier`. If you also pass `--qualifier` it must match the endpoint in the ARN.
+
 ## AWS setup
 
 - **Credentials:** anything boto3 finds: `AWS_PROFILE`, `aws sso login`, environment variables, an instance role.
@@ -82,12 +86,14 @@ The session id header is fixed for the process in this mode. This path is **unte
 | `Your AWS credentials were rejected` | Expired or wrong credentials; refresh them |
 | `Access denied. The caller needs bedrock-agentcore:InvokeAgentRuntime` | Add that IAM permission for the runtime |
 | `Runtime not found` | Wrong ARN, region or `--qualifier` |
+| `not an AgentCore runtime ARN` | The ARN is malformed. Use `arn:aws:bedrock-agentcore:<region>:<account>:runtime/<name>`, optionally followed by `/runtime-endpoint/<endpoint>` |
+| `the ARN names endpoint ... but --qualifier is ...` | The ARN and `--qualifier` disagree. Use only one |
 | `This runtime did not return an AG-UI event stream` | The runtime uses the HTTP protocol (or returns JSON). Deploy it with the AG-UI protocol |
 | `The agent code failed while running` | Your agent raised an error; check the runtime's CloudWatch logs |
 | `AgentCore support needs boto3` | `uv sync --extra agentcore` |
 
 ## Status
 
-Verified with a fake boto3 client (including botocore's real streaming body) and with botocore's `Stubber`, which
-checks the request against AWS's service model. **It has not been run against a real AgentCore runtime yet.** If you
-try it, please open an issue with what you see.
+The author has run this against a real AgentCore runtime with a plain runtime ARN, and it works. The endpoint-ARN form
+was added afterwards and is covered by tests only: a fake boto3 client (with botocore's real streaming body) and botocore's
+`Stubber`, which checks the request against AWS's service model. If you try other setups, please open an issue with what you see.

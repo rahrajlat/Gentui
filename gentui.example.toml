@@ -5,6 +5,7 @@
 url = "http://localhost:8000/agent"        # any AG-UI endpoint
 # An agent on Amazon Bedrock AgentCore Runtime (AG-UI protocol), invoked with boto3. Needs: uv sync --extra agentcore
 # agentcore_arn = "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/my_agent-AbCdEfGhIj"   # used instead of url
+#                 (an endpoint ARN ending in /runtime-endpoint/DEFAULT is fine too)
 # region = "us-east-1"                     # default: the region in the ARN
 # aws_profile = "dev"                      # default: the standard AWS credential chain
 # qualifier = "prod"                       # runtime endpoint name; default: DEFAULT
