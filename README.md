@@ -52,7 +52,7 @@ AG-UI**: both on a custom backend (the [example backend](https://github.com/rahr
 [`ag-ui-strands`](https://pypi.org/project/ag-ui-strands/) adapter.
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/rahrajlat/Gentui/main/docs/assets/demo.gif" alt="Gentui demo: ask, review the proposed command, approve, see the output, chart it" width="860">
+<img src="https://raw.githubusercontent.com/rahrajlat/Gentui/main/docs/assets/tour.gif" alt="Gentui feature tour: AgentCore launch, slash commands, chain of thought, memory, plan, approval, output, table, chart, event inspector, themes" width="860">
 </div>
 
 ## Features
@@ -74,7 +74,7 @@ AG-UI**: both on a custom backend (the [example backend](https://github.com/rahr
 
 ## The sample agent: natural language → shell
 
-The demo above is the bundled example backend, a **natural-language-to-shell agent** built on Strands
+The command-approval flow in the tour above comes from the bundled example backend, a **natural-language-to-shell agent** built on Strands
 Agents. You describe a task in plain English, it proposes a single shell command, and **nothing runs
 until you approve it**.
 
@@ -185,7 +185,8 @@ cd examples/strands-backend && uv run pytest -q    # the example backend's own t
 ```
 
 The images above are generated from the app's own code:
-`uv run --with pillow python docs/assets/build_assets.py`.
+`uv run --with pillow python docs/assets/build_assets.py` (logo, hero, `demo.gif`) and
+`uv run --with pillow python docs/assets/build_tour.py` (the feature tour).
 
 ## Contributing
 
