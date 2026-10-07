@@ -4,6 +4,18 @@ All notable changes to Gentui are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses [semantic versioning](https://semver.org/)
 (while below 1.0, minor versions may change behaviour).
 
+## [Unreleased]
+
+### Added
+- `/new` starts a new chat. A run still in flight is stopped first, so the old answer cannot stream into the new chat.
+- `/export_md [file or folder]` saves the conversation as Markdown: messages, replies, reasoning, tool calls and results, and
+  approve / reject decisions. `show_table` calls become Markdown tables. Existing files are never overwritten.
+
+### Changed
+- `/clear` is now an alias of `/new` and also stops a run in flight.
+- The `Ctrl+Q` and `Ctrl+D` shortcuts are removed. Use the slash commands `/quit` and `/dev` instead. (`Ctrl+C` now
+  tells you to type `/quit`.)
+
 ## [0.1.0] - 2026-10-05
 
 First public release (alpha).
