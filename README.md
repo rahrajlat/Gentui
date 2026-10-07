@@ -55,7 +55,7 @@ AG-UI**: both on a custom backend (the [example backend](https://github.com/rahr
   `resume`s it. The model can't approve its own commands.
 - **Generative widgets from tool calls:** command card, command output, tables, terminal charts
   (line, bar, scatter, histogram), live plan checklist.
-- **Developer-friendly:** an event inspector (`d`) showing the raw SSE payloads exactly as sent, `/theme`,
+- **Developer-friendly:** an event inspector (`/dev`) showing the raw SSE payloads exactly as sent, `/theme`,
   `/clear`, `/reasoning`, and a clear [backend contract](https://github.com/rahrajlat/Gentui/blob/main/docs/tool-contract.md).
 - **Yours to customise:** TOML config, hot-reloaded CSS, your own themes, and Python plugins that add
   widgets, slash commands and event hooks.
@@ -118,9 +118,14 @@ Working on Gentui itself? Run it from a clone with `uv sync` and `uv run gentui 
 | Key / command | Does |
 |---|---|
 | `Enter` | send |
-| `d` or `Ctrl+D` | toggle the event inspector |
-| `Ctrl+Q` | quit |
-| `/help` `/theme <name>` `/clear` `/reasoning` `/dev` `/quit` | slash commands |
+| `/dev` | toggle the event inspector (`d` also works when the prompt is not focused) |
+| `/quit` | exit |
+| `/new` | start a new chat (stops an answer that is still running) |
+| `/export_md [file or folder]` | save the chat as a Markdown file (default: `gentui-chat-<date>-<time>.md` in the current folder) |
+| `/help` `/theme <name>` `/clear` `/reasoning` `/dev` `/quit` | other slash commands (`/clear` is the same as `/new`) |
+
+`/export_md` writes your messages, the agent's replies, its reasoning (when shown), tool calls with their results, and your
+approve / reject decisions, in the order they happened. It never overwrites an existing file; it adds `-1`, `-2`, … instead.
 
 ## Agents on Amazon Bedrock AgentCore Runtime
 

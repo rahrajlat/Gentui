@@ -64,7 +64,7 @@ the endpoint name as the `qualifier`. If you also pass `--qualifier` it must mat
 | Streaming | Events are shown as they arrive. The stream is read one byte at a time on purpose, so a short event is not held back until the next one arrives |
 | Timeouts | No read timeout by default (agents can think for a long time); `timeout = <seconds>` sets one |
 | Busy session | `RetryableConflictException` ("session busy") is retried up to 3 times with 0.5s, 1s, 2s backoff, as AWS recommends for AG-UI clients |
-| Event inspector | `d` shows the raw SSE payloads exactly as the runtime sent them |
+| Event inspector | `/dev` shows the raw SSE payloads exactly as the runtime sent them |
 | Interrupts / approval | Work as with any AG-UI backend: the run ends with an interrupt and your click `resume`s it on the same session |
 
 ## Runtimes that use OAuth (JWT) inbound auth

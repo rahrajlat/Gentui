@@ -137,12 +137,12 @@ async def test_blocked_proposal_disables_buttons():
         assert all(b.disabled for b in cmd.query(Button))
 
 
-async def test_dev_pane_toggles_with_d_and_logs_events():
+async def test_dev_pane_toggles_with_the_dev_command_and_logs_events():
     app = GentuiApp(FakeClient())
     async with app.run_test(size=(120, 50)) as pilot:
         dev = app.query_one("#dev")
         assert not dev.has_class("-visible")
-        await pilot.press("ctrl+d")
+        await pilot.press(*"/dev", "enter")
         assert dev.has_class("-visible")
         await pilot.press("x", "enter")
         await pilot.pause(0.5)

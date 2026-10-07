@@ -1,5 +1,6 @@
 """Textual app: streaming chat + generative UI widgets rendered from AG-UI events."""
 
+import asyncio
 import time
 import uuid
 from collections import deque
@@ -15,6 +16,7 @@ from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.css.query import NoMatches
+from textual.worker import WorkerCancelled, WorkerFailed
 from textual.theme import Theme
 from textual.widgets import Collapsible, Input, Markdown, RichLog, Static
 from textual.widgets._markdown import MarkdownStream
@@ -23,6 +25,7 @@ from gentui import plugins
 from gentui.config import Config
 from gentui.tui import branding, commands, widgets  # noqa: F401  (registers built-in widgets and commands)
 from gentui.tui.splash import SplashScreen
+from gentui.tui.transcript import Transcript
 from gentui.tui.agui_client import AguiClient, BackendError
 from gentui.tui.widgets.base import ToolWidget, parse_partial_json
 from gentui.tui.widgets.interrupt import InterruptWidget
@@ -102,8 +105,9 @@ class GentuiApp(App[None]):
 
     BINDINGS = [
         Binding("d", "toggle_dev", "Dev pane"),
-        Binding("ctrl+d", "toggle_dev", "Dev pane", show=False, priority=True),
-        Binding("ctrl+q", "quit", "Quit"),
+        # Textual itself binds ctrl+q to quit (as a priority binding). Gentui uses slash commands instead
+        # (/quit, /dev), so that key is switched off rather than just left out of this list.
+        Binding("ctrl+q", "ignore", show=False, priority=True),
     ]
 
     def __init__(self, client: Client, config: Config | None = None) -> None:
@@ -123,6 +127,7 @@ class GentuiApp(App[None]):
         )
         self.thread_id = str(uuid.uuid4())
         self.state: dict[str, Any] = {}  # shared state mirrored from the backend
+        self.transcript = Transcript()  # what /export_md writes
 
         self._outbox: deque[tuple[str, dict[str, Any] | None, list[dict[str, Any]] | None]] = deque()
         self._open_interrupts: dict[str, Any] = {}  # AG-UI interrupts waiting for an answer
@@ -155,7 +160,7 @@ class GentuiApp(App[None]):
                     yield Static(branding.USER_MARK, id="promptmark")
                     yield Input(placeholder=self.config.placeholder, id="prompt")
                 with Horizontal(id="statusbar"):
-                    yield Static("/help · ctrl+q quit · d dev pane", classes="left")
+                    yield Static("/help · /new · /export_md · /dev · /quit", classes="left")
                     yield Static(self.config.target, classes="right")
             with Vertical(id="dev"):
                 yield RichLog(id="events", wrap=True, markup=False, highlight=False)
@@ -180,6 +185,13 @@ class GentuiApp(App[None]):
         if self.config.splash and (not self.is_headless or self.SPLASH_IN_HEADLESS):
             self.push_screen(SplashScreen(self.SPLASH_SECONDS), lambda _: self.query_one("#prompt", Input).focus())
 
+    def action_ignore(self) -> None:
+        """Does nothing: used to switch off a key Textual binds by default."""
+
+    def action_help_quit(self) -> None:
+        """Textual's ctrl+c hint says "press ctrl+q to quit"; here the way out is /quit."""
+        self.notify("Type /quit to exit", title="Quit")
+
     def action_toggle_dev(self) -> None:
         self.query_one("#dev").toggle_class("-visible")
 
@@ -196,6 +208,7 @@ class GentuiApp(App[None]):
             if name in plugins.COMMANDS:
                 await plugins.call(plugins.COMMANDS[name][0], self, args)
                 return
+        self.transcript.user(text)
         await self._mount(self._row(f"{branding.USER_MARK} ", Static(Text(text), classes="user"), mark_class="user-mark"))
         self.send(text)
 
@@ -209,6 +222,7 @@ class GentuiApp(App[None]):
         """A widget answered an interrupt; resume once every open interrupt has an answer."""
         if event.interrupt_id not in self._open_interrupts:
             return
+        self._record_decision(event)
         entry: dict[str, Any] = {"interruptId": event.interrupt_id, "status": event.status}
         if event.payload is not None:
             entry["payload"] = event.payload
@@ -259,7 +273,9 @@ class GentuiApp(App[None]):
             message = Markdown(classes="assistant")
             await self._mount(self._row(branding.MARK, message))
             self._text_streams[ev.message_id] = Markdown.get_stream(message)
+            self.transcript.open_text(ev.message_id)
         elif t == EventType.TEXT_MESSAGE_CONTENT:
+            self.transcript.append_text(ev.message_id, ev.delta)
             await self._text_streams[ev.message_id].write(ev.delta)
         elif t == EventType.TEXT_MESSAGE_END:
             await self._text_streams.pop(ev.message_id).stop()
@@ -276,12 +292,16 @@ class GentuiApp(App[None]):
                 body.update(Text(text))
         elif t == EventType.REASONING_MESSAGE_END:
             if ev.message_id in self._thoughts:
-                box, _, _, t0 = self._thoughts.pop(ev.message_id)
-                box.title = f"{branding.MARK} Thought for {max(1, round(time.monotonic() - t0))}s"
+                box, _, thought, t0 = self._thoughts.pop(ev.message_id)
+                seconds = max(1, round(time.monotonic() - t0))
+                self.transcript.reasoning(thought, seconds)
+                box.title = f"{branding.MARK} Thought for {seconds}s"
                 box.collapsed = True  # tuck it away once the answer starts
         elif t == EventType.TOOL_CALL_START:
+            self.transcript.tool_start(ev.tool_call_id, ev.tool_call_name)
             await self._tool_start(ev.tool_call_id, ev.tool_call_name)
         elif t == EventType.TOOL_CALL_ARGS:
+            self.transcript.tool_args(ev.tool_call_id, ev.delta)
             self._tool_arg_buf[ev.tool_call_id] = self._tool_arg_buf.get(ev.tool_call_id, "") + ev.delta
             args = parse_partial_json(self._tool_arg_buf[ev.tool_call_id])
             if args is not None and (w := self._tool_widgets.get(ev.tool_call_id)):
@@ -291,6 +311,7 @@ class GentuiApp(App[None]):
             if w := self._tool_widgets.get(ev.tool_call_id):
                 w.on_end(args)
         elif t == EventType.TOOL_CALL_RESULT:
+            self.transcript.tool_result(ev.tool_call_id, ev.content)
             if w := self._tool_widgets.get(ev.tool_call_id):
                 w.on_result(ev.content)
         elif t == EventType.STATE_SNAPSHOT:
@@ -367,8 +388,36 @@ class GentuiApp(App[None]):
 
     _mount = mount_chat
 
+    def _record_decision(self, event: ToolWidget.Answer) -> None:
+        """Note your Approve / Reject / Cancel click in the transcript."""
+        payload = event.payload if isinstance(event.payload, dict) else {}
+        if event.status == "cancelled":
+            self.transcript.decision("Rejected")
+        elif payload.get("approved") is True:
+            edited = payload.get("command")
+            self.transcript.decision(f"Approved (edited to `{edited}`)" if edited else "Approved")
+        elif payload.get("approved") is False:
+            self.transcript.decision("Rejected")
+        else:
+            self.transcript.decision("Answered")
+
+    async def _stop_run(self) -> None:
+        """Cancel the agent run in flight (if any) and drop messages waiting to be sent."""
+        self._outbox.clear()
+        for worker in self.workers.cancel_group(self, "agent"):
+            try:
+                await worker.wait()
+            except (WorkerCancelled, WorkerFailed, asyncio.CancelledError):
+                pass  # it was cancelled on purpose
+        self._busy = False
+
     async def new_thread(self) -> None:
-        """Clear the screen and start a fresh conversation (new thread id, empty state)."""
+        """Clear the screen and start a fresh conversation (new thread id, empty state).
+
+        A run still in flight is stopped first, so the old answer cannot stream into the new chat."""
+        await self._stop_run()
+        self.transcript.clear()
+        self._text_streams.clear()
         self.thread_id = str(uuid.uuid4())
         self.state = {}
         self._tool_widgets.clear()
@@ -381,6 +430,7 @@ class GentuiApp(App[None]):
                 await child.remove()
 
     async def _error(self, message: str) -> None:
+        self.transcript.error(message)
         await self._mount(Static(Text(f"✖ {message}"), classes="error"))
 
     def _log_raw(self, payload: str) -> None:

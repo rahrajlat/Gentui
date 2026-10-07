@@ -15,7 +15,7 @@ from typing import Any
 
 DEFAULT_WELCOME = (
     "◈ Welcome to Gentui!\n\n"
-    "  /help for commands · ctrl+q to quit · d for the dev pane\n"
+    "  /help for commands · /quit to exit · /dev for the event inspector\n"
     "  backend: {url}\n"
     "  cwd: {cwd}"
 )
