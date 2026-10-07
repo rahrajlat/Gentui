@@ -23,6 +23,15 @@ tables, charts and human approval, with no frontend to build.
 
 ---
 
+## Get started
+
+```bash
+pip install gentui                               # or: uv tool install gentui
+gentui http://localhost:8000/agent               # your AG-UI endpoint
+```
+
+Requires Python 3.12 or newer. No backend yet? See the [Quick start](#quick-start) for a sample agent.
+
 ## Why Gentui?
 
 **Gentui is a terminal interface for prototyping agents really quickly.**
@@ -108,133 +117,48 @@ uv run server                                     # http://localhost:8000/agent
 
 Then, in another terminal, start Gentui as above (`gentui http://localhost:8000/agent`).
 
-```bash
-gentui https://my.host/agent --token sk-...        # bearer auth
-gentui URL -H "X-Org: acme" --theme nord --dev     # extra header, theme, event inspector
-```
 
+Type `/help` to list the slash commands (`/new`, `/export_md`, `/theme`, `/dev`, `/reasoning`, `/quit`).
 Working on Gentui itself? Run it from a clone with `uv sync` and `uv run gentui <url>`.
 
-| Key / command | Does |
+## Documentation
+
+| I want to… | Read |
 |---|---|
-| `Enter` | send |
-| `/dev` | toggle the event inspector (`d` also works when the prompt is not focused) |
-| `/quit` | exit |
-| `/new` | start a new chat (stops an answer that is still running) |
-| `/export_md [file or folder]` | save the chat as a Markdown file (default: `gentui-chat-<date>-<time>.md` in the current folder) |
-| `/help` `/theme <name>` `/clear` `/reasoning` `/dev` `/quit` | other slash commands (`/clear` is the same as `/new`) |
+| use the slash commands, export a chat | [Slash commands](https://github.com/rahrajlat/Gentui/blob/main/docs/commands.md) |
+| set options, themes, CSS, auth, map my own widgets | [Configuring and customising](https://github.com/rahrajlat/Gentui/blob/main/docs/customising.md) (all options: [`gentui.example.toml`](https://github.com/rahrajlat/Gentui/blob/main/gentui.example.toml)) |
+| add widgets, commands or event hooks | [Plugins](https://github.com/rahrajlat/Gentui/blob/main/docs/plugins.md) |
+| build my own backend in any language | [Backend contract](https://github.com/rahrajlat/Gentui/blob/main/docs/tool-contract.md) |
+| talk to an agent on Amazon Bedrock AgentCore | [AgentCore Runtime](https://github.com/rahrajlat/Gentui/blob/main/docs/agentcore.md) |
+| understand the internals | [How it works](https://github.com/rahrajlat/Gentui/blob/main/docs/architecture.md) |
+| cut a release | [Releasing](https://github.com/rahrajlat/Gentui/blob/main/docs/releasing.md) |
 
-`/export_md` writes your messages, the agent's replies, its reasoning (when shown), tool calls with their results, and your
-approve / reject decisions, in the order they happened. It never overwrites an existing file; it adds `-1`, `-2`, … instead.
+### Example: an agent on AgentCore Runtime
 
-## Agents on Amazon Bedrock AgentCore Runtime
-
-Gentui can also invoke an agent hosted on **[AgentCore Runtime](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/what-is-bedrock-agentcore.html)**
-with boto3's `invoke_agent_runtime`, using your normal AWS credentials. The runtime must be deployed with the
-**AG-UI protocol**.
+Your runtime must be deployed with the AG-UI protocol. Then, end to end:
 
 ```bash
-pip install "gentui[agentcore]"      # boto3 is an optional extra (uv: uv tool install "gentui[agentcore]")
-gentui arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/my_agent-AbCdEfGhIj
-gentui ARN --profile dev --region eu-west-1       # optional: AWS profile and region
-gentui ARN --qualifier prod                        # optional: a specific runtime endpoint
+# 1. install with the optional AWS extra (adds boto3)
+pip install "gentui[agentcore]"          # or: uv tool install "gentui[agentcore]"
+
+# 2. log in with any normal AWS method
+aws sso login --profile dev              # or export AWS_PROFILE / access keys
+
+# 3. pass the runtime ARN instead of a URL
+gentui arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/my_agent-AbCdEfGhIj --profile dev
 ```
 
-`--profile` and `--region` are both **optional**. Without them, Gentui uses the standard AWS credential chain
-(`AWS_PROFILE`, SSO, environment variables) and the region in the ARN. They can also be set in `gentui.toml` as
-`aws_profile` and `region`.
+Optional flags: `--region eu-west-1` (default: the region in the ARN) and `--qualifier prod` (default: the
+`DEFAULT` endpoint). Or put it in `gentui.toml` and just run `gentui`:
 
-One conversation is one runtime session, errors come with fixes (missing credentials, denied access, wrong ARN), and
-busy sessions are retried. Details, IAM permissions and troubleshooting: **[docs/agentcore.md](https://github.com/rahrajlat/Gentui/blob/main/docs/agentcore.md)**.
-Both a runtime ARN and an endpoint ARN (`.../runtime-endpoint/DEFAULT`) work.
-
-## Configure
-
-Put options in `./gentui.toml` or `~/.config/gentui/config.toml`. Flags, `GENTUI_URL` and
-`GENTUI_TOKEN` override the file. Every option is documented in
-[`gentui.example.toml`](https://github.com/rahrajlat/Gentui/blob/main/gentui.example.toml): backend URL, token and headers, props sent with every run,
-title, welcome text, theme, splash and logo, reasoning on/off, timestamps, plugins and widget mapping.
-
-> **Stateless backends** (ones that rebuild context from the message list, like the official
-> `ag-ui-strands` adapter) need `send_history = true`. By default only the newest message is sent and
-> the backend is expected to keep history per `threadId`.
-
-## Customise
-
-- **Theme:** `theme = "nord"` or `/theme <name>`. The default is `gentui` (teal and violet); `claude`
-  (coral) is also built in.
-- **Your own styling:** `css = "my.tcss"` loads a [Textual CSS](https://textual.textualize.io/guide/CSS/)
-  file on top of the defaults and **hot-reloads while the app runs**. Useful selectors: `.user`,
-  `.assistant`, `.thinking`, `.error`, `ToolWidget`, `#chat`, `#prompt`.
-- **Your own widget for a backend tool:** subclass `ToolWidget`, then map it without any plugin file:
-
-  ```toml
-  [widgets]
-  show_map = "my_widgets:MapWidget"
-  ```
-
-## Plugins
-
-A plugin is a plain Python file. Drop it in `./gentui_plugins/` or `~/.config/gentui/plugins/`, list it in
-`plugins = [...]` or `--plugin`, or ship it as a pip package using the `gentui.plugins` entry point.
-
-```python
-from gentui.plugins import on_event, register_command
-from gentui.tui.widgets.base import ToolWidget
-from gentui.tui.widgets.registry import register_widget
-
-@register_widget("weather")                  # render tool calls named "weather"
-class Weather(ToolWidget):
-    def on_end(self, args): self.show(f"☀ {args['city']}")
-
-@register_command("ping", "say pong")        # adds /ping
-def ping(app, args): app.notify("pong")
-
-@on_event("TOOL_CALL_RESULT")                # hook any AG-UI event
-async def audit(app, event): ...
-
-def setup(app): ...                          # optional, runs once the app is mounted
+```toml
+agentcore_arn = "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/my_agent-AbCdEfGhIj"
+aws_profile = "dev"
+send_history = true      # needed if the runtime rebuilds context from messages (e.g. ag-ui-strands)
 ```
 
-Plugins can mount any Textual widget into the conversation with `await app.mount_chat(widget)`. A
-broken plugin is reported in a toast and never stops the app.
-
-## Build a backend for it
-
-Any language works: serve a `POST` endpoint that streams AG-UI events. To get the rich widgets, name
-your tools like this (anything else shows a JSON card). The full contract, including the approval
-flow and a checklist, is in **[docs/tool-contract.md](https://github.com/rahrajlat/Gentui/blob/main/docs/tool-contract.md)**.
-
-| Tool name | Arguments / result | Renders |
-|---|---|---|
-| `propose_command` | `{command, explanation, risk: safe\|caution\|dangerous}` | command card with Approve / Edit / Reject; the decision goes back as an AG-UI `resume` of the run's interrupt |
-| `run_command` | result JSON `{command, exit_code, timed_out, truncated, output}` | output card |
-| `show_table` | `{title, columns, rows}` | table |
-| `show_chart` | `{type: line\|bar\|scatter\|histogram, title, x, series: [{name, values}], x_label, y_label, bins}` | terminal chart (plotext) |
-| `search_memory` | `{query}` | quiet "◌ recalled …" line |
-| `todo_write` + state `plan` | state `{"plan": [{content, status}]}` | live checklist |
-
-## How it works
-
-```
- gentui (Textual) ── POST /agent (RunAgentInput) ──▶ any AG-UI backend
-      ▲                                                    │
-      │◀────────────── SSE: AG-UI events ─────────────────┘
-
- Approve ▸ `resume` of the run's interrupt ──▶ backend runs the approved command
-```
-
-| Piece | File |
-|---|---|
-| SSE client (RunAgentInput in, typed events out) | [`tui/agui_client.py`](https://github.com/rahrajlat/Gentui/blob/main/src/gentui/tui/agui_client.py) |
-| Event → widget dispatch, interrupts, chat | [`tui/app.py`](https://github.com/rahrajlat/Gentui/blob/main/src/gentui/tui/app.py) |
-| Widgets and the tool-name registry | [`tui/widgets/`](https://github.com/rahrajlat/Gentui/tree/main/src/gentui/tui/widgets) |
-| Logo, splash and animation | [`tui/branding.py`](https://github.com/rahrajlat/Gentui/blob/main/src/gentui/tui/branding.py), [`tui/splash.py`](https://github.com/rahrajlat/Gentui/blob/main/src/gentui/tui/splash.py) |
-| Plugin API and config | [`plugins.py`](https://github.com/rahrajlat/Gentui/blob/main/src/gentui/plugins.py), [`config.py`](https://github.com/rahrajlat/Gentui/blob/main/src/gentui/config.py) |
-
-AG-UI events used: `RUN_STARTED/FINISHED/ERROR` (with `outcome: interrupt`), `TEXT_MESSAGE_*`,
-`REASONING_*`, `TOOL_CALL_START/ARGS/END/RESULT`, `STATE_SNAPSHOT`, `STATE_DELTA`. The request side
-uses `messages`, `forwardedProps` and `resume`.
+The caller needs the `bedrock-agentcore:InvokeAgentRuntime` permission. IAM details, sessions and
+troubleshooting are in the [AgentCore guide](https://github.com/rahrajlat/Gentui/blob/main/docs/agentcore.md).
 
 ## Status
 
