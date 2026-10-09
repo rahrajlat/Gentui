@@ -33,6 +33,67 @@ gentui http://localhost:8000/agent               # your AG-UI endpoint
 
 Requires Python 3.12 or newer. No backend yet? See the [Quick start](#quick-start) for a sample agent.
 
+## Key features
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+**🔌 Bring any agent**<br>
+Speaks [AG-UI](https://docs.ag-ui.com), so any compatible backend works: local, hosted, or on **Amazon Bedrock AgentCore**.
+
+</td>
+<td width="50%" valign="top">
+
+**💬 Streaming chat**<br>
+Markdown answers stream in as they are written. Unknown tools show as a readable card, never an error.
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+**🧠 Visible chain of thought**<br>
+Reasoning streams into a collapsible "Thought for 3s" block. Open it or tuck it away.
+
+</td>
+<td valign="top">
+
+**✋ Human-in-the-loop**<br>
+Approve, edit or reject before anything runs. Built on AG-UI interrupts: the model can't approve itself.
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+**📊 Generative widgets**<br>
+Tool calls become the UI: command cards, output, tables, terminal charts and a live plan checklist.
+
+</td>
+<td valign="top">
+
+**🎬 Demo mode**<br>
+`gentui --demo` plays a tour of every feature by itself. No backend needed.
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+**⏺ Record and replay**<br>
+Save a session to JSON with `--record`, then replay it with pause, a seek bar and speed control.
+
+</td>
+<td valign="top">
+
+**🛠 Built for developers**<br>
+A raw event inspector (`/dev`), `/export_md`, themes, hot-reloaded CSS and Python plugins.
+
+</td>
+</tr>
+</table>
+
 ## Try the demo
 
 No backend needed. Gentui plays a tour of every feature by itself, like a movie:
