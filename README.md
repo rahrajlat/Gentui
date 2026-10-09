@@ -30,7 +30,8 @@ pip install gentui                               # or: uv tool install gentui
 gentui http://localhost:8000/agent               # your AG-UI endpoint
 ```
 
-Requires Python 3.12 or newer. No backend yet? See the [Quick start](#quick-start) for a sample agent.
+Requires Python 3.12 or newer. Want to see it first? `gentui --demo` plays a tour of every feature with no backend
+(pick a scene from the menu, or `gentui --demo approval`). No backend yet? See the [Quick start](#quick-start) for a sample agent.
 
 ## Why Gentui?
 
@@ -175,7 +176,7 @@ Gentui is **alpha**. What has been verified, and what has not:
   font such as DejaVu Sans Mono, Cascadia or JetBrains Mono.
 
 **Ideas, not built yet:** `show_form` / `ask_approval` tools, a composable JSON-tree UI tool, persistent
-threads, a `--demo` mode and record/replay of runs.
+threads, record/replay of runs.
 
 ## Development
 

@@ -27,6 +27,20 @@ def parse_headers(items: list[str] | None) -> dict[str, str] | None:
     return headers
 
 
+def _run_demo(parser: argparse.ArgumentParser, args: argparse.Namespace, config) -> None:
+    from gentui.tui import demo
+
+    scene = demo.choose_scene() if args.demo == "menu" else args.demo
+    if scene not in demo.SCENES:
+        parser.error(f"unknown demo scene {scene!r}; choose from:\n{demo.scene_list()}")
+    config.agentcore_arn, config.url = None, "demo mode (scripted, no backend)"
+    config.welcome = (
+        "◈ Welcome to Gentui! This is the demo: sit back, it plays by itself.\n\n"
+        "  /demo to pick a scene · /help for commands · /quit to exit\n  backend: {url}"
+    )
+    demo.DemoApp(demo.DemoClient(args.demo_speed), config, scene).run()
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(
         prog="gentui",
@@ -50,8 +64,15 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--plugin", "-p", action="append", metavar="MODULE|FILE", help="load a plugin (repeatable)")
     parser.add_argument("--version", action="version", version=f"gentui {_version()}")
     parser.add_argument("--no-reasoning", action="store_true", help="hide the model's chain of thought")
+    parser.add_argument(
+        "--demo", nargs="?", const="menu", metavar="SCENE",
+        help="play a scripted tour, no backend needed: all, chat, approval, widgets or devtools (no name = a menu)",
+    )
+    parser.add_argument("--demo-speed", type=float, default=1.0, metavar="X", help="demo playback speed [default: 1]")
     parser.add_argument("--dev", action="store_true", help="open the AG-UI event inspector at start")
     args = parser.parse_args(argv)
+    if args.demo and args.demo_speed <= 0:
+        parser.error("--demo-speed must be above 0")
 
     target = args.url or args.url_pos
     arn = args.agentcore_arn or (target if target and target.startswith("arn:") else None)
@@ -73,6 +94,10 @@ def main(argv: list[str] | None = None) -> None:
         )
     except (OSError, ValueError) as exc:
         sys.exit(f"gentui: {exc}")
+
+    if args.demo:
+        _run_demo(parser, args, config)
+        return
 
     from gentui.tui.agui_client import AguiClient, BackendError
     from gentui.tui.app import GentuiApp
