@@ -1,6 +1,6 @@
 [project]
 name = "gentui"
-version = "0.1.1"
+version = "0.1.2"
 description = "A terminal interface for prototyping agents really quickly, for any AG-UI backend"
 readme = "README.md"
 license = "MIT"
