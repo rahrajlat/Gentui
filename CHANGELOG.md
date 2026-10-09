@@ -7,6 +7,11 @@ All notable changes to Gentui are documented here. The format follows
 ## [Unreleased]
 
 ### Added
+- `gentui --record NAME` saves a session to `NAME.json` (your messages and every AG-UI event, with timestamps), and
+  `gentui --replay NAME` plays it back with no backend: pause / play (space), a draggable slider, jump 5 s with the arrow
+  keys, 0.5x to 8x speed, and every widget drawn as it was live (tools, plan, tables, charts, approvals). Chain-of-thought
+  blocks can be opened and closed while replaying (`t`, or click one). Long waits are squeezed so a replay never sits idle.
+  An existing recording is never overwritten.
 - `gentui --demo [scene]` plays a scripted tour of every feature, like a movie, with no backend: it types, approves a
   command and runs slash commands by itself. Scenes: `all`, `chat`, `approval`, `widgets`, `devtools`. A bare `--demo`
   shows a menu; `/demo <scene>` switches scene inside the app; `--demo-speed X` changes the pace.

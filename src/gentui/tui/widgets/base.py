@@ -73,6 +73,9 @@ class ToolWidget(Vertical):
         """Replace the main body content (simple widgets only need this)."""
         self.query_one("#body", Static).update(renderable)
 
+    def replay_decision(self, status: str, payload: Any = None) -> None:
+        """A replay shows the answer that was given to this call's interrupt (`status`: resolved | cancelled)."""
+
     def submit(self, text: str, props: dict[str, Any] | None = None) -> None:
         self.post_message(self.Submit(text, props))
 

@@ -83,7 +83,7 @@ class CommandWidget(ToolWidget):
 
     def _set_buttons(self, disabled: bool) -> None:
         for button in self.query(Button):
-            button.disabled = disabled
+            button.disabled = disabled or self.app.READ_ONLY
 
     def _finish(self, state: str, status: Text) -> None:
         self.state = state
@@ -94,6 +94,17 @@ class CommandWidget(ToolWidget):
         status_line.display = True
 
     # -- user decisions ------------------------------------------------------------------
+
+    def replay_decision(self, status: str, payload: Any = None) -> None:
+        if self.state != "ready":
+            return
+        payload = payload if isinstance(payload, dict) else {}
+        if status == "cancelled" or payload.get("approved") is False:
+            self._finish("rejected", Text("✖ Rejected", style="red"))
+        elif payload.get("command"):
+            self._finish("approved", Text(f"✔ Approved (edited to {payload['command']}) — running…", style="green"))
+        else:
+            self._finish("approved", Text("✔ Approved — running…", style="green"))
 
     def _approve(self) -> None:
         editor = self.query_one("#editor", Input)
@@ -114,7 +125,7 @@ class CommandWidget(ToolWidget):
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         event.stop()
-        if self.state != "ready":
+        if self.state != "ready" or self.app.READ_ONLY:
             return
         if event.button.id == "approve":
             self._approve()
