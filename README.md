@@ -31,8 +31,20 @@ pip install gentui                               # or: uv tool install gentui
 gentui http://localhost:8000/agent               # your AG-UI endpoint
 ```
 
-Requires Python 3.12 or newer. Want to see it first? `gentui --demo` plays a tour of every feature with no backend
-(pick a scene from the menu, or `gentui --demo approval`). No backend yet? See the [Quick start](#quick-start) for a sample agent.
+Requires Python 3.12 or newer. No backend yet? See the [Quick start](#quick-start) for a sample agent.
+
+## Try the demo
+
+No backend needed. Gentui plays a tour of every feature by itself, like a movie:
+
+```bash
+gentui --demo                # a menu: pick what to watch
+gentui --demo all            # the whole movie
+gentui --demo approval       # one scene: chat, approval, widgets or devtools
+gentui --demo all --demo-speed 2    # twice as fast
+```
+
+Inside the demo, `/demo <scene>` switches scene and `/quit` leaves. Nothing is sent anywhere.
 
 ## Why Gentui?
 
