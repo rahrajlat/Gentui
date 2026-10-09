@@ -7,6 +7,9 @@ All notable changes to Gentui are documented here. The format follows
 ## [Unreleased]
 
 ### Added
+- `gentui --demo [scene]` plays a scripted tour of every feature, like a movie, with no backend: it types, approves a
+  command and runs slash commands by itself. Scenes: `all`, `chat`, `approval`, `widgets`, `devtools`. A bare `--demo`
+  shows a menu; `/demo <scene>` switches scene inside the app; `--demo-speed X` changes the pace.
 - `/new` starts a new chat. A run still in flight is stopped first, so the old answer cannot stream into the new chat.
 - `/export_md [file or folder]` saves the conversation as Markdown: messages, replies, reasoning, tool calls and results, and
   approve / reject decisions. `show_table` calls become Markdown tables. Existing files are never overwritten.
