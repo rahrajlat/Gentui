@@ -43,16 +43,33 @@ class InterruptWidget(ToolWidget):
             else:
                 yield Button("Cancel", id="cancel")
 
-    def on_mount(self) -> None:
+    def show_message(self, decision: str | None = None) -> None:
         i = self.interrupt
         lines = [Text(f"⏸ {i.message or 'The agent is waiting for you'}", style="bold")]
         if not self.simple:
             lines.append(Text("This prompt needs input Gentui cannot provide yet.", style="dim italic"))
+        if decision:
+            lines.append(Text(decision))
         self.show(Text("\n").join(lines))
+
+    def on_mount(self) -> None:
+        self.show_message()
+        if self.app.READ_ONLY:
+            for button in self.query(Button):
+                button.disabled = True
+
+    def replay_decision(self, status: str, payload: Any = None) -> None:
+        if self.answered:
+            return
+        self.answered = True
+        for button in self.query(Button):
+            button.disabled = True
+        approved = status == "resolved" and isinstance(payload, dict) and payload.get("approved") is True
+        self.show_message("✔ Approved" if approved else "✖ Rejected" if status == "resolved" else "✖ Cancelled")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         event.stop()
-        if self.answered:
+        if self.answered or self.app.READ_ONLY:
             return
         self.answered = True
         for button in self.query(Button):

@@ -41,3 +41,7 @@ Plugins can register commands with `@register_command`. See [plugins.md](plugins
 | `gentui --demo all --demo-speed 2` | twice as fast |
 
 Inside the demo, `/demo <scene>` switches scene, and anything you type afterwards gets a canned reply.
+
+## Record and replay
+
+`gentui --record NAME` saves the session, `gentui --replay NAME` plays it back. See [replay.md](replay.md).

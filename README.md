@@ -46,6 +46,19 @@ gentui --demo all --demo-speed 2    # twice as fast
 
 Inside the demo, `/demo <scene>` switches scene and `/quit` leaves. Nothing is sent anywhere.
 
+## Record and replay
+
+Save a session, then play it back anywhere: no agent, no network.
+
+```bash
+gentui http://localhost:8000/agent --record my_session     # saves my_session.json
+gentui --replay my_session                                 # plays it back
+```
+
+In a replay: **space** pauses and plays, **drag the bar** (or **←/→**) to fast-forward and rewind, **+/-** changes the speed,
+**t** opens or closes every chain of thought (you can also click one), **d** shows the raw events, **q** quits. Tool calls,
+the plan, tables, charts and approvals are drawn exactly as they were live. See [Record and replay](https://github.com/rahrajlat/Gentui/blob/main/docs/replay.md).
+
 ## Why Gentui?
 
 **Gentui is a terminal interface for prototyping agents really quickly.**
@@ -80,6 +93,8 @@ AG-UI**: both on a custom backend (the [example backend](https://github.com/rahr
   (line, bar, scatter, histogram), live plan checklist.
 - **Developer-friendly:** an event inspector (`/dev`) showing the raw SSE payloads exactly as sent, `/theme`,
   `/clear`, `/reasoning`, and a clear [backend contract](https://github.com/rahrajlat/Gentui/blob/main/docs/tool-contract.md).
+- **Record and replay.** `--record name` saves a session to JSON; `--replay name` plays it back with pause, a seek bar
+  and speed control.
 - **Yours to customise:** TOML config, hot-reloaded CSS, your own themes, and Python plugins that add
   widgets, slash commands and event hooks.
 - **Runs agents on AWS too:** invoke agents hosted on Amazon Bedrock AgentCore Runtime (AG-UI protocol) via boto3.
@@ -144,6 +159,7 @@ Working on Gentui itself? Run it from a clone with `uv sync` and `uv run gentui 
 | add widgets, commands or event hooks | [Plugins](https://github.com/rahrajlat/Gentui/blob/main/docs/plugins.md) |
 | build my own backend in any language | [Backend contract](https://github.com/rahrajlat/Gentui/blob/main/docs/tool-contract.md) |
 | talk to an agent on Amazon Bedrock AgentCore | [AgentCore Runtime](https://github.com/rahrajlat/Gentui/blob/main/docs/agentcore.md) |
+| record a session and play it back | [Record and replay](https://github.com/rahrajlat/Gentui/blob/main/docs/replay.md) |
 | understand the internals | [How it works](https://github.com/rahrajlat/Gentui/blob/main/docs/architecture.md) |
 | cut a release | [Releasing](https://github.com/rahrajlat/Gentui/blob/main/docs/releasing.md) |
 
@@ -189,7 +205,7 @@ Gentui is **alpha**. What has been verified, and what has not:
   font such as DejaVu Sans Mono, Cascadia or JetBrains Mono.
 
 **Ideas, not built yet:** `show_form` / `ask_approval` tools, a composable JSON-tree UI tool, persistent
-threads, record/replay of runs.
+threads.
 
 ## Development
 

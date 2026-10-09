@@ -27,6 +27,31 @@ def parse_headers(items: list[str] | None) -> dict[str, str] | None:
     return headers
 
 
+def _run(app, record: str | None) -> None:
+    """Run the app, saving the session when --record was given."""
+    if record:
+        from gentui.session import Recorder, SessionError, resolve
+
+        try:
+            app.recorder = Recorder(resolve(record), app.config.target)
+        except SessionError as exc:
+            sys.exit(f"gentui: {exc}")
+    app.run()
+    if app.recorder:
+        print(f"Saved the session to {app.recorder.path}. Play it back with: gentui --replay {app.recorder.path.stem}")
+
+
+def _run_replay(name: str, config) -> None:
+    from gentui.session import SessionError, load, resolve
+    from gentui.tui.replay import ReplayApp
+
+    try:
+        session = load(resolve(name))
+    except SessionError as exc:
+        sys.exit(f"gentui: {exc}")
+    ReplayApp(session, config).run()
+
+
 def _run_demo(parser: argparse.ArgumentParser, args: argparse.Namespace, config) -> None:
     from gentui.tui import demo
 
@@ -38,7 +63,7 @@ def _run_demo(parser: argparse.ArgumentParser, args: argparse.Namespace, config)
         "◈ Welcome to Gentui! This is the demo: sit back, it plays by itself.\n\n"
         "  /demo to pick a scene · /help for commands · /quit to exit\n  backend: {url}"
     )
-    demo.DemoApp(demo.DemoClient(args.demo_speed), config, scene).run()
+    _run(demo.DemoApp(demo.DemoClient(args.demo_speed), config, scene), args.record)
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -69,10 +94,17 @@ def main(argv: list[str] | None = None) -> None:
         help="play a scripted tour, no backend needed: all, chat, approval, widgets or devtools (no name = a menu)",
     )
     parser.add_argument("--demo-speed", type=float, default=1.0, metavar="X", help="demo playback speed [default: 1]")
+    parser.add_argument("--record", metavar="NAME", help="save this session to NAME.json (what you type and every event)")
+    parser.add_argument("--replay", metavar="NAME", help="play back NAME.json: pause, play, seek, no backend needed")
     parser.add_argument("--dev", action="store_true", help="open the AG-UI event inspector at start")
     args = parser.parse_args(argv)
     if args.demo and args.demo_speed <= 0:
         parser.error("--demo-speed must be above 0")
+
+    if args.record and args.replay:
+        parser.error("--record and --replay cannot be used together")
+    if args.replay and args.demo:
+        parser.error("--replay and --demo cannot be used together")
 
     target = args.url or args.url_pos
     arn = args.agentcore_arn or (target if target and target.startswith("arn:") else None)
@@ -95,6 +127,9 @@ def main(argv: list[str] | None = None) -> None:
     except (OSError, ValueError) as exc:
         sys.exit(f"gentui: {exc}")
 
+    if args.replay:
+        _run_replay(args.replay, config)
+        return
     if args.demo:
         _run_demo(parser, args, config)
         return
@@ -121,7 +156,7 @@ def main(argv: list[str] | None = None) -> None:
             sys.exit(f"gentui: {exc}")
     else:
         client = AguiClient(config.url, config.request_headers, config.timeout, config.send_history)
-    GentuiApp(client, config).run()
+    _run(GentuiApp(client, config), args.record)
 
 
 if __name__ == "__main__":

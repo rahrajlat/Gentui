@@ -23,6 +23,7 @@ from textual.widgets._markdown import MarkdownStream
 
 from gentui import plugins
 from gentui.config import Config
+from gentui.session import Recorder, SessionError
 from gentui.tui import branding, commands, widgets  # noqa: F401  (registers built-in widgets and commands)
 from gentui.tui.splash import SplashScreen
 from gentui.tui.transcript import Transcript
@@ -72,6 +73,7 @@ class Client(Protocol):
 class GentuiApp(App[None]):
     SPLASH_IN_HEADLESS = False  # tests turn the splash off; the splash tests turn it back on
     SPLASH_SECONDS = 2.4
+    READ_ONLY = False  # a replay: nothing you do reaches an agent
 
     CSS = """
     Screen { background: $background; }
@@ -119,6 +121,7 @@ class GentuiApp(App[None]):
         self.register_theme(GENTUI_THEME)
         self.register_theme(CLAUDE_THEME)
         self.client = client
+        self.recorder: Recorder | None = None  # set by --record
         if hasattr(client, "on_raw"):
             client.on_raw = self._log_raw
         self.show_reasoning = self.config.show_reasoning
@@ -156,14 +159,18 @@ class GentuiApp(App[None]):
                     id="chat",
                 )
                 yield Static(id="busy")
-                with Horizontal(id="promptbox"):
-                    yield Static(branding.USER_MARK, id="promptmark")
-                    yield Input(placeholder=self.config.placeholder, id="prompt")
-                with Horizontal(id="statusbar"):
-                    yield Static("/help · /new · /export_md · /dev · /quit", classes="left")
-                    yield Static(self.config.target, classes="right")
+                yield from self.compose_bottom()
             with Vertical(id="dev"):
                 yield RichLog(id="events", wrap=True, markup=False, highlight=False)
+
+    def compose_bottom(self) -> ComposeResult:
+        """What sits under the chat: the prompt and the status bar (a replay swaps in its own controls)."""
+        with Horizontal(id="promptbox"):
+            yield Static(branding.USER_MARK, id="promptmark")
+            yield Input(placeholder=self.config.placeholder, id="prompt")
+        with Horizontal(id="statusbar"):
+            yield Static("/help · /new · /export_md · /dev · /quit", classes="left")
+            yield Static(self.config.target, classes="right")
 
     async def on_mount(self) -> None:
         if self.config.theme in self.available_themes:
@@ -181,9 +188,29 @@ class GentuiApp(App[None]):
                 self.notify(f"plugin setup failed: {exc!r}", severity="error")
         self.set_interval(0.08, self._tick)  # fast enough for the spinner and shimmer
         self.query_one("#chat", VerticalScroll).anchor()  # stay scrolled to the newest content
-        self.query_one("#prompt", Input).focus()
+        for prompt in self.query("#prompt"):
+            prompt.focus()
         if self.config.splash and (not self.is_headless or self.SPLASH_IN_HEADLESS):
-            self.push_screen(SplashScreen(self.SPLASH_SECONDS), lambda _: self.query_one("#prompt", Input).focus())
+            self.push_screen(SplashScreen(self.SPLASH_SECONDS), lambda _: [p.focus() for p in self.query("#prompt")])
+
+    async def on_unmount(self) -> None:
+        self._save_recording()
+
+    def _save_recording(self) -> None:
+        if self.recorder is None:
+            return
+        try:
+            self.recorder.save()
+        except SessionError as exc:
+            self.notify(str(exc), severity="error", timeout=15)
+
+    def _now(self) -> float:
+        """Seconds on the clock that times "Thought for Ns" (a replay shows the recorded time)."""
+        return time.monotonic()
+
+    def _wall(self) -> datetime:
+        """The time shown beside each message (a replay shows when it was recorded)."""
+        return datetime.now()
 
     def action_ignore(self) -> None:
         """Does nothing: used to switch off a key Textual binds by default."""
@@ -202,25 +229,36 @@ class GentuiApp(App[None]):
         text = event.value.strip()
         if not text:
             return
+        if self.READ_ONLY:
+            return
         event.input.clear()
         if text.startswith("/"):
             name, _, args = text[1:].partition(" ")
             if name in plugins.COMMANDS:
                 await plugins.call(plugins.COMMANDS[name][0], self, args)
                 return
+        if self.recorder:
+            self.recorder.user(text)
+        await self.show_user_message(text)
+        self.send(text)
+
+    async def show_user_message(self, text: str) -> None:
         self.transcript.user(text)
         await self._mount(self._row(f"{branding.USER_MARK} ", Static(Text(text), classes="user"), mark_class="user-mark"))
-        self.send(text)
 
     @on(ToolWidget.Submit)
     def _on_widget_submit(self, event: ToolWidget.Submit) -> None:
         """A widget (button, form...) wants to tell the agent something."""
+        if self.READ_ONLY:
+            return
+        if self.recorder:
+            self.recorder.submit(event.text, event.props)
         self.send(event.text, event.props)
 
     @on(ToolWidget.Answer)
     def _on_widget_answer(self, event: ToolWidget.Answer) -> None:
         """A widget answered an interrupt; resume once every open interrupt has an answer."""
-        if event.interrupt_id not in self._open_interrupts:
+        if self.READ_ONLY or event.interrupt_id not in self._open_interrupts:
             return
         self._record_decision(event)
         entry: dict[str, Any] = {"interruptId": event.interrupt_id, "status": event.status}
@@ -235,6 +273,8 @@ class GentuiApp(App[None]):
     def send(
         self, text: str, props: dict[str, Any] | None = None, resume: list[dict[str, Any]] | None = None
     ) -> None:
+        if resume and self.recorder:
+            self.recorder.resume(resume)
         self._outbox.append((text, props, resume))
         if not self._busy:  # one run at a time; extra messages wait their turn
             self._busy = True
@@ -255,6 +295,8 @@ class GentuiApp(App[None]):
                         else self.client.run(self.thread_id, text, props)
                     )
                     async for event in stream:
+                        if self.recorder:
+                            self.recorder.event(event)
                         await self._handle(event)
                 except httpx.HTTPError as exc:
                     await self._error(f"Cannot talk to the backend: {exc!r}. Is it running?")
@@ -263,6 +305,7 @@ class GentuiApp(App[None]):
         finally:
             self._busy = False
             self.sub_title = self.config.subtitle
+            self._save_recording()
 
     # -- AG-UI event -> UI --------------------------------------------------------------------
 
@@ -283,7 +326,7 @@ class GentuiApp(App[None]):
             body = Static(classes="thinking")
             box = Collapsible(body, title=f"{branding.MARK} Thinking…", collapsed=False, classes="thought")
             await self._mount(box)
-            self._thoughts[ev.message_id] = (box, body, "", time.monotonic())
+            self._thoughts[ev.message_id] = (box, body, "", self._now())
         elif t == EventType.REASONING_MESSAGE_CONTENT:
             if ev.message_id in self._thoughts:
                 box, body, text, t0 = self._thoughts[ev.message_id]
@@ -293,7 +336,7 @@ class GentuiApp(App[None]):
         elif t == EventType.REASONING_MESSAGE_END:
             if ev.message_id in self._thoughts:
                 box, _, thought, t0 = self._thoughts.pop(ev.message_id)
-                seconds = max(1, round(time.monotonic() - t0))
+                seconds = max(1, round(self._now() - t0))
                 self.transcript.reasoning(thought, seconds)
                 box.title = f"{branding.MARK} Thought for {seconds}s"
                 box.collapsed = True  # tuck it away once the answer starts
@@ -368,7 +411,7 @@ class GentuiApp(App[None]):
         """One chat line: a marker (`>` you, `●` agent), the content, and the time it was sent."""
         children: list[Any] = [Static(mark, classes=f"mark {mark_class}"), body]
         if self.config.show_time:
-            children.append(Static(datetime.now().strftime(self.config.time_format), classes="time"))
+            children.append(Static(self._wall().strftime(self.config.time_format), classes="time"))
         return Horizontal(*children, classes="row")
 
     def _tick(self) -> None:
@@ -416,6 +459,8 @@ class GentuiApp(App[None]):
 
         A run still in flight is stopped first, so the old answer cannot stream into the new chat."""
         await self._stop_run()
+        if self.recorder:
+            self.recorder.new_chat()
         self.transcript.clear()
         self._text_streams.clear()
         self.thread_id = str(uuid.uuid4())
