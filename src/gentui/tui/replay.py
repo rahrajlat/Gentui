@@ -168,14 +168,17 @@ class ReplayApp(GentuiApp):
             await asyncio.sleep(0.05)
             now = time.monotonic()
             dt, last = now - last, now
-            if self._seek is not None:
-                target, self._seek = self._seek, None
-                await self._jump(target)
-            elif self.playing:
-                self.pos = min(self.pos + dt * self.speed, self.session.duration)
-                await self._advance()
-                if self._index >= len(self.session.items) and self.pos >= self.session.duration:
-                    self.playing = False
+            try:
+                if self._seek is not None:
+                    target, self._seek = self._seek, None
+                    await self._jump(target)
+                elif self.playing:
+                    self.pos = min(self.pos + dt * self.speed, self.session.duration)
+                    await self._advance()
+                    if self._index >= len(self.session.items) and self.pos >= self.session.duration:
+                        self.playing = False
+            except NoMatches:  # the screen is going away (quitting): stop quietly
+                return
             self._refresh_bar()
 
     async def _advance(self) -> None:

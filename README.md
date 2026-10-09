@@ -116,6 +116,10 @@ gentui http://localhost:8000/agent --record my_session     # saves my_session.js
 gentui --replay my_session                                 # plays it back
 ```
 
+<div align="center">
+<img src="https://raw.githubusercontent.com/rahrajlat/Gentui/main/docs/assets/replay.gif" alt="Gentui replay: play, pause, rewind with the seek bar, open the chain of thought, charts and approvals drawn as they were live" width="860">
+</div>
+
 In a replay: **space** pauses and plays, **drag the bar** (or **←/→**) to fast-forward and rewind, **+/-** changes the speed,
 **t** opens or closes every chain of thought (you can also click one), **d** shows the raw events, **q** quits. Tool calls,
 the plan, tables, charts and approvals are drawn exactly as they were live. See [Record and replay](https://github.com/rahrajlat/Gentui/blob/main/docs/replay.md).
@@ -277,7 +281,8 @@ cd examples/strands-backend && uv run pytest -q    # the example backend's own t
 
 The images above are generated from the app's own code:
 `uv run --with pillow python docs/assets/build_assets.py` (logo, hero, `demo.gif`) and
-`uv run --with pillow python docs/assets/build_tour.py` (the feature tour).
+`uv run --with pillow python docs/assets/build_tour.py` (the feature tour), and
+`uv run --with pillow python docs/assets/build_replay.py` (the replay).
 
 ## Contributing
 
