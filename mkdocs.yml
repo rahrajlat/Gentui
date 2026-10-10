@@ -32,6 +32,9 @@ theme:
 
 nav:
   - Home: index.md
+  - Getting started:
+      - Install and demo: getting-started.md
+      - The sample agent: sample-agent.md
   - Using Gentui:
       - Command-line reference: cli.md
       - Commands: commands.md
@@ -47,6 +50,7 @@ nav:
       - AgentCore Runtime: agentcore.md
   - Project:
       - How it works: architecture.md
+      - Development and status: development.md
       - Releasing: releasing.md
 
 markdown_extensions:

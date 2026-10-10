@@ -30,337 +30,59 @@ tables, charts and human approval, with no frontend to build.
 ```bash
 pip install gentui                               # or: uv tool install gentui
 gentui http://localhost:8000/agent               # your AG-UI endpoint
+gentui --demo                                    # no backend yet? watch a tour of every feature
 ```
 
-Requires Python 3.12 or newer. No backend yet? See the [Quick start](#quick-start) for a sample agent.
+Requires Python 3.12 or newer.
 
-## Key features
+## Documentation
 
-<table>
-<tr>
-<td width="50%" valign="top">
+**Full docs, with search: [rahrajlat.github.io/Gentui](https://rahrajlat.github.io/Gentui/)**
 
-**🔌 Bring any agent**<br>
-Speaks [AG-UI](https://docs.ag-ui.com), so any compatible backend works: local, hosted, or on **Amazon Bedrock AgentCore**.
+| I want to… | Read |
+|---|---|
+| install it and try the demo | [Getting started](https://rahrajlat.github.io/Gentui/getting-started/) |
+| see every command-line flag | [Command-line reference](https://rahrajlat.github.io/Gentui/cli/) |
+| use slash commands, themes and the event inspector | [Commands](https://rahrajlat.github.io/Gentui/commands/) |
+| save a session and play it back | [Record and replay](https://rahrajlat.github.io/Gentui/replay/) |
+| run the same prompts every time | [Run a set of prompts](https://rahrajlat.github.io/Gentui/prompts/) |
+| diff two runs side by side | [Compare runs](https://rahrajlat.github.io/Gentui/compare/) |
+| score runs with my own judge model | [Judges](https://rahrajlat.github.io/Gentui/judges/) |
+| change config, CSS and colours | [Customising](https://rahrajlat.github.io/Gentui/customising/) |
+| add widgets, commands or event hooks | [Plugins](https://rahrajlat.github.io/Gentui/plugins/) |
+| build my own backend in any language | [Backend contract](https://rahrajlat.github.io/Gentui/tool-contract/) |
+| talk to an agent on Amazon Bedrock AgentCore | [AgentCore Runtime](https://rahrajlat.github.io/Gentui/agentcore/) |
+| understand the internals | [How it works](https://rahrajlat.github.io/Gentui/architecture/) |
 
-</td>
-<td width="50%" valign="top">
-
-**💬 Streaming chat**<br>
-Markdown answers stream in as they are written. Unknown tools show as a readable card, never an error.
-
-</td>
-</tr>
-<tr>
-<td valign="top">
-
-**🧠 Visible chain of thought**<br>
-Reasoning streams into a collapsible "Thought for 3s" block. Open it or tuck it away.
-
-</td>
-<td valign="top">
-
-**✋ Human-in-the-loop**<br>
-Approve, edit or reject before anything runs. Built on AG-UI interrupts: the model can't approve itself.
-
-</td>
-</tr>
-<tr>
-<td valign="top">
-
-**📊 Generative widgets**<br>
-Tool calls become the UI: command cards, output, tables, terminal charts and a live plan checklist.
-
-</td>
-<td valign="top">
-
-**🎬 Demo mode**<br>
-`gentui --demo` plays a tour of every feature by itself. No backend needed.
-
-</td>
-</tr>
-<tr>
-<td valign="top">
-
-**⏺ Record and replay**<br>
-Save a session to JSON with `--record`, then replay it with pause, a seek bar and speed control.
-
-</td>
-<td valign="top">
-
-**🛠 Built for developers**<br>
-A raw event inspector (`/dev`), `/export_md`, themes, hot-reloaded CSS and Python plugins.
-
-</td>
-</tr>
-</table>
-
-## Try the demo
-
-No backend needed. Gentui plays a tour of every feature by itself, like a movie:
-
-```bash
-gentui --demo                # a menu: pick what to watch
-gentui --demo all            # the whole movie
-gentui --demo approval       # one scene: chat, approval, widgets or devtools
-gentui --demo all --demo-speed 2    # twice as fast
-```
-
-Inside the demo, `/demo <scene>` switches scene and `/quit` leaves. Nothing is sent anywhere.
-
-## Record and replay
-
-Save a session, then play it back anywhere: no agent, no network.
-
-```bash
-gentui http://localhost:8000/agent --record my_session     # saves my_session.json
-gentui --replay my_session                                 # plays it back
-```
-
-<div align="center">
-<img src="https://raw.githubusercontent.com/rahrajlat/Gentui/main/docs/assets/replay.gif" alt="Gentui replay: play, pause, rewind with the seek bar, open the chain of thought, charts and approvals drawn as they were live" width="860">
-</div>
-
-In a replay: **space** pauses and plays, **drag the bar** (or **←/→**) to fast-forward and rewind, **+/-** changes the speed,
-**t** opens or closes every chain of thought (you can also click one), **d** shows the raw events, **q** quits. Tool calls,
-the plan, tables, charts and approvals are drawn exactly as they were live. See [Record and replay](https://github.com/rahrajlat/Gentui/blob/main/docs/replay.md).
-
-## Compare runs and score them with a judge
-
-Changed your agent's prompt or model? Run the same prompts against both versions, then diff the results side by side.
-
-```bash
-# prompts.yml
-#   prompts:
-#     - How full is the disk?
-#     - text: Plot the usage per mount as a chart
-
-gentui http://localhost:8000/agent --prompts prompts.yml --record v1     # sends each prompt for you
-# ...change the agent...
-gentui http://localhost:8000/agent --prompts prompts.yml --record v2
-gentui --compare v1,v2                                                    # no backend needed
-```
-
-<div align="center">
-<img src="https://raw.githubusercontent.com/rahrajlat/Gentui/main/docs/assets/compare.gif" alt="Gentui compare mode: two runs side by side as a diff, a prompt picker, and a judge panel with a match score and comment for each prompt" width="860">
-</div>
-
-- **Two boxes, drop-downs to choose.** List as many recordings as you like (`--compare v1,v2,v3`) and pick which two to show.
-- **A drop-down for the prompt.** Look at one prompt from your file at a time, or all of them.
-- **Everything is drawn in full:** streamed answers, tool calls, tables and charts. Green is only on the right, red only on
-  the left, yellow is in both but changed. Changed text is shown word by word (`m` shows it rendered instead).
-- **Judge.** Turn on a judge and each prompt gets a panel on top with a match score (0 to 100%) and a comment on what differs.
-- **Export.** Press `e` (or run `gentui --compare v1,v2 --judge ... --export report.html`) for a single self-contained HTML
-  report: all prompts, the judge's scores and comments, and every chart drawn as SVG.
-
-### Judges
-
-A judge reads both answers to a prompt and returns a score and a reason. Gentui ships one for [Ollama](https://ollama.com):
-
-```bash
-gentui --compare v1,v2 --judge ollama:gpt-oss:120b-cloud     # Ollama Cloud through your signed-in local Ollama (`ollama signin`)
-OLLAMA_API_KEY=... gentui --compare v1,v2 --judge ollama     # straight to ollama.com, with an API key
-gentui --compare v1,v2 --judge ollama:qwen3:8b               # any model on your local Ollama
-```
-
-**Bring your own judge** (any model or service, or no model at all): write one function and register it.
-
-```python
-# my_judge.py
-from gentui.plugins import register_judge
-
-@register_judge("my_judge")                  # the name shown in the Judge drop-down
-async def my_judge(case):                    # a plain `def` works too
-    # case.prompt         the prompt
-    # case.left, case.right              what each agent answered (text)
-    # case.left_tools, case.right_tools  [{"name": ..., "args": ..., "result": ...}, ...]
-    same = case.left.strip() == case.right.strip()
-    return {"score": 1.0 if same else 0.3, "reason": "identical" if same else "the answers differ"}
-```
-
-```bash
-gentui --compare v1,v2 --plugin my_judge.py --judge my_judge
-```
-
-Return `{"score": 0..1, "reason": "..."}` (or a `(score, reason)` tuple). A judge that raises shows "Judge failed" on that
-prompt and nothing else is affected. Verdicts are cached in `~/.cache/gentui/judge.json`. A judge is sent the prompt, the answers
-and tool output, so use a hosted one with care. More in the [judges guide](https://github.com/rahrajlat/Gentui/blob/main/docs/judges.md) and [compare guide](https://github.com/rahrajlat/Gentui/blob/main/docs/compare.md).
-
-## Why Gentui?
-
-**Gentui is a terminal interface for prototyping agents really quickly.**
-
-While developing agents locally, we end up spending our time on the frontend: a Streamlit or Chainlit
-app, or a React project, just to talk to the agent. Each one is a separate frontend to build and keep
-running, and it slows down the thing you actually want to iterate on: the agent.
-
-Gentui removes that step. Install it, point it at your agent's AG-UI endpoint, and you get a chat, the
-model's **chain of thought**, **human-in-the-loop (HITL)** and **approval** flows out of the box, with no
-frontend code to write. Change your agent, restart it, and you're prototyping again in seconds.
-
-When the agent calls a tool, the **tool call becomes the UI**: a command to approve, a table, a chart,
-a live plan. Nothing risky runs until you click **Approve**.
-
-**Tested with the [Strands Agents](https://strandsagents.com) framework (AWS's open-source agent SDK) over
-AG-UI**: both on a custom backend (the [example backend](https://github.com/rahrajlat/Gentui/tree/main/examples/strands-backend)) and on the official
-[`ag-ui-strands`](https://pypi.org/project/ag-ui-strands/) adapter.
+## See it
 
 <div align="center">
 <img src="https://raw.githubusercontent.com/rahrajlat/Gentui/main/docs/assets/tour.gif" alt="Gentui feature tour: AgentCore launch, slash commands, chain of thought, memory, plan, approval, output, table, chart, event inspector, themes" width="860">
 </div>
 
-## Features
+### Record and replay
 
-- **Works with any AG-UI backend.** Streaming text, tool calls and shared state work out of the box;
-  unknown tools show as a readable card, never an error.
-- **Chain of thought, visible.** Reasoning streams into a collapsible "Thought for 3s" block.
-- **Human-in-the-loop approval** built on AG-UI **interrupts**: the run ends waiting, your click
-  `resume`s it. The model can't approve its own commands.
-- **Generative widgets from tool calls:** command card, command output, tables, terminal charts
-  (line, bar, scatter, histogram), live plan checklist.
-- **Developer-friendly:** an event inspector (`/dev`) showing the raw SSE payloads exactly as sent, `/theme`,
-  `/clear`, `/reasoning`, and a clear [backend contract](https://github.com/rahrajlat/Gentui/blob/main/docs/tool-contract.md).
-- **Record and replay.** `--record name` saves a session to JSON; `--replay name` plays it back with pause, a seek bar
-  and speed control.
-- **Compare and judge.** `--prompts file.yml` runs a set of prompts for you; `--compare v1,v2` diffs two recorded runs side by
-  side, and a pluggable judge (Ollama built in, or your own function) scores how well they match.
-- **Yours to customise:** TOML config, hot-reloaded CSS, your own themes, and Python plugins that add
-  widgets, slash commands and event hooks.
-- **Runs agents on AWS too:** invoke agents hosted on Amazon Bedrock AgentCore Runtime (AG-UI protocol) via boto3.
-- **Backend-agnostic by design.** The client has no framework code; a complete example backend lives in
-  [`examples/strands-backend`](https://github.com/rahrajlat/Gentui/tree/main/examples/strands-backend).
+Save any session to JSON, then play it back with pause, a seek bar and speed control. No agent, no network. [Read more](https://rahrajlat.github.io/Gentui/replay/)
 
-## The sample agent: natural language → shell
+<div align="center">
+<img src="https://raw.githubusercontent.com/rahrajlat/Gentui/main/docs/assets/replay.gif" alt="Gentui replay: play, pause, rewind with the seek bar, open the chain of thought, charts and approvals drawn as they were live" width="860">
+</div>
 
-The command-approval flow in the tour above comes from the bundled example backend, a **natural-language-to-shell agent** built on Strands
-Agents. You describe a task in plain English, it proposes a single shell command, and **nothing runs
-until you approve it**.
+### Compare runs and judge them
 
-1. **Ask:** "what are the 5 largest files here?"
-2. **Review:** a shell sub-agent writes one command for your shell (bash, or PowerShell on Windows)
-   with a one-line explanation and a risk level: `safe`, `caution` or `dangerous`.
-3. **Decide:** **Approve**, **Edit** the command first, or **Reject**. Your decision is sent back as an
-   AG-UI `resume`; the model can't approve for itself or change the command.
-4. **Run:** only the approved command executes, with a timeout, an output cap and a fixed working
-   directory. A denylist (recursive delete of root or home, disk formatting, shutdown, fork bombs,
-   interactive programs) is checked at proposal, at approval and again right before running. It is a
-   safety net, not a sandbox.
+Run the same prompts against two versions of your agent, diff the results side by side, and let a judge (Ollama built in, or your own function) score each prompt. Export it all, charts included, to one HTML page. [Read more](https://rahrajlat.github.io/Gentui/compare/)
 
-The same agent can also show results as a **table** or **chart**, lay out multi-step work as a live
-**plan**, explain what a command does (an explainer sub-agent), and keep **long-term memory** between
-conversations. It's a worked example of the [backend contract](https://github.com/rahrajlat/Gentui/blob/main/docs/tool-contract.md): copy it, or add your
-own tools with [this guide](https://github.com/rahrajlat/Gentui/blob/main/examples/strands-backend/docs/add_a_tool.md).
-
-## Quick start
-
-Requires Python 3.12 or newer. Gentui is on [PyPI](https://pypi.org/project/gentui/):
-
-```bash
-pip install gentui                               # or: uv tool install gentui
-gentui http://localhost:8000/agent               # your AG-UI endpoint
-```
-
-With [uv](https://docs.astral.sh/uv/) you can also run it without installing: `uvx gentui http://localhost:8000/agent`.
-
-No backend yet? Run the [sample natural-language-to-shell agent](#the-sample-agent-natural-language--shell)
-(Strands Agents + FastAPI). It lives in this repository, so clone it first, then start the backend in one terminal. It
-uses a local [Ollama](https://ollama.com) by default; see its [README](https://github.com/rahrajlat/Gentui/blob/main/examples/strands-backend/README.md) for other providers:
-
-```bash
-git clone https://github.com/rahrajlat/Gentui.git
-cd Gentui/examples/strands-backend
-uv sync && cp .env.example .env
-uv run server                                     # http://localhost:8000/agent
-```
-
-Then, in another terminal, start Gentui as above (`gentui http://localhost:8000/agent`).
-
-
-Type `/help` to list the slash commands (`/new`, `/export_md`, `/theme`, `/dev`, `/reasoning`, `/quit`).
-Working on Gentui itself? Run it from a clone with `uv sync` and `uv run gentui <url>`.
-
-## Documentation
-
-Full docs, with search: **[rahrajlat.github.io/Gentui](https://rahrajlat.github.io/Gentui/)**.
-
-| I want to… | Read |
-|---|---|
-| use the slash commands, export a chat | [Slash commands](https://github.com/rahrajlat/Gentui/blob/main/docs/commands.md) |
-| set options, themes, CSS, auth, map my own widgets | [Configuring and customising](https://github.com/rahrajlat/Gentui/blob/main/docs/customising.md) (all options: [`gentui.example.toml`](https://github.com/rahrajlat/Gentui/blob/main/gentui.example.toml)) |
-| add widgets, commands or event hooks | [Plugins](https://github.com/rahrajlat/Gentui/blob/main/docs/plugins.md) |
-| build my own backend in any language | [Backend contract](https://github.com/rahrajlat/Gentui/blob/main/docs/tool-contract.md) |
-| talk to an agent on Amazon Bedrock AgentCore | [AgentCore Runtime](https://github.com/rahrajlat/Gentui/blob/main/docs/agentcore.md) |
-| record a session and play it back | [Record and replay](https://github.com/rahrajlat/Gentui/blob/main/docs/replay.md) |
-| run a set of prompts, compare runs | [Prompts](https://github.com/rahrajlat/Gentui/blob/main/docs/prompts.md) and [Compare](https://github.com/rahrajlat/Gentui/blob/main/docs/compare.md) |
-| score runs with my own judge model | [Judges](https://github.com/rahrajlat/Gentui/blob/main/docs/judges.md) |
-| see every command-line flag | [CLI reference](https://github.com/rahrajlat/Gentui/blob/main/docs/cli.md) |
-| understand the internals | [How it works](https://github.com/rahrajlat/Gentui/blob/main/docs/architecture.md) |
-| cut a release | [Releasing](https://github.com/rahrajlat/Gentui/blob/main/docs/releasing.md) |
-
-### Example: an agent on AgentCore Runtime
-
-Your runtime must be deployed with the AG-UI protocol. Then, end to end:
-
-```bash
-# 1. install with the optional AWS extra (adds boto3)
-pip install "gentui[agentcore]"          # or: uv tool install "gentui[agentcore]"
-
-# 2. log in with any normal AWS method
-aws sso login --profile dev              # or export AWS_PROFILE / access keys
-
-# 3. pass the runtime ARN instead of a URL
-gentui arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/my_agent-AbCdEfGhIj --profile dev
-```
-
-Optional flags: `--region eu-west-1` (default: the region in the ARN) and `--qualifier prod` (default: the
-`DEFAULT` endpoint). Or put it in `gentui.toml` and just run `gentui`:
-
-```toml
-agentcore_arn = "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/my_agent-AbCdEfGhIj"
-aws_profile = "dev"
-send_history = true      # needed if the runtime rebuilds context from messages (e.g. ag-ui-strands)
-```
-
-The caller needs the `bedrock-agentcore:InvokeAgentRuntime` permission. IAM details, sessions and
-troubleshooting are in the [AgentCore guide](https://github.com/rahrajlat/Gentui/blob/main/docs/agentcore.md).
+<div align="center">
+<img src="https://raw.githubusercontent.com/rahrajlat/Gentui/main/docs/assets/compare.gif" alt="Gentui compare mode: two runs side by side as a diff, a prompt picker, and a judge panel with a match score and comment for each prompt" width="860">
+</div>
 
 ## Status
 
-Gentui is **alpha**. What has been verified, and what has not:
-
-- Built and tested against the **Strands Agents** framework (AWS) over AG-UI: the
-  [example backend](https://github.com/rahrajlat/Gentui/tree/main/examples/strands-backend) and the official
-  [`ag-ui-strands`](https://pypi.org/project/ag-ui-strands/) adapter (with `send_history = true`).
-- AgentCore Runtime support works against a real runtime (confirmed by the author with a plain runtime ARN) and only
-  covers runtimes using the AG-UI protocol. Other setups are covered by tests with a fake boto3 client and botocore's `Stubber`.
-- Backends on other frameworks, the interrupt flow against a backend other than the example, other model
-  providers than Ollama, and native Windows are **untested**.
-- The look relies on Unicode box-drawing and block characters. If glyphs are missing, try a terminal
-  font such as DejaVu Sans Mono, Cascadia or JetBrains Mono.
-
-**Ideas, not built yet:** `show_form` / `ask_approval` tools, a composable JSON-tree UI tool, persistent
-threads.
-
-## Development
-
-```bash
-uv run pytest -q                                   # TUI tests: headless, no LLM or backend needed
-cd examples/strands-backend && uv run pytest -q    # the example backend's own tests
-```
-
-The images above are generated from the app's own code:
-`uv run --with pillow python docs/assets/build_assets.py` (logo, hero, `demo.gif`) and
-`uv run --with pillow python docs/assets/build_tour.py` (the feature tour), and
-`uv run --with pillow python docs/assets/build_replay.py` (the replay), and
-`uv run --with pillow python docs/assets/build_compare.py` (compare and judge).
-
-The docs site is built with MkDocs Material: `uv run --group docs mkdocs serve` previews it locally.
+Gentui is **alpha**: tested with the Strands Agents framework over AG-UI and with AgentCore Runtime; other setups are untested. The details are in [Development and status](https://rahrajlat.github.io/Gentui/development/).
 
 ## Contributing
 
-Issues and pull requests are welcome. Please run both test suites before opening a PR, and add a test
-with any behaviour change. Because Gentui is a client for an open protocol, changes that keep it
-backend-agnostic are the easiest to accept.
+Issues and pull requests are welcome. Please run the tests (`uv run pytest -q`) before opening a PR, and add a test with any behaviour change. See [Development and status](https://rahrajlat.github.io/Gentui/development/).
 
 ## License
 
