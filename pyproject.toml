@@ -56,4 +56,5 @@ dev = [
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+pythonpath = ["."]  # lets tests import shared helpers as `tests.test_session`
 testpaths = ["tests"]  # the example backend has its own tests and environment
