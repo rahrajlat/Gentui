@@ -5,7 +5,7 @@ streams is shown with no setup (text, reasoning, tool calls as JSON cards, state
 page lists what a backend must do to get Gentui's **rich widgets**: the approval card, output,
 table, chart, plan and memory line.
 
-Nothing here is Strands-specific, and approval uses the protocol's own interrupts. The example backend in [`examples/strands-backend`](../examples/strands-backend) happens to use Strands; any language or
+Nothing here is Strands-specific, and approval uses the protocol's own interrupts. The example backend in [`examples/strands-backend`](https://github.com/rahrajlat/Gentui/blob/main/examples/strands-backend) happens to use Strands; any language or
 framework can follow the contract.
 
 ## 1. The request
@@ -135,7 +135,7 @@ cards without buttons.
 
 ## Compatibility status
 
-- **Tested end to end** with two Strands backends: the [example backend](../examples/strands-backend) in this repo (custom
+- **Tested end to end** with two Strands backends: the [example backend](https://github.com/rahrajlat/Gentui/blob/main/examples/strands-backend) in this repo (custom
   adapter) and the official [`ag-ui-strands`](https://pypi.org/project/ag-ui-strands/) adapter serving
   a stock Strands agent. With the second (and `send_history = true`), streaming text, tool calls (as JSON cards), multi-turn
   context and error handling work, and the adapter's extra events (`MESSAGES_SNAPSHOT`, `RAW`) are
@@ -154,4 +154,4 @@ cards without buttons.
 - [ ] Optional: `REASONING_*` events, and `STATE_SNAPSHOT` / `STATE_DELTA` for the plan.
 
 To render a tool Gentui doesn't know, write a widget: see "Add features (plugins)" in the
-[README](../README.md).
+[README](https://github.com/rahrajlat/Gentui/blob/main/README.md).

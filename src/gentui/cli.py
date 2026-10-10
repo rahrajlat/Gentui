@@ -111,7 +111,7 @@ def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(
         prog="gentui",
         description="Terminal client for any AG-UI agent backend.",
-        epilog="Options can also live in gentui.toml (see gentui.example.toml).",
+        epilog="Options can also live in gentui.toml (see gentui.example.toml). Docs: https://rahrajlat.github.io/Gentui/",
     )
     parser.add_argument(
         "url_pos", nargs="?", metavar="URL|ARN",

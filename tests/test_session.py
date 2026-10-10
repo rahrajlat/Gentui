@@ -18,8 +18,8 @@ from gentui.tui.widgets.plan import PlanWidget
 from gentui.tui.widgets.table import TableWidget
 
 
-async def record(path: Path, scene: str = "all") -> None:
-    app = demo.DemoApp(demo.DemoClient(speed=60), Config(splash=False), scene)
+async def record(path: Path, scene: str = "all", speed: float = 60) -> None:
+    app = demo.DemoApp(demo.DemoClient(speed=speed), Config(splash=False), scene)
     app.recorder = session.Recorder(path, "demo")
     async with app.run_test(size=(100, 40)) as pilot:
         await pilot.pause(0.5)
@@ -32,6 +32,14 @@ async def record(path: Path, scene: str = "all") -> None:
 async def approval(tmp_path):
     path = tmp_path / "s.json"
     await record(path, "approval")
+    return path
+
+
+@pytest.fixture
+async def long_approval(tmp_path):
+    """The approval scene recorded slowly (about 3 s long), for tests that need time to pause and resume in."""
+    path = tmp_path / "long.json"
+    await record(path, "approval", speed=10)
     return path
 
 
@@ -155,9 +163,10 @@ async def test_thoughts_can_be_opened_and_closed_while_replaying(approval):
         assert not thought.collapsed
 
 
-async def test_pause_play_and_the_space_bar(approval):
-    app = replay_app(approval)
+async def test_pause_play_and_the_space_bar(long_approval):
+    app = replay_app(long_approval)
     async with app.run_test(size=(100, 40)) as pilot:
+        app.speed = 0.5  # a slow CI machine must not be able to play the whole thing out between two key presses
         await pilot.press("space")
         assert not app.playing
         frozen = app.pos

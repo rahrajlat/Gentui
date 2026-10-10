@@ -31,7 +31,7 @@ gentui arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/my_agent-AbCdEfG
 gentui --agentcore-arn ARN --profile dev --region eu-west-1 --qualifier prod
 ```
 
-Or in `gentui.toml` (see [gentui.example.toml](../gentui.example.toml)):
+Or in `gentui.toml` (see [gentui.example.toml](https://github.com/rahrajlat/Gentui/blob/main/gentui.example.toml)):
 
 ```toml
 agentcore_arn = "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/my_agent-AbCdEfGhIj"

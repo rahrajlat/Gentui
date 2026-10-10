@@ -1,0 +1,66 @@
+site_name: Gentui
+site_description: A terminal interface for prototyping agents really quickly, for any AG-UI backend
+site_url: https://rahrajlat.github.io/Gentui/
+repo_url: https://github.com/rahrajlat/Gentui
+repo_name: rahrajlat/Gentui
+edit_uri: edit/main/docs/
+copyright: MIT licensed
+
+theme:
+  name: material
+  logo: assets/logo.png
+  favicon: assets/logo.png
+  palette:
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: deep purple
+      toggle: { icon: material/weather-sunny, name: Switch to light mode }
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: deep purple
+      toggle: { icon: material/weather-night, name: Switch to dark mode }
+  features:
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.action.edit
+
+nav:
+  - Home: index.md
+  - Using Gentui:
+      - Command-line reference: cli.md
+      - Commands: commands.md
+      - Customising: customising.md
+  - Record, compare, judge:
+      - Record and replay: replay.md
+      - Run a set of prompts: prompts.md
+      - Compare runs: compare.md
+      - Judges: judges.md
+  - Extending:
+      - Plugins: plugins.md
+      - Backend contract: tool-contract.md
+      - AgentCore Runtime: agentcore.md
+  - Project:
+      - How it works: architecture.md
+      - Releasing: releasing.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - toc: { permalink: true }
+  - pymdownx.highlight: { anchor_linenums: false }
+  - pymdownx.superfences
+  - pymdownx.tabbed: { alternate_style: true }
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/rahrajlat/Gentui
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/gentui/

@@ -1,6 +1,6 @@
 # Releasing Gentui to PyPI
 
-Releases are published by [`.github/workflows/release.yml`](../.github/workflows/release.yml) using PyPI
+Releases are published by [`.github/workflows/release.yml`](https://github.com/rahrajlat/Gentui/blob/main/.github/workflows/release.yml) using PyPI
 **trusted publishing**: GitHub proves its identity to PyPI, so there is no API token to create, store or leak.
 
 ## One-time setup
@@ -46,7 +46,7 @@ That error is a TestPyPI quirk, not a problem with the package. On the real PyPI
 
 ## Real release
 
-1. Update `version` in `pyproject.toml` and the top entry of [`CHANGELOG.md`](../CHANGELOG.md) (replace "Unreleased" with the date).
+1. Update `version` in `pyproject.toml` and the top entry of [`CHANGELOG.md`](https://github.com/rahrajlat/Gentui/blob/main/CHANGELOG.md) (replace "Unreleased" with the date).
 2. Commit, and make sure CI is green on `main`.
 3. Tag and push the tag. The tag must be `v` plus the exact version:
    ```bash

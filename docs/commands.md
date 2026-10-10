@@ -46,4 +46,4 @@ Inside the demo, `/demo <scene>` switches scene, and anything you type afterward
 
 `gentui --record NAME` saves the session, `gentui --replay NAME` plays it back. See [replay.md](replay.md).
 
-`gentui --prompts prompts.yml` sends a YAML list of prompts for you, and `gentui --compare a,b` diffs recorded sessions side by side (see [replay.md](replay.md)).
+`gentui --prompts prompts.yml` sends a YAML list of prompts for you ([prompts](prompts.md)), and `gentui --compare a,b` diffs recorded sessions side by side ([compare](compare.md)).

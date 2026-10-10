@@ -3,7 +3,7 @@
 ## Configuration file
 
 Put options in `./gentui.toml` or `~/.config/gentui/config.toml`. Flags, `GENTUI_URL` and `GENTUI_TOKEN`
-override the file. Every option is documented in [`gentui.example.toml`](../gentui.example.toml): backend URL, token
+override the file. Every option is documented in [`gentui.example.toml`](https://github.com/rahrajlat/Gentui/blob/main/gentui.example.toml): backend URL, token
 and headers, props sent with every run, title, welcome text, theme, splash and logo, reasoning on/off, timestamps,
 plugins and widget mapping.
 

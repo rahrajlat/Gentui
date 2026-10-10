@@ -7,6 +7,7 @@ Point it at any [AG-UI](https://docs.ag-ui.com) backend and get streaming chat, 
 tables, charts and human approval, with no frontend to build.
 
 [![CI](https://img.shields.io/github/actions/workflow/status/rahrajlat/Gentui/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/rahrajlat/Gentui/actions/workflows/ci.yml)
+[![Docs](https://img.shields.io/badge/docs-rahrajlat.github.io%2FGentui-4FD6C8?style=flat-square)](https://rahrajlat.github.io/Gentui/)
 [![PyPI](https://img.shields.io/pypi/v/gentui?style=flat-square&color=4FD6C8)](https://pypi.org/project/gentui/)
 [![PyPI Downloads](https://static.pepy.tech/personalized-badge/gentui?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/gentui)
 [![Python](https://img.shields.io/badge/python-3.12%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org)
@@ -183,7 +184,7 @@ gentui --compare v1,v2 --plugin my_judge.py --judge my_judge
 
 Return `{"score": 0..1, "reason": "..."}` (or a `(score, reason)` tuple). A judge that raises shows "Judge failed" on that
 prompt and nothing else is affected. Verdicts are cached in `~/.cache/gentui/judge.json`. A judge is sent the prompt, the answers
-and tool output, so use a hosted one with care. More in [Run prompts, compare and judge](https://github.com/rahrajlat/Gentui/blob/main/docs/replay.md#run-a-set-of-prompts---prompts).
+and tool output, so use a hosted one with care. More in the [judges guide](https://github.com/rahrajlat/Gentui/blob/main/docs/judges.md) and [compare guide](https://github.com/rahrajlat/Gentui/blob/main/docs/compare.md).
 
 ## Why Gentui?
 
@@ -280,6 +281,8 @@ Working on Gentui itself? Run it from a clone with `uv sync` and `uv run gentui 
 
 ## Documentation
 
+Full docs, with search: **[rahrajlat.github.io/Gentui](https://rahrajlat.github.io/Gentui/)**.
+
 | I want to… | Read |
 |---|---|
 | use the slash commands, export a chat | [Slash commands](https://github.com/rahrajlat/Gentui/blob/main/docs/commands.md) |
@@ -288,7 +291,9 @@ Working on Gentui itself? Run it from a clone with `uv sync` and `uv run gentui 
 | build my own backend in any language | [Backend contract](https://github.com/rahrajlat/Gentui/blob/main/docs/tool-contract.md) |
 | talk to an agent on Amazon Bedrock AgentCore | [AgentCore Runtime](https://github.com/rahrajlat/Gentui/blob/main/docs/agentcore.md) |
 | record a session and play it back | [Record and replay](https://github.com/rahrajlat/Gentui/blob/main/docs/replay.md) |
-| run a set of prompts, compare runs, add a judge | [Run prompts, compare and judge](https://github.com/rahrajlat/Gentui/blob/main/docs/replay.md#run-a-set-of-prompts---prompts) |
+| run a set of prompts, compare runs | [Prompts](https://github.com/rahrajlat/Gentui/blob/main/docs/prompts.md) and [Compare](https://github.com/rahrajlat/Gentui/blob/main/docs/compare.md) |
+| score runs with my own judge model | [Judges](https://github.com/rahrajlat/Gentui/blob/main/docs/judges.md) |
+| see every command-line flag | [CLI reference](https://github.com/rahrajlat/Gentui/blob/main/docs/cli.md) |
 | understand the internals | [How it works](https://github.com/rahrajlat/Gentui/blob/main/docs/architecture.md) |
 | cut a release | [Releasing](https://github.com/rahrajlat/Gentui/blob/main/docs/releasing.md) |
 
@@ -348,6 +353,8 @@ The images above are generated from the app's own code:
 `uv run --with pillow python docs/assets/build_tour.py` (the feature tour), and
 `uv run --with pillow python docs/assets/build_replay.py` (the replay), and
 `uv run --with pillow python docs/assets/build_compare.py` (compare and judge).
+
+The docs site is built with MkDocs Material: `uv run --group docs mkdocs serve` previews it locally.
 
 ## Contributing
 
