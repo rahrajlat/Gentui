@@ -54,7 +54,7 @@ def _run_replay(name: str, config) -> None:
     ReplayApp(session, config).run()
 
 
-def _run_compare(parser: argparse.ArgumentParser, names: str, config) -> None:
+def _run_compare(parser: argparse.ArgumentParser, names: str, config, judge: str | None, export: str | None) -> None:
     from gentui.session import SessionError, load, resolve
     from gentui.tui.compare import CompareApp
 
@@ -65,7 +65,32 @@ def _run_compare(parser: argparse.ArgumentParser, names: str, config) -> None:
         sessions = [load(resolve(name)) for name in wanted]
     except SessionError as exc:
         sys.exit(f"gentui: {exc}")
-    CompareApp(sessions, config).run()
+    if export:
+        _export_compare(sessions, config, judge, export)
+        return
+    CompareApp(sessions, config, judge).run()
+
+
+def _export_compare(sessions, config, judge: str | None, export: str) -> None:
+    """--export: write the HTML report for the first two sessions without opening the UI."""
+    import asyncio
+
+    from gentui import plugins, report
+    from gentui.judge import resolve
+
+    for message in plugins.load_all(config.plugins, config.widgets, config.default_widget):
+        print(f"gentui: {message}", file=sys.stderr)
+    name = None
+    if judge:
+        name = resolve(judge)
+        if name is None:
+            sys.exit(f"gentui: no judge called {judge!r}; have: {', '.join(plugins.JUDGES)}")
+    page = asyncio.run(report.build(sessions[0], sessions[1], name, config.show_reasoning))
+    try:
+        path = report.save(Path(export), page)
+    except OSError as exc:
+        sys.exit(f"gentui: cannot write {export}: {exc}")
+    print(f"Saved the comparison of {sessions[0].path.stem} and {sessions[1].path.stem} to {path}")
 
 
 def _run_demo(parser: argparse.ArgumentParser, args: argparse.Namespace, config) -> None:
@@ -117,6 +142,14 @@ def main(argv: list[str] | None = None) -> None:
         "--compare", metavar="NAME,NAME,...",
         help="compare recorded sessions side by side as a diff, picking which two from drop-downs; no backend needed",
     )
+    parser.add_argument(
+        "--judge", metavar="NAME",
+        help="with --compare: score how well each prompt's answers match, using this judge (ollama, or one from --plugin)",
+    )
+    parser.add_argument(
+        "--export", metavar="FILE.html",
+        help="with --compare: write the comparison (every chart, the judge's verdicts) to an HTML page instead of opening it",
+    )
     parser.add_argument("--dev", action="store_true", help="open the AG-UI event inspector at start")
     args = parser.parse_args(argv)
     if args.demo and args.demo_speed <= 0:
@@ -129,6 +162,8 @@ def main(argv: list[str] | None = None) -> None:
 
     if args.compare and (args.record or args.replay or args.demo or args.prompts):
         parser.error("--compare cannot be combined with --record, --replay, --demo or --prompts")
+    if (args.judge or args.export) and not args.compare:
+        parser.error("--judge and --export only work with --compare")
     if args.prompts and (args.replay or args.demo):
         parser.error("--prompts needs a live backend: it cannot be combined with --replay or --demo")
     prompts = None
@@ -162,7 +197,7 @@ def main(argv: list[str] | None = None) -> None:
         sys.exit(f"gentui: {exc}")
 
     if args.compare:
-        _run_compare(parser, args.compare, config)
+        _run_compare(parser, args.compare, config, args.judge, args.export)
         return
     if args.replay:
         _run_replay(args.replay, config)

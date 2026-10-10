@@ -124,9 +124,66 @@ In a replay: **space** pauses and plays, **drag the bar** (or **←/→**) to fa
 **t** opens or closes every chain of thought (you can also click one), **d** shows the raw events, **q** quits. Tool calls,
 the plan, tables, charts and approvals are drawn exactly as they were live. See [Record and replay](https://github.com/rahrajlat/Gentui/blob/main/docs/replay.md).
 
-Run the same prompts every time with `--prompts prompts.yml`, record the runs, and diff them side by side with
-`gentui --compare v1,v2`: two boxes with drop-downs, full outputs, tool calls and charts, differences highlighted.
-See [Run a set of prompts](https://github.com/rahrajlat/Gentui/blob/main/docs/replay.md#run-a-set-of-prompts---prompts).
+## Compare runs and score them with a judge
+
+Changed your agent's prompt or model? Run the same prompts against both versions, then diff the results side by side.
+
+```bash
+# prompts.yml
+#   prompts:
+#     - How full is the disk?
+#     - text: Plot the usage per mount as a chart
+
+gentui http://localhost:8000/agent --prompts prompts.yml --record v1     # sends each prompt for you
+# ...change the agent...
+gentui http://localhost:8000/agent --prompts prompts.yml --record v2
+gentui --compare v1,v2                                                    # no backend needed
+```
+
+<div align="center">
+<img src="https://raw.githubusercontent.com/rahrajlat/Gentui/main/docs/assets/compare.gif" alt="Gentui compare mode: two runs side by side as a diff, a prompt picker, and a judge panel with a match score and comment for each prompt" width="860">
+</div>
+
+- **Two boxes, drop-downs to choose.** List as many recordings as you like (`--compare v1,v2,v3`) and pick which two to show.
+- **A drop-down for the prompt.** Look at one prompt from your file at a time, or all of them.
+- **Everything is drawn in full:** streamed answers, tool calls, tables and charts. Green is only on the right, red only on
+  the left, yellow is in both but changed. Changed text is shown word by word (`m` shows it rendered instead).
+- **Judge.** Turn on a judge and each prompt gets a panel on top with a match score (0 to 100%) and a comment on what differs.
+- **Export.** Press `e` (or run `gentui --compare v1,v2 --judge ... --export report.html`) for a single self-contained HTML
+  report: all prompts, the judge's scores and comments, and every chart drawn as SVG.
+
+### Judges
+
+A judge reads both answers to a prompt and returns a score and a reason. Gentui ships one for [Ollama](https://ollama.com):
+
+```bash
+gentui --compare v1,v2 --judge ollama:gpt-oss:120b-cloud     # Ollama Cloud through your signed-in local Ollama (`ollama signin`)
+OLLAMA_API_KEY=... gentui --compare v1,v2 --judge ollama     # straight to ollama.com, with an API key
+gentui --compare v1,v2 --judge ollama:qwen3:8b               # any model on your local Ollama
+```
+
+**Bring your own judge** (any model or service, or no model at all): write one function and register it.
+
+```python
+# my_judge.py
+from gentui.plugins import register_judge
+
+@register_judge("my_judge")                  # the name shown in the Judge drop-down
+async def my_judge(case):                    # a plain `def` works too
+    # case.prompt         the prompt
+    # case.left, case.right              what each agent answered (text)
+    # case.left_tools, case.right_tools  [{"name": ..., "args": ..., "result": ...}, ...]
+    same = case.left.strip() == case.right.strip()
+    return {"score": 1.0 if same else 0.3, "reason": "identical" if same else "the answers differ"}
+```
+
+```bash
+gentui --compare v1,v2 --plugin my_judge.py --judge my_judge
+```
+
+Return `{"score": 0..1, "reason": "..."}` (or a `(score, reason)` tuple). A judge that raises shows "Judge failed" on that
+prompt and nothing else is affected. Verdicts are cached in `~/.cache/gentui/judge.json`. A judge is sent the prompt, the answers
+and tool output, so use a hosted one with care. More in [Run prompts, compare and judge](https://github.com/rahrajlat/Gentui/blob/main/docs/replay.md#run-a-set-of-prompts---prompts).
 
 ## Why Gentui?
 
@@ -164,6 +221,8 @@ AG-UI**: both on a custom backend (the [example backend](https://github.com/rahr
   `/clear`, `/reasoning`, and a clear [backend contract](https://github.com/rahrajlat/Gentui/blob/main/docs/tool-contract.md).
 - **Record and replay.** `--record name` saves a session to JSON; `--replay name` plays it back with pause, a seek bar
   and speed control.
+- **Compare and judge.** `--prompts file.yml` runs a set of prompts for you; `--compare v1,v2` diffs two recorded runs side by
+  side, and a pluggable judge (Ollama built in, or your own function) scores how well they match.
 - **Yours to customise:** TOML config, hot-reloaded CSS, your own themes, and Python plugins that add
   widgets, slash commands and event hooks.
 - **Runs agents on AWS too:** invoke agents hosted on Amazon Bedrock AgentCore Runtime (AG-UI protocol) via boto3.
@@ -229,6 +288,7 @@ Working on Gentui itself? Run it from a clone with `uv sync` and `uv run gentui 
 | build my own backend in any language | [Backend contract](https://github.com/rahrajlat/Gentui/blob/main/docs/tool-contract.md) |
 | talk to an agent on Amazon Bedrock AgentCore | [AgentCore Runtime](https://github.com/rahrajlat/Gentui/blob/main/docs/agentcore.md) |
 | record a session and play it back | [Record and replay](https://github.com/rahrajlat/Gentui/blob/main/docs/replay.md) |
+| run a set of prompts, compare runs, add a judge | [Run prompts, compare and judge](https://github.com/rahrajlat/Gentui/blob/main/docs/replay.md#run-a-set-of-prompts---prompts) |
 | understand the internals | [How it works](https://github.com/rahrajlat/Gentui/blob/main/docs/architecture.md) |
 | cut a release | [Releasing](https://github.com/rahrajlat/Gentui/blob/main/docs/releasing.md) |
 
@@ -286,7 +346,8 @@ cd examples/strands-backend && uv run pytest -q    # the example backend's own t
 The images above are generated from the app's own code:
 `uv run --with pillow python docs/assets/build_assets.py` (logo, hero, `demo.gif`) and
 `uv run --with pillow python docs/assets/build_tour.py` (the feature tour), and
-`uv run --with pillow python docs/assets/build_replay.py` (the replay).
+`uv run --with pillow python docs/assets/build_replay.py` (the replay), and
+`uv run --with pillow python docs/assets/build_compare.py` (compare and judge).
 
 ## Contributing
 

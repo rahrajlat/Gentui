@@ -7,6 +7,12 @@ All notable changes to Gentui are documented here. The format follows
 ## [Unreleased]
 
 ### Added
+- Export a comparison: `e` in the compare view, or `gentui --compare a,b [--judge J] --export report.html`, writes one
+  self-contained HTML page with every prompt, the judge's scores and comments, both sides' answers, tool calls, tables and all
+  charts (inline SVG). Changed text is marked word by word. No scripts, nothing loaded from the web.
+- Judges for `--compare`: a **Judge** drop-down scores how well each prompt's answers match (0 to 100%) with a comment under
+  the prompt, plus the average. Ships `ollama:<model>` (Ollama Cloud with `OLLAMA_API_KEY`, or a local Ollama via
+  `OLLAMA_HOST`); bring your own with a `@register_judge` plugin and `--plugin`. Verdicts are cached on disk.
 - `gentui --prompts prompts.yml` sends the prompts in a YAML file one after the other (each once the previous answer is
   done), and works with `--record` for repeatable runs.
 - `gentui --compare a,b,...` opens a diff view of recorded sessions: two boxes with drop-downs to pick the sessions, lined up

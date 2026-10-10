@@ -6,6 +6,7 @@ marked: green cells exist only on the right, red only on the left, yellow are in
 shown word by word (the default) or as it was rendered (`m`).
 """
 
+import asyncio
 import json
 import re
 from dataclasses import dataclass, field, replace
@@ -21,7 +22,9 @@ from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.widgets import Select, Static
 from textual.widgets._markdown import MarkdownStream
 
+from gentui import plugins
 from gentui.config import Config
+from gentui.judge import Case, Verdict, judge_case, resolve
 from gentui.session import Item, Session
 from gentui.tui import branding
 from gentui.tui.app import GentuiApp
@@ -150,6 +153,59 @@ def word_diff(old: str, new: str) -> tuple[Text, Text]:
     return left, right
 
 
+def case_of(turn: list[Pair]) -> Case:
+    """What a judge is asked about: one prompt and everything each side did in answer to it."""
+
+    def side(blocks: list[Block | None]) -> tuple[str, list[dict[str, Any]]]:
+        blocks = [b for b in blocks if b is not None]
+        text = "\n\n".join(b.text.strip() for b in blocks if b.kind == "text" and b.text.strip())
+        calls = [{"name": b.name, "args": b.args, "result": b.result} for b in blocks if b.kind == "tool"]
+        return text, calls
+
+    def asked(blocks: list[Block | None]) -> str:
+        return next((b.text.strip() for b in blocks if b is not None and b.kind == "user"), "")
+
+    left_prompt, right_prompt = asked([p.left for p in turn]), asked([p.right for p in turn])
+    prompt = left_prompt if left_prompt == right_prompt else f"(A was asked) {left_prompt}\n(B was asked) {right_prompt}"
+    left, left_tools = side([p.left for p in turn])
+    right, right_tools = side([p.right for p in turn])
+    return Case(prompt, left, right, left_tools, right_tools)
+
+
+async def verdict_for(name: str, pairs: list[Pair]) -> Verdict:
+    """The judge's verdict on one prompt's exchange. Identical answers and tool calls score 100% with no model call."""
+    if all(p.status == "same" for p in pairs):
+        return Verdict(1.0, "identical answers and tool calls")
+    return await judge_case(name, case_of(pairs))
+
+
+def verdict_style(verdict: Verdict | None) -> str:
+    """The CSS class that colours a verdict's panel."""
+    if verdict is None:
+        return "pending"
+    if verdict.failed:
+        return "failed"
+    score = verdict.score or 0.0
+    return "good" if score >= 0.8 else "ok" if score >= 0.5 else "bad"
+
+
+def verdict_text(verdict: Verdict) -> Text:
+    """The body of a judge panel: the score with a bar, then the judge's comment."""
+    if verdict.failed:
+        return Text.assemble(("Judge failed\n", "bold red"), verdict.reason)
+    score = verdict.score or 0.0
+    colour = {"good": "green", "ok": "yellow", "bad": "red"}[verdict_style(verdict)]
+    filled = round(score * 20)
+    text = Text()
+    text.append(f"{score:.0%} match", style=f"bold {colour}")
+    text.append("  " + "█" * filled, style=colour)
+    text.append("░" * (20 - filled), style="dim")
+    if verdict.cached:
+        text.append("  (cached)", style="dim")
+    text.append("\n" + (verdict.reason or "(no comment)"))
+    return text
+
+
 # -- drawing one side ------------------------------------------------------------------------
 
 
@@ -263,6 +319,11 @@ class CompareApp(GentuiApp):
     #pickers Select { width: 1fr; margin: 0 1; }
     #prompt-row { height: 3; margin: 0 1; }
     #prompt-row Select { width: 1fr; margin: 0 1; }
+    .verdict { height: auto; margin: 1 1 0 1; padding: 0 1; border: round $secondary; background: $surface;
+               border-title-style: bold; }
+    .verdict.good { border: round $success; }
+    .verdict.ok { border: round $warning; }
+    .verdict.bad, .verdict.failed { border: round $error; }
     #summary { height: 1; margin: 0 3; }
     .pair { height: auto; }
     .cell { width: 1fr; height: auto; padding: 0 1; border-left: blank; }
@@ -277,15 +338,22 @@ class CompareApp(GentuiApp):
     )
     BINDINGS = [
         Binding("m", "toggle_words", "Words / rendered", priority=True),
+        Binding("e", "export", "Export", priority=True),
         Binding("q", "quit", "Quit", priority=True),
     ]
 
-    def __init__(self, sessions: list[Session], config: Config | None = None) -> None:
+    def __init__(self, sessions: list[Session], config: Config | None = None, judge: str | None = None) -> None:
         config = replace(config or Config(), splash=False, logo=False, show_time=False, dev_pane=False)
         config.url = "compare: " + ", ".join(s.path.stem for s in sessions)
         super().__init__(object(), config)  # no client: nothing is ever sent
         self.sessions = sessions
         self.picked = [0, 1]
+        self.want_judge = judge  # --judge NAME: switched on at start
+        self.judge: str | None = None  # the judge in use (a name in plugins.JUDGES), None = off
+        self.prompt_turn = 0  # the prompt shown (0 = all)
+        self.turn_cases: dict[int, list[Pair]] = {}
+        self._summary = Text()
+        self.verdicts: dict[int, Verdict] = {}  # the judge's verdicts so far, by prompt number
 
     def compose(self) -> ComposeResult:
         options = [(s.path.stem, n) for n, s in enumerate(self.sessions)]
@@ -294,17 +362,45 @@ class CompareApp(GentuiApp):
             yield Select(options, value=1, allow_blank=False, id="pick-right")
         with Horizontal(id="prompt-row"):
             yield Select([("All prompts", 0)], value=0, allow_blank=False, id="pick-prompt")
+            yield Select(
+                [("Judge: off", 0), *((name, name) for name in plugins.JUDGES)],
+                value=0, allow_blank=False, id="pick-judge",
+            )
         yield Static(id="summary")
         yield DiffScroll(id="chat", classes="-words")
         with Horizontal(id="statusbar"):
-            yield Static("m words / rendered · q quit", classes="left")
+            yield Static("m words / rendered · e export · q quit", classes="left")
             yield Static(self.config.target, classes="right")
 
     async def on_ready(self) -> None:
         await self._rebuild()  # GentuiApp.on_mount (theme, plugins) has run by now
+        if self.want_judge:
+            name = resolve(self.want_judge)
+            if name:
+                picker = self.query_one("#pick-judge", Select)
+                picker.set_options([("Judge: off", 0), *((n, n) for n in plugins.JUDGES)])
+                picker.value = name
+            else:
+                self.notify(f"no judge called {self.want_judge!r}; have: {', '.join(plugins.JUDGES)}", severity="warning")
 
     def action_toggle_dev(self) -> None:
         """There is no event inspector here."""
+
+    def action_export(self) -> None:
+        """Save the comparison, with every chart and the judge's verdicts so far, as a self-contained HTML page."""
+        from gentui import report
+
+        left, right = (self.sessions[n] for n in self.picked)
+        pairs = align(blocks_of(left, self.config.show_reasoning)[0], blocks_of(right, self.config.show_reasoning)[0])
+        page = report.render(left.path.stem, right.path.stem, pairs, self.verdicts, self.judge)
+        try:
+            path = report.save(report.default_name(left.path.stem, right.path.stem), page)
+        except OSError as exc:
+            self.notify(f"cannot write the report: {exc}", severity="error", timeout=15)
+            return
+        pending = bool(self.judge) and len(self.verdicts) < len(self.turn_cases)
+        self.notify(f"Saved {path}" + (" (the judge was still working: some prompts have no verdict)" if pending else ""),
+                    title="Exported")
 
     def action_toggle_words(self) -> None:
         self.query_one("#chat").toggle_class("-words")
@@ -312,19 +408,65 @@ class CompareApp(GentuiApp):
     @on(Select.Changed)
     def _on_pick(self, event: Select.Changed) -> None:
         if event.select.id == "pick-prompt":
-            self._show_prompt(event.value)
+            self.prompt_turn = event.value
+            self._refresh_visibility()
+            return
+        if event.select.id == "pick-judge":
+            self.judge = event.value or None
+            self._refresh_visibility()
+            self._start_judge()
+            self.call_after_refresh(self.query_one("#chat").scroll_home, animate=False)  # the panels just appeared
             return
         picked = [self.query_one("#pick-left", Select).value, self.query_one("#pick-right", Select).value]
         if picked != self.picked and all(isinstance(p, int) for p in picked):
             self.picked = picked
             self.run_worker(self._rebuild(), group="compare", exclusive=True)
 
-    def _show_prompt(self, which: Any) -> None:
-        """Show one prompt's exchange (1, 2, ...) or all of them (0)."""
-        for row in self.query(".pair"):
-            row.display = which == 0 or row.has_class(f"turn-{which}")
+    def _refresh_visibility(self) -> None:
+        """Show one prompt's exchange (1, 2, ...) or all of them (0); verdicts only while a judge is on."""
+        which = self.prompt_turn
+        for row in self.query(".pair, .verdict"):
+            row.display = (which == 0 or row.has_class(f"turn-{which}")) and (self.judge is not None or not row.has_class("verdict"))
+
+    def _start_judge(self) -> None:
+        self.workers.cancel_group(self, "judge")
+        self.verdicts = {}
+        if self.judge:
+            self.run_worker(self._run_judge(self.judge), group="judge", exclusive=True)
+        self._show_summary()
+
+    async def _run_judge(self, name: str) -> None:
+        """Judge every prompt's exchange (a few at a time) and write each verdict under its prompt."""
+        gate = asyncio.Semaphore(3)
+        scores: dict[int, float] = {}
+
+        def show(widget: Static, verdict: Verdict | None) -> None:
+            widget.border_title = f"⚖ Judge · {name}"
+            widget.set_classes(f"verdict turn-{widget.name} {verdict_style(verdict)}")
+            widget.update(Text("judging…", style="dim") if verdict is None else verdict_text(verdict))
+
+        async def one(turn: int, pairs: list[Pair], widget: Static) -> None:
+            if not all(p.status == "same" for p in pairs):
+                show(widget, None)
+            async with gate:
+                verdict = await verdict_for(name, pairs)
+            self.verdicts[turn] = verdict
+            show(widget, verdict)
+            if verdict.score is not None:
+                scores[turn] = verdict.score
+                self._show_summary(scores)
+
+        widgets = {int(w.name or 0): w for w in self.query(".verdict").results(Static)}
+        await asyncio.gather(*(one(t, p, widgets[t]) for t, p in self.turn_cases.items() if t in widgets))
+
+    def _show_summary(self, scores: dict[int, float] | None = None) -> None:
+        line = self._summary.copy()
+        if self.judge and scores:
+            line.append(f" · judge average {sum(scores.values()) / len(scores):.0%}", style="bold")
+        self.query_one("#summary", Static).update(line)
 
     async def _rebuild(self) -> None:
+        self.workers.cancel_group(self, "judge")
         chat = self.query_one("#chat", VerticalScroll)
         await chat.remove_children()
         sessions = [self.sessions[n] for n in self.picked]
@@ -335,9 +477,11 @@ class CompareApp(GentuiApp):
         cells: list[dict[int, Vertical]] = [{}, {}]
         rows = []
         turn = 0
+        self.turn_cases = {}
         prompt_options: list[tuple[str, int]] = [("All prompts", 0)]
         for pair in pairs:
             user = next((b for b in (pair.left, pair.right) if b is not None and b.kind == "user"), None)
+            new_turn = user is not None
             if user is not None:  # a prompt starts a new turn; what comes before the first one is turn 0
                 turn += 1
                 text = " ".join(user.text.split())
@@ -361,11 +505,16 @@ class CompareApp(GentuiApp):
                 if block is not None:
                     cells[side][id(block)] = cell
                 row_cells.append(cell)
+            if new_turn:  # the judge's panel opens each prompt's section
+                rows.append(Static("", classes=f"verdict turn-{turn}", name=str(turn)))
             rows.append(Horizontal(*row_cells, classes=f"pair turn-{turn}"))
+            if turn:
+                self.turn_cases.setdefault(turn, []).append(pair)
         await chat.mount_all(rows)
         picker = self.query_one("#pick-prompt", Select)
         picker.set_options(prompt_options)
         picker.value = 0
+        self.prompt_turn = 0
 
         for side, pane in enumerate(panes):
             owner = both[side][1]
@@ -381,5 +530,7 @@ class CompareApp(GentuiApp):
         summary.append(f" · {count('changed')} changed", style="yellow")
         summary.append(f" · {count('removed')} only in {sessions[0].path.stem}", style="red")
         summary.append(f" · {count('added')} only in {sessions[1].path.stem}", style="green")
-        self.query_one("#summary", Static).update(summary)
+        self._summary = summary
+        self._refresh_visibility()
+        self._start_judge()
         chat.scroll_home(animate=False)  # not where the previous pair of sessions was scrolled to
