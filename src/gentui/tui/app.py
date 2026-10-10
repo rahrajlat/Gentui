@@ -122,6 +122,7 @@ class GentuiApp(App[None]):
         self.register_theme(CLAUDE_THEME)
         self.client = client
         self.recorder: Recorder | None = None  # set by --record
+        self.queued_prompts: list[str] = []  # set by --prompts: sent one by one once the app is up
         if hasattr(client, "on_raw"):
             client.on_raw = self._log_raw
         self.show_reasoning = self.config.show_reasoning
@@ -186,6 +187,8 @@ class GentuiApp(App[None]):
                 await plugins.call(setup, self)
             except Exception as exc:  # noqa: BLE001
                 self.notify(f"plugin setup failed: {exc!r}", severity="error")
+        if self.queued_prompts:
+            self.run_worker(self._run_queued_prompts(), group="prompts")
         self.set_interval(0.08, self._tick)  # fast enough for the spinner and shimmer
         self.query_one("#chat", VerticalScroll).anchor()  # stay scrolled to the newest content
         for prompt in self.query("#prompt"):
@@ -237,10 +240,26 @@ class GentuiApp(App[None]):
             if name in plugins.COMMANDS:
                 await plugins.call(plugins.COMMANDS[name][0], self, args)
                 return
+        await self.submit_text(text)
+
+    async def submit_text(self, text: str) -> None:
+        """Send `text` as if you had typed it."""
         if self.recorder:
             self.recorder.user(text)
         await self.show_user_message(text)
         self.send(text)
+
+    async def _run_queued_prompts(self) -> None:
+        """--prompts: send each prompt once the previous answer is complete. A run that is waiting for your
+        approval holds the queue until you answer."""
+        total = len(self.queued_prompts)
+        for text in self.queued_prompts:
+            while self._busy or self._open_interrupts:
+                await asyncio.sleep(0.2)
+            await self.submit_text(text)
+        while self._busy or self._open_interrupts:
+            await asyncio.sleep(0.2)
+        self.notify(f"Sent all {total} prompts", title="Prompts done")
 
     async def show_user_message(self, text: str) -> None:
         self.transcript.user(text)

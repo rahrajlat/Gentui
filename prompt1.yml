@@ -1,0 +1,4 @@
+prompts:
+  - What are the 5 largest files in this folder?
+  - Now plot their sizes as a bar chart
+  - Summarise what you found in two sentences

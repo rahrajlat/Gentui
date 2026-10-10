@@ -124,6 +124,10 @@ In a replay: **space** pauses and plays, **drag the bar** (or **←/→**) to fa
 **t** opens or closes every chain of thought (you can also click one), **d** shows the raw events, **q** quits. Tool calls,
 the plan, tables, charts and approvals are drawn exactly as they were live. See [Record and replay](https://github.com/rahrajlat/Gentui/blob/main/docs/replay.md).
 
+Run the same prompts every time with `--prompts prompts.yml`, record the runs, and diff them side by side with
+`gentui --compare v1,v2`: two boxes with drop-downs, full outputs, tool calls and charts, differences highlighted.
+See [Run a set of prompts](https://github.com/rahrajlat/Gentui/blob/main/docs/replay.md#run-a-set-of-prompts---prompts).
+
 ## Why Gentui?
 
 **Gentui is a terminal interface for prototyping agents really quickly.**

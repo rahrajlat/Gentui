@@ -52,3 +52,51 @@ backend sent it), `resume` (your answer to an interrupt), `submit` (a widget's m
 
 **Treat a recording like a log.** It holds whatever the agent streamed, including tool output, so it can contain secrets
 or private data. Headers, tokens and your config are never written. Share recordings with care.
+
+## Run a set of prompts: `--prompts`
+
+Put the messages in a YAML file and Gentui sends them for you, one after the other, each when the previous answer is
+complete:
+
+```yaml
+# prompts.yml
+prompts:
+  - What are the 5 largest files here?
+  - text: Now plot them as a bar chart
+```
+
+```bash
+gentui http://localhost:8000/agent --prompts prompts.yml --record baseline
+```
+
+A bare list works too, and each item is a string or a mapping with a `text` key. Combined with `--record` this gives you a
+repeatable run you can keep. If the agent asks for approval, the queue waits for your answer. When the last prompt has been
+answered the app stays open (type `/quit` to leave), so you can carry on the conversation by hand.
+
+## Compare runs: `--compare`
+
+Record the same prompts against two versions of an agent (a new system prompt, a different model), then diff them:
+
+```bash
+gentui URL --prompts prompts.yml --record v1
+gentui URL --prompts prompts.yml --record v2      # after changing the agent
+gentui --compare v1,v2                            # no backend needed
+```
+
+`--compare` takes two or more recorded sessions. It opens a view with two boxes, each with a drop-down to choose which
+recording it shows (list as many as you like and switch between them). The two are lined up block by block (your prompts,
+each answer, each tool call) and drawn in full: streamed Markdown, command output, tables, charts and the plan.
+
+| Colour | Meaning |
+|---|---|
+| green bar and tint | only in the right-hand session |
+| red bar and tint | only in the left-hand session |
+| yellow bar and tint | in both, but different (a changed answer, other arguments, another tool result) |
+| none | identical |
+
+A third drop-down, "All prompts", lists each prompt from the prompts file ("1. What are the 5 largest…"). Pick one to see only
+that prompt's exchange, side by side.
+
+Changed answers and prompts are shown word by word (red words are only on the left, green only on the right). Press `m` to
+switch them to the rendered Markdown instead. A line under the drop-downs counts same / changed / only-in-each. Reasoning
+blocks are shown but never counted as a difference. `q` quits.
