@@ -28,6 +28,7 @@ def setup(app): ...                          # optional, runs once the app is mo
 | `@register_widget(tool_name)` | render a backend tool call with your own widget |
 | `@register_command(name, help)` | add a slash command (shows up in `/help`) |
 | `@on_event(EVENT_TYPE)` | run code for any AG-UI event |
+| `@register_judge(name)` | add a judge for `--compare` that scores how well two answers match ([replay.md](replay.md#score-the-match-with-a-judge)) |
 | `setup(app)` | optional; runs once the app is mounted |
 
 Plugins can mount any Textual widget into the conversation with `await app.mount_chat(widget)`. A

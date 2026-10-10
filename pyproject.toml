@@ -22,6 +22,7 @@ dependencies = [
     "ag-ui-protocol>=1.0.0",
     "httpx>=0.28.1",
     "jsonpatch>=1.33",
+    "pyyaml>=6.0",
     "textual>=8.2.8",
     "textual-plotext>=1.0.1",
 ]

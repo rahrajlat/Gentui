@@ -13,6 +13,9 @@
     @on_event("TOOL_CALL_RESULT")               # runs for every matching AG-UI event
     def log_results(app, event): ...
 
+    @register_judge("mine")                     # a judge for `gentui --compare`: (case) -> {score, reason}
+    async def mine(case): ...
+
     def setup(app): ...                         # optional; called once the app is mounted
 
 Where plugins are loaded from: the `plugins = [...]` config option / `--plugin`,
@@ -35,11 +38,23 @@ Hook = Callable[[Any, Any], Any]  # (app, ag_ui event)
 COMMANDS: dict[str, tuple[Command, str]] = {}
 HOOKS: list[tuple[frozenset[str] | None, Hook]] = []
 SETUPS: list[Callable[[Any], Any]] = []
+JUDGES: dict[str, Callable[[Any], Any]] = {}  # name -> judge(case); see gentui.judge
 
 
 def register_command(name: str, help: str = "") -> Callable[[Command], Command]:
     def deco(fn: Command) -> Command:
         COMMANDS[name.lstrip("/")] = (fn, help)
+        return fn
+
+    return deco
+
+
+def register_judge(name: str) -> Callable[[Callable[[Any], Any]], Callable[[Any], Any]]:
+    """Add a judge for compare mode. It gets a `gentui.judge.Case` and returns {"score": 0..1, "reason": "..."}
+    (a `Verdict`, or a (score, reason) tuple, also works). It may be sync or async."""
+
+    def deco(fn: Callable[[Any], Any]) -> Callable[[Any], Any]:
+        JUDGES[name] = fn
         return fn
 
     return deco

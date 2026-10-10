@@ -1,0 +1,5554 @@
+{
+ "format": "gentui-session",
+ "version": 1,
+ "gentui": "0.1.4",
+ "recorded_at": "2026-10-10T05:58:28+01:00",
+ "target": "http://localhost:8000/agent",
+ "items": [
+  {
+   "t": 0.021,
+   "kind": "user",
+   "text": "What are the 5 largest files in this folder?"
+  },
+  {
+   "t": 0.113,
+   "kind": "event",
+   "event": {
+    "type": "RUN_STARTED",
+    "threadId": "7ad6f0a6-7d85-420b-93cd-5e1622e87eec",
+    "runId": "7014629b-4a5a-4940-8ac7-d41cc962deed"
+   }
+  },
+  {
+   "t": 0.114,
+   "kind": "event",
+   "event": {
+    "type": "STATE_SNAPSHOT",
+    "snapshot": {
+     "plan": []
+    }
+   }
+  },
+  {
+   "t": 0.477,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_START",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989"
+   }
+  },
+  {
+   "t": 0.478,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_START",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "role": "reasoning"
+   }
+  },
+  {
+   "t": 0.492,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": "User"
+   }
+  },
+  {
+   "t": 0.493,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " asks"
+   }
+  },
+  {
+   "t": 0.493,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": ": \"What are the "
+   }
+  },
+  {
+   "t": 0.499,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": "5 largest files in this folder"
+   }
+  },
+  {
+   "t": 0.504,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": "?\" Need"
+   }
+  },
+  {
+   "t": 0.511,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " to propose"
+   }
+  },
+  {
+   "t": 0.52,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " a shell"
+   }
+  },
+  {
+   "t": 0.53,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " command to list "
+   }
+  },
+  {
+   "t": 0.534,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": "5 largest files in current"
+   }
+  },
+  {
+   "t": 0.543,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " directory (folder"
+   }
+  },
+  {
+   "t": 0.55,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": "). Should"
+   }
+  },
+  {
+   "t": 0.557,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " probably"
+   }
+  },
+  {
+   "t": 0.564,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " include"
+   }
+  },
+  {
+   "t": 0.63,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " hidden"
+   }
+  },
+  {
+   "t": 0.63,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": "?"
+   }
+  },
+  {
+   "t": 0.631,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " Lik"
+   }
+  },
+  {
+   "t": 0.631,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": "ely normal"
+   }
+  },
+  {
+   "t": 0.631,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " files. Use `"
+   }
+  },
+  {
+   "t": 0.631,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": "find . -type"
+   }
+  },
+  {
+   "t": 0.631,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " f -printf"
+   }
+  },
+  {
+   "t": 0.631,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " '%s %"
+   }
+  },
+  {
+   "t": 0.636,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": "p\\n'"
+   }
+  },
+  {
+   "t": 0.642,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " | sort -nr"
+   }
+  },
+  {
+   "t": 0.649,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " | head"
+   }
+  },
+  {
+   "t": 0.654,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " -5"
+   }
+  },
+  {
+   "t": 0.712,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": "`"
+   }
+  },
+  {
+   "t": 0.713,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " or `ls"
+   }
+  },
+  {
+   "t": 0.713,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " -l"
+   }
+  },
+  {
+   "t": 0.713,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": "S` but"
+   }
+  },
+  {
+   "t": 0.713,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " only"
+   }
+  },
+  {
+   "t": 0.713,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " files"
+   }
+  },
+  {
+   "t": 0.713,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " not"
+   }
+  },
+  {
+   "t": 0.716,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " directories. Provide"
+   }
+  },
+  {
+   "t": 0.723,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " command via"
+   }
+  },
+  {
+   "t": 0.731,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " shell_agent"
+   }
+  },
+  {
+   "t": 0.738,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " with"
+   }
+  },
+  {
+   "t": 0.746,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " request"
+   }
+  },
+  {
+   "t": 0.797,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": ". Provide"
+   }
+  },
+  {
+   "t": 0.798,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": " statement"
+   }
+  },
+  {
+   "t": 0.798,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989",
+    "delta": "."
+   }
+  },
+  {
+   "t": 0.881,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_END",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989"
+   }
+  },
+  {
+   "t": 0.883,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_END",
+    "messageId": "6a086cff-4510-444f-9c4b-f732d9a79989"
+   }
+  },
+  {
+   "t": 0.883,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_START",
+    "toolCallId": "tooluse_a3c064bc75b24e94a29579e7",
+    "toolCallName": "shell_agent"
+   }
+  },
+  {
+   "t": 0.893,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_ARGS",
+    "toolCallId": "tooluse_a3c064bc75b24e94a29579e7",
+    "delta": "{\"input\": \"List the 5 largest files (by size) in the current directory, showing their sizes in human readable format.\"}"
+   }
+  },
+  {
+   "t": 0.893,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_END",
+    "toolCallId": "tooluse_a3c064bc75b24e94a29579e7"
+   }
+  },
+  {
+   "t": 1.205,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_START",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf"
+   }
+  },
+  {
+   "t": 1.205,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_START",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "role": "reasoning"
+   }
+  },
+  {
+   "t": 1.21,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "We need to list"
+   }
+  },
+  {
+   "t": 1.21,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " "
+   }
+  },
+  {
+   "t": 1.216,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "5 largest files in current directory"
+   }
+  },
+  {
+   "t": 1.222,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": ", show"
+   }
+  },
+  {
+   "t": 1.231,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " sizes in"
+   }
+  },
+  {
+   "t": 1.234,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " human readable."
+   }
+  },
+  {
+   "t": 1.24,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " Use ls"
+   }
+  },
+  {
+   "t": 1.247,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " -lS"
+   }
+  },
+  {
+   "t": 1.255,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "? That"
+   }
+  },
+  {
+   "t": 1.27,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " sorts"
+   }
+  },
+  {
+   "t": 1.271,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " by size,"
+   }
+  },
+  {
+   "t": 1.271,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " but includes"
+   }
+  },
+  {
+   "t": 1.279,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " directories. Better"
+   }
+  },
+  {
+   "t": 1.283,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": ":"
+   }
+  },
+  {
+   "t": 1.289,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " find . -max"
+   }
+  },
+  {
+   "t": 1.307,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "depth 1 -type"
+   }
+  },
+  {
+   "t": 1.307,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " f -printf"
+   }
+  },
+  {
+   "t": 1.313,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " \"%"
+   }
+  },
+  {
+   "t": 1.321,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "s %"
+   }
+  },
+  {
+   "t": 1.325,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "p\\n\""
+   }
+  },
+  {
+   "t": 1.334,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " then"
+   }
+  },
+  {
+   "t": 1.339,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " sort -"
+   }
+  },
+  {
+   "t": 1.339,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "nr"
+   }
+  },
+  {
+   "t": 1.357,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " | head -5"
+   }
+  },
+  {
+   "t": 1.357,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " and"
+   }
+  },
+  {
+   "t": 1.357,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " use"
+   }
+  },
+  {
+   "t": 1.366,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " num"
+   }
+  },
+  {
+   "t": 1.368,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "fmt. Sim"
+   }
+  },
+  {
+   "t": 1.374,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "pler: ls"
+   }
+  },
+  {
+   "t": 1.381,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " -lh"
+   }
+  },
+  {
+   "t": 1.393,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "S |"
+   }
+  },
+  {
+   "t": 1.399,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " grep"
+   }
+  },
+  {
+   "t": 1.399,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " -v"
+   }
+  },
+  {
+   "t": 1.405,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " '^d"
+   }
+  },
+  {
+   "t": 1.42,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "' | head -5"
+   }
+  },
+  {
+   "t": 1.425,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " but"
+   }
+  },
+  {
+   "t": 1.434,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " ls"
+   }
+  },
+  {
+   "t": 1.442,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " -lhS sorts"
+   }
+  },
+  {
+   "t": 1.447,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " by size descending, but includes"
+   }
+  },
+  {
+   "t": 1.454,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " files"
+   }
+  },
+  {
+   "t": 1.468,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " only"
+   }
+  },
+  {
+   "t": 1.469,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "?"
+   }
+  },
+  {
+   "t": 1.479,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " It lists"
+   }
+  },
+  {
+   "t": 1.485,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " directories too;"
+   }
+  },
+  {
+   "t": 1.492,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " we can filter"
+   }
+  },
+  {
+   "t": 1.506,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " out"
+   }
+  },
+  {
+   "t": 1.506,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " directories"
+   }
+  },
+  {
+   "t": 1.512,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " using"
+   }
+  },
+  {
+   "t": 1.517,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " -"
+   }
+  },
+  {
+   "t": 1.527,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "p"
+   }
+  },
+  {
+   "t": 1.535,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "? Could"
+   }
+  },
+  {
+   "t": 1.542,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " use ls"
+   }
+  },
+  {
+   "t": 1.549,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " -lh"
+   }
+  },
+  {
+   "t": 1.557,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "S --"
+   }
+  },
+  {
+   "t": 1.59,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "type"
+   }
+  },
+  {
+   "t": 1.59,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " f"
+   }
+  },
+  {
+   "t": 1.59,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " but"
+   }
+  },
+  {
+   "t": 1.59,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " not"
+   }
+  },
+  {
+   "t": 1.595,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " standard. Use find"
+   }
+  },
+  {
+   "t": 1.601,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": ".\n\n"
+   }
+  },
+  {
+   "t": 1.609,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "Command"
+   }
+  },
+  {
+   "t": 1.618,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": ": find ."
+   }
+  },
+  {
+   "t": 1.626,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " -maxdepth 1 -"
+   }
+  },
+  {
+   "t": 1.634,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "type f -printf"
+   }
+  },
+  {
+   "t": 1.639,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " \"%s %p"
+   }
+  },
+  {
+   "t": 1.648,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "\\n\" | sort"
+   }
+  },
+  {
+   "t": 1.656,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " -nr | head -5"
+   }
+  },
+  {
+   "t": 1.666,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " | num"
+   }
+  },
+  {
+   "t": 1.668,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "fmt --"
+   }
+  },
+  {
+   "t": 1.675,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "to=iec"
+   }
+  },
+  {
+   "t": 1.684,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " --"
+   }
+  },
+  {
+   "t": 1.692,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "suffix=B"
+   }
+  },
+  {
+   "t": 1.7,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " --padding"
+   }
+  },
+  {
+   "t": 1.705,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "=7"
+   }
+  },
+  {
+   "t": 1.721,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " --"
+   }
+  },
+  {
+   "t": 1.721,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "field"
+   }
+  },
+  {
+   "t": 1.727,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "=1\n\n"
+   }
+  },
+  {
+   "t": 1.737,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "But we"
+   }
+  },
+  {
+   "t": 1.742,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " need show"
+   }
+  },
+  {
+   "t": 1.75,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " human"
+   }
+  },
+  {
+   "t": 1.758,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " readable sizes"
+   }
+  },
+  {
+   "t": 1.767,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " alongside"
+   }
+  },
+  {
+   "t": 1.778,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " filenames"
+   }
+  },
+  {
+   "t": 1.78,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": ". Use"
+   }
+  },
+  {
+   "t": 1.788,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " awk"
+   }
+  },
+  {
+   "t": 1.8,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " to format"
+   }
+  },
+  {
+   "t": 1.803,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": ".\n\nSimplify: find"
+   }
+  },
+  {
+   "t": 1.809,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " . -max"
+   }
+  },
+  {
+   "t": 1.818,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "depth 1 -type f"
+   }
+  },
+  {
+   "t": 1.834,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " -printf \"%s %p"
+   }
+  },
+  {
+   "t": 1.834,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "\\n\" | sort"
+   }
+  },
+  {
+   "t": 1.838,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " -nr | head -5"
+   }
+  },
+  {
+   "t": 1.845,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " | awk '{"
+   }
+  },
+  {
+   "t": 1.854,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " printf"
+   }
+  },
+  {
+   "t": 1.859,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " \"%s %s\\n"
+   }
+  },
+  {
+   "t": 1.868,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "\", $"
+   }
+  },
+  {
+   "t": 1.874,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "1"
+   }
+  },
+  {
+   "t": 1.881,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": ", $"
+   }
+  },
+  {
+   "t": 1.888,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "2 }"
+   }
+  },
+  {
+   "t": 1.899,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "' then"
+   }
+  },
+  {
+   "t": 1.902,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " pipe to num"
+   }
+  },
+  {
+   "t": 1.911,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "fmt.\n\n"
+   }
+  },
+  {
+   "t": 1.92,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "Better"
+   }
+  },
+  {
+   "t": 1.925,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": ": find . -max"
+   }
+  },
+  {
+   "t": 1.934,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "depth 1 -type f"
+   }
+  },
+  {
+   "t": 1.94,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " -printf \"%s %p"
+   }
+  },
+  {
+   "t": 1.948,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "\\n\" | sort"
+   }
+  },
+  {
+   "t": 1.966,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " -nr | head -5"
+   }
+  },
+  {
+   "t": 1.966,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " | num"
+   }
+  },
+  {
+   "t": 1.971,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "fmt --to=iec --"
+   }
+  },
+  {
+   "t": 1.987,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "suffix=B --padding"
+   }
+  },
+  {
+   "t": 1.988,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "=7 --field="
+   }
+  },
+  {
+   "t": 1.999,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "1\n\nWill"
+   }
+  },
+  {
+   "t": 2.001,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " output human"
+   }
+  },
+  {
+   "t": 2.007,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " readable size"
+   }
+  },
+  {
+   "t": 2.016,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " and filename"
+   }
+  },
+  {
+   "t": 2.024,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": ".\n\nRisk"
+   }
+  },
+  {
+   "t": 2.034,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": ": safe"
+   }
+  },
+  {
+   "t": 2.038,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": " (read"
+   }
+  },
+  {
+   "t": 2.046,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf",
+    "delta": "-only). Provide command.\n\n"
+   }
+  },
+  {
+   "t": 2.239,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_END",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf"
+   }
+  },
+  {
+   "t": 2.24,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_END",
+    "messageId": "b9f64fa5-d5f9-4a37-9260-6957c44966cf"
+   }
+  },
+  {
+   "t": 2.24,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_START",
+    "toolCallId": "tooluse_fc5b2ddbbc284d3198b25d2f",
+    "toolCallName": "propose_command"
+   }
+  },
+  {
+   "t": 2.256,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_ARGS",
+    "toolCallId": "tooluse_fc5b2ddbbc284d3198b25d2f",
+    "delta": "{\"command\": \"find . -maxdepth 1 -type f -printf \\\"%s %p\\\\n\\\" | sort -nr | head -5 | numfmt --to=iec --suffix=B --padding=7 --field=1\", \"explanation\": \"Lists the five largest regular files in the current directory with sizes in human\\u2011readable format.\", \"risk\": \"safe\"}"
+   }
+  },
+  {
+   "t": 2.256,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_END",
+    "toolCallId": "tooluse_fc5b2ddbbc284d3198b25d2f"
+   }
+  },
+  {
+   "t": 2.3,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_RESULT",
+    "messageId": "3e654b71-f766-4e96-a299-a8dbfc5c7781",
+    "toolCallId": "tooluse_fc5b2ddbbc284d3198b25d2f",
+    "content": "Proposal shown to the user. It has NOT been run. Stop and wait for the user's decision.",
+    "role": "tool"
+   }
+  },
+  {
+   "t": 2.591,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_START",
+    "messageId": "1a0b4f6d-1dea-4cd5-ad95-5570543b4b28",
+    "role": "assistant"
+   }
+  },
+  {
+   "t": 2.595,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "1a0b4f6d-1dea-4cd5-ad95-5570543b4b28",
+    "delta": "Await"
+   }
+  },
+  {
+   "t": 2.599,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "1a0b4f6d-1dea-4cd5-ad95-5570543b4b28",
+    "delta": "ing your approval"
+   }
+  },
+  {
+   "t": 2.599,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "1a0b4f6d-1dea-4cd5-ad95-5570543b4b28",
+    "delta": " to run the"
+   }
+  },
+  {
+   "t": 2.599,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "1a0b4f6d-1dea-4cd5-ad95-5570543b4b28",
+    "delta": " proposed"
+   }
+  },
+  {
+   "t": 2.623,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "1a0b4f6d-1dea-4cd5-ad95-5570543b4b28",
+    "delta": " command."
+   }
+  },
+  {
+   "t": 2.796,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_END",
+    "messageId": "1a0b4f6d-1dea-4cd5-ad95-5570543b4b28"
+   }
+  },
+  {
+   "t": 2.796,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_RESULT",
+    "messageId": "1b0f58f6-a0de-4cf2-b174-0959c7165a40",
+    "toolCallId": "tooluse_a3c064bc75b24e94a29579e7",
+    "content": "Awaiting your approval to run the proposed command.",
+    "role": "tool"
+   }
+  },
+  {
+   "t": 2.797,
+   "kind": "event",
+   "event": {
+    "type": "RUN_FINISHED",
+    "threadId": "7ad6f0a6-7d85-420b-93cd-5e1622e87eec",
+    "runId": "7014629b-4a5a-4940-8ac7-d41cc962deed",
+    "outcome": {
+     "type": "interrupt",
+     "interrupts": [
+      {
+       "id": "approve-tooluse_fc5b2ddbbc284d3198b25d2f",
+       "reason": "tool_call",
+       "message": "Run this command?  find . -maxdepth 1 -type f -printf \"%s %p\\n\" | sort -nr | head -5 | numfmt --to=iec --suffix=B --padding=7 --field=1",
+       "toolCallId": "tooluse_fc5b2ddbbc284d3198b25d2f",
+       "responseSchema": {
+        "type": "object",
+        "properties": {
+         "approved": {
+          "type": "boolean"
+         },
+         "command": {
+          "type": "string",
+          "description": "only when the user edited the command"
+         }
+        },
+        "required": [
+         "approved"
+        ]
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "t": 6.142,
+   "kind": "resume",
+   "entries": [
+    {
+     "interruptId": "approve-tooluse_fc5b2ddbbc284d3198b25d2f",
+     "status": "resolved",
+     "payload": {
+      "approved": true
+     }
+    }
+   ]
+  },
+  {
+   "t": 6.155,
+   "kind": "event",
+   "event": {
+    "type": "RUN_STARTED",
+    "threadId": "7ad6f0a6-7d85-420b-93cd-5e1622e87eec",
+    "runId": "e46cce26-5f71-4489-b9ae-dc7693373c3c"
+   }
+  },
+  {
+   "t": 6.155,
+   "kind": "event",
+   "event": {
+    "type": "STATE_SNAPSHOT",
+    "snapshot": {
+     "plan": []
+    }
+   }
+  },
+  {
+   "t": 6.456,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_START",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae"
+   }
+  },
+  {
+   "t": 6.457,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_START",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "role": "reasoning"
+   }
+  },
+  {
+   "t": 6.467,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": "We need to run"
+   }
+  },
+  {
+   "t": 6.467,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " the command approved"
+   }
+  },
+  {
+   "t": 6.468,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": ". The command"
+   }
+  },
+  {
+   "t": 6.472,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " we"
+   }
+  },
+  {
+   "t": 6.48,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " proposed"
+   }
+  },
+  {
+   "t": 6.488,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " is: \"List the "
+   }
+  },
+  {
+   "t": 6.494,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": "5 largest files ("
+   }
+  },
+  {
+   "t": 6.507,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": "by size) in the current"
+   }
+  },
+  {
+   "t": 6.509,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " directory, showing their sizes in"
+   }
+  },
+  {
+   "t": 6.519,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " human readable format.\""
+   }
+  },
+  {
+   "t": 6.525,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " We didn't"
+   }
+  },
+  {
+   "t": 6.535,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " specify the exact command. Probably"
+   }
+  },
+  {
+   "t": 6.54,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " we"
+   }
+  },
+  {
+   "t": 6.553,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " need to generate a shell command"
+   }
+  },
+  {
+   "t": 6.611,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " like"
+   }
+  },
+  {
+   "t": 6.611,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " `"
+   }
+  },
+  {
+   "t": 6.611,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": "ls -lh"
+   }
+  },
+  {
+   "t": 6.611,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": "S"
+   }
+  },
+  {
+   "t": 6.612,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " | head"
+   }
+  },
+  {
+   "t": 6.612,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " -n 5`"
+   }
+  },
+  {
+   "t": 6.612,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": "? But that"
+   }
+  },
+  {
+   "t": 6.612,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " only lists all"
+   }
+  },
+  {
+   "t": 6.619,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " files sorted"
+   }
+  },
+  {
+   "t": 6.626,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " by size,"
+   }
+  },
+  {
+   "t": 6.626,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " but includes directories. Better"
+   }
+  },
+  {
+   "t": 6.635,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": ": `find"
+   }
+  },
+  {
+   "t": 6.635,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " ."
+   }
+  },
+  {
+   "t": 6.697,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " -max"
+   }
+  },
+  {
+   "t": 6.697,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": "depth 1 -type"
+   }
+  },
+  {
+   "t": 6.697,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " f -exec"
+   }
+  },
+  {
+   "t": 6.697,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " du"
+   }
+  },
+  {
+   "t": 6.697,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " -h"
+   }
+  },
+  {
+   "t": 6.698,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " {} +"
+   }
+  },
+  {
+   "t": 6.698,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " | sort -rh"
+   }
+  },
+  {
+   "t": 6.706,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " | head -n"
+   }
+  },
+  {
+   "t": 6.706,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " 5`. Or"
+   }
+  },
+  {
+   "t": 6.706,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " use"
+   }
+  },
+  {
+   "t": 6.706,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " `du"
+   }
+  },
+  {
+   "t": 6.712,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " -sh"
+   }
+  },
+  {
+   "t": 6.72,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " *"
+   }
+  },
+  {
+   "t": 6.72,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": "` but"
+   }
+  },
+  {
+   "t": 6.782,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " include"
+   }
+  },
+  {
+   "t": 6.782,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " hidden"
+   }
+  },
+  {
+   "t": 6.782,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": "?"
+   }
+  },
+  {
+   "t": 6.783,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " Simpler: `du -"
+   }
+  },
+  {
+   "t": 6.783,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": "ah"
+   }
+  },
+  {
+   "t": 6.783,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " ."
+   }
+  },
+  {
+   "t": 6.783,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " | sort -rh"
+   }
+  },
+  {
+   "t": 6.783,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " | head -n "
+   }
+  },
+  {
+   "t": 6.786,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": "5`. But want"
+   }
+  },
+  {
+   "t": 6.786,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " only files,"
+   }
+  },
+  {
+   "t": 6.79,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " not directories. Use `find"
+   }
+  },
+  {
+   "t": 6.797,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " . -type"
+   }
+  },
+  {
+   "t": 6.805,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " f -printf"
+   }
+  },
+  {
+   "t": 6.808,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " \"%"
+   }
+  },
+  {
+   "t": 6.815,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": "s %p"
+   }
+  },
+  {
+   "t": 6.821,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": "\\n\""
+   }
+  },
+  {
+   "t": 6.827,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " | sort -nr"
+   }
+  },
+  {
+   "t": 6.835,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " | head -n "
+   }
+  },
+  {
+   "t": 6.84,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": "5 |"
+   }
+  },
+  {
+   "t": 6.845,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " num"
+   }
+  },
+  {
+   "t": 6.852,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": "fmt --"
+   }
+  },
+  {
+   "t": 6.857,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": "to"
+   }
+  },
+  {
+   "t": 6.863,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": "=iec"
+   }
+  },
+  {
+   "t": 6.87,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " --"
+   }
+  },
+  {
+   "t": 6.875,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": "suffix"
+   }
+  },
+  {
+   "t": 6.885,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": "=B"
+   }
+  },
+  {
+   "t": 6.888,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": "`."
+   }
+  },
+  {
+   "t": 6.896,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " Could"
+   }
+  },
+  {
+   "t": 6.902,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " just"
+   }
+  },
+  {
+   "t": 6.909,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " use"
+   }
+  },
+  {
+   "t": 6.918,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " `ls -l"
+   }
+  },
+  {
+   "t": 6.919,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": "S` but"
+   }
+  },
+  {
+   "t": 6.926,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " that's"
+   }
+  },
+  {
+   "t": 6.939,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " fine"
+   }
+  },
+  {
+   "t": 6.973,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": ".\n\nWe"
+   }
+  },
+  {
+   "t": 6.973,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " need to call"
+   }
+  },
+  {
+   "t": 6.984,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": " run"
+   }
+  },
+  {
+   "t": 6.984,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae",
+    "delta": "_command with approval_id."
+   }
+  },
+  {
+   "t": 7.055,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_END",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae"
+   }
+  },
+  {
+   "t": 7.057,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_END",
+    "messageId": "4bad1212-2db5-4911-b87b-2b89f9ace5ae"
+   }
+  },
+  {
+   "t": 7.057,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_START",
+    "toolCallId": "tooluse_374219a9f5d34e5fb5e7ae4a",
+    "toolCallName": "run_command"
+   }
+  },
+  {
+   "t": 7.066,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_ARGS",
+    "toolCallId": "tooluse_374219a9f5d34e5fb5e7ae4a",
+    "delta": "{\"approval_id\": \"tooluse_fc5b2ddbbc284d3198b25d2f\"}"
+   }
+  },
+  {
+   "t": 7.066,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_END",
+    "toolCallId": "tooluse_374219a9f5d34e5fb5e7ae4a"
+   }
+  },
+  {
+   "t": 7.15,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_RESULT",
+    "messageId": "395de341-cf34-4402-8904-4a789cfc5692",
+    "toolCallId": "tooluse_374219a9f5d34e5fb5e7ae4a",
+    "content": "{\"command\": \"find . -maxdepth 1 -type f -printf \\\"%s %p\\\\n\\\" | sort -nr | head -5 | numfmt --to=iec --suffix=B --padding=7 --field=1\", \"exit_code\": 0, \"timed_out\": false, \"truncated\": false, \"output\": \"  206KB ./uv.lock\\n  3.8KB ./README.md\\n   900B ./.env.example\\n   721B ./pyproject.toml\\n     5B ./.python-version\\n\"}",
+    "role": "tool"
+   }
+  },
+  {
+   "t": 7.438,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_START",
+    "messageId": "0f2b2297-5554-489c-ae86-82daa429e6ac"
+   }
+  },
+  {
+   "t": 7.438,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_START",
+    "messageId": "0f2b2297-5554-489c-ae86-82daa429e6ac",
+    "role": "reasoning"
+   }
+  },
+  {
+   "t": 7.448,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "0f2b2297-5554-489c-ae86-82daa429e6ac",
+    "delta": "We need to present"
+   }
+  },
+  {
+   "t": 7.449,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "0f2b2297-5554-489c-ae86-82daa429e6ac",
+    "delta": " the result"
+   }
+  },
+  {
+   "t": 7.449,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "0f2b2297-5554-489c-ae86-82daa429e6ac",
+    "delta": " clearly"
+   }
+  },
+  {
+   "t": 7.461,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "0f2b2297-5554-489c-ae86-82daa429e6ac",
+    "delta": ". Provide"
+   }
+  },
+  {
+   "t": 7.474,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "0f2b2297-5554-489c-ae86-82daa429e6ac",
+    "delta": " list"
+   }
+  },
+  {
+   "t": 7.475,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "0f2b2297-5554-489c-ae86-82daa429e6ac",
+    "delta": "."
+   }
+  },
+  {
+   "t": 7.495,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_END",
+    "messageId": "0f2b2297-5554-489c-ae86-82daa429e6ac"
+   }
+  },
+  {
+   "t": 7.496,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_END",
+    "messageId": "0f2b2297-5554-489c-ae86-82daa429e6ac"
+   }
+  },
+  {
+   "t": 7.497,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_START",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "role": "assistant"
+   }
+  },
+  {
+   "t": 7.546,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": "Here"
+   }
+  },
+  {
+   "t": 7.547,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": " are the five largest"
+   }
+  },
+  {
+   "t": 7.548,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": " regular"
+   }
+  },
+  {
+   "t": 7.548,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": " files in the current directory ("
+   }
+  },
+  {
+   "t": 7.548,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": "sizes"
+   }
+  },
+  {
+   "t": 7.549,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": " shown in human‑readable"
+   }
+  },
+  {
+   "t": 7.59,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": " form):\n\n| Size"
+   }
+  },
+  {
+   "t": 7.592,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": " |"
+   }
+  },
+  {
+   "t": 7.593,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": " File"
+   }
+  },
+  {
+   "t": 7.593,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": " |\n|------|------|\n"
+   }
+  },
+  {
+   "t": 7.593,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": "| 206 KB |"
+   }
+  },
+  {
+   "t": 7.594,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": " `./"
+   }
+  },
+  {
+   "t": 7.594,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": "uv.lock` |\n| "
+   }
+  },
+  {
+   "t": 7.594,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": "3.8 KB |"
+   }
+  },
+  {
+   "t": 7.601,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": " `./"
+   }
+  },
+  {
+   "t": 7.602,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": "README.md` |\n| "
+   }
+  },
+  {
+   "t": 7.609,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": "900 B "
+   }
+  },
+  {
+   "t": 7.614,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": " | `"
+   }
+  },
+  {
+   "t": 7.676,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": "./."
+   }
+  },
+  {
+   "t": 7.679,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": "env.example` |\n| "
+   }
+  },
+  {
+   "t": 7.679,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": "721 B  | `"
+   }
+  },
+  {
+   "t": 7.68,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": "./pyproject.toml"
+   }
+  },
+  {
+   "t": 7.68,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": "` |\n|  "
+   }
+  },
+  {
+   "t": 7.68,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": " "
+   }
+  },
+  {
+   "t": 7.68,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": "5 B  | `"
+   }
+  },
+  {
+   "t": 7.686,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": "./.python"
+   }
+  },
+  {
+   "t": 7.689,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": "-version` |\n\nThese are"
+   }
+  },
+  {
+   "t": 7.69,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": " sorted"
+   }
+  },
+  {
+   "t": 7.696,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": " from"
+   }
+  },
+  {
+   "t": 7.702,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85",
+    "delta": " largest to smallest."
+   }
+  },
+  {
+   "t": 7.838,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_END",
+    "messageId": "9cdb7d13-31e6-41a7-91c1-dfa75ca61f85"
+   }
+  },
+  {
+   "t": 7.838,
+   "kind": "event",
+   "event": {
+    "type": "RUN_FINISHED",
+    "threadId": "7ad6f0a6-7d85-420b-93cd-5e1622e87eec",
+    "runId": "e46cce26-5f71-4489-b9ae-dc7693373c3c"
+   }
+  },
+  {
+   "t": 7.946,
+   "kind": "user",
+   "text": "Now plot their sizes as a bar chart"
+  },
+  {
+   "t": 7.955,
+   "kind": "event",
+   "event": {
+    "type": "RUN_STARTED",
+    "threadId": "7ad6f0a6-7d85-420b-93cd-5e1622e87eec",
+    "runId": "b1a29879-9b78-4766-8e1e-5d613990173a"
+   }
+  },
+  {
+   "t": 7.955,
+   "kind": "event",
+   "event": {
+    "type": "STATE_SNAPSHOT",
+    "snapshot": {
+     "plan": []
+    }
+   }
+  },
+  {
+   "t": 8.239,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_START",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879"
+   }
+  },
+  {
+   "t": 8.239,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_START",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "role": "reasoning"
+   }
+  },
+  {
+   "t": 8.258,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": "We need to create"
+   }
+  },
+  {
+   "t": 8.259,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " a bar chart of"
+   }
+  },
+  {
+   "t": 8.259,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " the"
+   }
+  },
+  {
+   "t": 8.26,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " five"
+   }
+  },
+  {
+   "t": 8.268,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " files"
+   }
+  },
+  {
+   "t": 8.279,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": "'"
+   }
+  },
+  {
+   "t": 8.292,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " sizes. We"
+   }
+  },
+  {
+   "t": 8.292,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " have sizes in"
+   }
+  },
+  {
+   "t": 8.301,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " human"
+   }
+  },
+  {
+   "t": 8.307,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " readable format"
+   }
+  },
+  {
+   "t": 8.32,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": ", but chart"
+   }
+  },
+  {
+   "t": 8.322,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " tool"
+   }
+  },
+  {
+   "t": 8.33,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " needs"
+   }
+  },
+  {
+   "t": 8.393,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " numbers"
+   }
+  },
+  {
+   "t": 8.393,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": ". We can"
+   }
+  },
+  {
+   "t": 8.393,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " use"
+   }
+  },
+  {
+   "t": 8.394,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " the"
+   }
+  },
+  {
+   "t": 8.394,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " raw"
+   }
+  },
+  {
+   "t": 8.394,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " sizes"
+   }
+  },
+  {
+   "t": 8.394,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " in bytes from"
+   }
+  },
+  {
+   "t": 8.397,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " earlier"
+   }
+  },
+  {
+   "t": 8.401,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " command"
+   }
+  },
+  {
+   "t": 8.408,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": ": The"
+   }
+  },
+  {
+   "t": 8.418,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " command"
+   }
+  },
+  {
+   "t": 8.422,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " printed"
+   }
+  },
+  {
+   "t": 8.479,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " raw"
+   }
+  },
+  {
+   "t": 8.48,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " bytes"
+   }
+  },
+  {
+   "t": 8.48,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " then"
+   }
+  },
+  {
+   "t": 8.48,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " formatted"
+   }
+  },
+  {
+   "t": 8.48,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": ". We"
+   }
+  },
+  {
+   "t": 8.48,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " have"
+   }
+  },
+  {
+   "t": 8.48,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " output with"
+   }
+  },
+  {
+   "t": 8.484,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " original"
+   }
+  },
+  {
+   "t": 8.49,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " sizes ("
+   }
+  },
+  {
+   "t": 8.498,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": "bytes"
+   }
+  },
+  {
+   "t": 8.506,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": ") before formatting"
+   }
+  },
+  {
+   "t": 8.512,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": "?"
+   }
+  },
+  {
+   "t": 8.565,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " The"
+   }
+  },
+  {
+   "t": 8.565,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " command"
+   }
+  },
+  {
+   "t": 8.566,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " used"
+   }
+  },
+  {
+   "t": 8.566,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " num"
+   }
+  },
+  {
+   "t": 8.566,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": "fmt to format"
+   }
+  },
+  {
+   "t": 8.566,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": ", losing"
+   }
+  },
+  {
+   "t": 8.57,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " raw"
+   }
+  },
+  {
+   "t": 8.575,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": "."
+   }
+  },
+  {
+   "t": 8.584,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " We can"
+   }
+  },
+  {
+   "t": 8.592,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " get"
+   }
+  },
+  {
+   "t": 8.597,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " sizes"
+   }
+  },
+  {
+   "t": 8.605,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " again as"
+   }
+  },
+  {
+   "t": 8.613,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " raw numbers"
+   }
+  },
+  {
+   "t": 8.62,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " via"
+   }
+  },
+  {
+   "t": 8.627,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " find"
+   }
+  },
+  {
+   "t": 8.635,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " -"
+   }
+  },
+  {
+   "t": 8.642,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": "printf. Let's propose"
+   }
+  },
+  {
+   "t": 8.703,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " a"
+   }
+  },
+  {
+   "t": 8.703,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " new"
+   }
+  },
+  {
+   "t": 8.703,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " command to get sizes"
+   }
+  },
+  {
+   "t": 8.703,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " in bytes with"
+   }
+  },
+  {
+   "t": 8.704,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " file"
+   }
+  },
+  {
+   "t": 8.704,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " names. Use:"
+   }
+  },
+  {
+   "t": 8.704,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " find . -maxdepth"
+   }
+  },
+  {
+   "t": 8.704,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " 1 -type f -"
+   }
+  },
+  {
+   "t": 8.709,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": "printf \"%s %p\\n"
+   }
+  },
+  {
+   "t": 8.711,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": "\" | sort -nr"
+   }
+  },
+  {
+   "t": 8.715,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " | head -5 ."
+   }
+  },
+  {
+   "t": 8.721,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " Then we"
+   }
+  },
+  {
+   "t": 8.728,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " can parse."
+   }
+  },
+  {
+   "t": 8.738,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " Let's"
+   }
+  },
+  {
+   "t": 8.74,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " propose"
+   }
+  },
+  {
+   "t": 8.746,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " that"
+   }
+  },
+  {
+   "t": 8.754,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": " command"
+   }
+  },
+  {
+   "t": 8.759,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879",
+    "delta": "."
+   }
+  },
+  {
+   "t": 8.882,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_END",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879"
+   }
+  },
+  {
+   "t": 8.883,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_END",
+    "messageId": "735e156c-7b7a-4ef5-a268-0dc43ce5c879"
+   }
+  },
+  {
+   "t": 8.883,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_START",
+    "toolCallId": "tooluse_e3aa88a9ea98448599351836",
+    "toolCallName": "shell_agent"
+   }
+  },
+  {
+   "t": 8.896,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_ARGS",
+    "toolCallId": "tooluse_e3aa88a9ea98448599351836",
+    "delta": "{\"input\": \"Get the sizes in bytes of the 5 largest regular files in the current directory, output as two columns: size (bytes) and filename, sorted descending.\"}"
+   }
+  },
+  {
+   "t": 8.896,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_END",
+    "toolCallId": "tooluse_e3aa88a9ea98448599351836"
+   }
+  },
+  {
+   "t": 9.231,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_START",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729"
+   }
+  },
+  {
+   "t": 9.231,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_START",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "role": "reasoning"
+   }
+  },
+  {
+   "t": 9.235,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": "We need to provide"
+   }
+  },
+  {
+   "t": 9.237,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " a shell"
+   }
+  },
+  {
+   "t": 9.245,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " command that"
+   }
+  },
+  {
+   "t": 9.26,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " lists"
+   }
+  },
+  {
+   "t": 9.26,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " sizes"
+   }
+  },
+  {
+   "t": 9.27,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " in bytes of"
+   }
+  },
+  {
+   "t": 9.274,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " the 5 largest regular files"
+   }
+  },
+  {
+   "t": 9.285,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " in current"
+   }
+  },
+  {
+   "t": 9.29,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " directory, output"
+   }
+  },
+  {
+   "t": 9.296,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " two"
+   }
+  },
+  {
+   "t": 9.303,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " columns: size (bytes)"
+   }
+  },
+  {
+   "t": 9.318,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " and filename, sorted descending."
+   }
+  },
+  {
+   "t": 9.318,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " Should"
+   }
+  },
+  {
+   "t": 9.367,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " use"
+   }
+  },
+  {
+   "t": 9.367,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " something"
+   }
+  },
+  {
+   "t": 9.367,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " like find ."
+   }
+  },
+  {
+   "t": 9.368,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " -max"
+   }
+  },
+  {
+   "t": 9.368,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": "depth 1 -type"
+   }
+  },
+  {
+   "t": 9.381,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " f -printf"
+   }
+  },
+  {
+   "t": 9.382,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " \"%"
+   }
+  },
+  {
+   "t": 9.382,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": "s %"
+   }
+  },
+  {
+   "t": 9.389,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": "p\\n\""
+   }
+  },
+  {
+   "t": 9.406,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " | sort -nr"
+   }
+  },
+  {
+   "t": 9.406,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " | head -5"
+   }
+  },
+  {
+   "t": 9.407,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": "."
+   }
+  },
+  {
+   "t": 9.453,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " Need"
+   }
+  },
+  {
+   "t": 9.453,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " to ensure"
+   }
+  },
+  {
+   "t": 9.453,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " no"
+   }
+  },
+  {
+   "t": 9.454,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " leading ./"
+   }
+  },
+  {
+   "t": 9.454,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " perhaps"
+   }
+  },
+  {
+   "t": 9.46,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": ". Use"
+   }
+  },
+  {
+   "t": 9.46,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " -"
+   }
+  },
+  {
+   "t": 9.467,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": "printf \"%s %f"
+   }
+  },
+  {
+   "t": 9.473,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": "\\n\"?"
+   }
+  },
+  {
+   "t": 9.488,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " But"
+   }
+  },
+  {
+   "t": 9.492,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " need"
+   }
+  },
+  {
+   "t": 9.537,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " filename only"
+   }
+  },
+  {
+   "t": 9.537,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " not"
+   }
+  },
+  {
+   "t": 9.545,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " path. Use %"
+   }
+  },
+  {
+   "t": 9.545,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": "s %"
+   }
+  },
+  {
+   "t": 9.552,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": "p"
+   }
+  },
+  {
+   "t": 9.559,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " gives"
+   }
+  },
+  {
+   "t": 9.573,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " ./"
+   }
+  },
+  {
+   "t": 9.577,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": "filename"
+   }
+  },
+  {
+   "t": 9.645,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": ". Could"
+   }
+  },
+  {
+   "t": 9.645,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " strip"
+   }
+  },
+  {
+   "t": 9.645,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " leading"
+   }
+  },
+  {
+   "t": 9.645,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " ./"
+   }
+  },
+  {
+   "t": 9.645,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " but"
+   }
+  },
+  {
+   "t": 9.645,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " okay"
+   }
+  },
+  {
+   "t": 9.645,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": ". Use find ."
+   }
+  },
+  {
+   "t": 9.646,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " -maxdepth 1 -"
+   }
+  },
+  {
+   "t": 9.654,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": "type f -printf \"%"
+   }
+  },
+  {
+   "t": 9.662,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": "s %p\\n\""
+   }
+  },
+  {
+   "t": 9.671,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " | sort -nr | head"
+   }
+  },
+  {
+   "t": 9.68,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " -5."
+   }
+  },
+  {
+   "t": 9.688,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " That's"
+   }
+  },
+  {
+   "t": 9.697,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " safe"
+   }
+  },
+  {
+   "t": 9.706,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " ("
+   }
+  },
+  {
+   "t": 9.713,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": "read-only). Provide explanation"
+   }
+  },
+  {
+   "t": 9.722,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": ","
+   }
+  },
+  {
+   "t": 9.73,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": " risk safe"
+   }
+  },
+  {
+   "t": 9.738,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729",
+    "delta": "."
+   }
+  },
+  {
+   "t": 9.975,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_END",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729"
+   }
+  },
+  {
+   "t": 9.977,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_END",
+    "messageId": "637f2b41-148b-4d6f-93ce-f540ceca0729"
+   }
+  },
+  {
+   "t": 9.977,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_START",
+    "toolCallId": "tooluse_52b0d3fb0ee54311a6b91a7b",
+    "toolCallName": "propose_command"
+   }
+  },
+  {
+   "t": 9.996,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_ARGS",
+    "toolCallId": "tooluse_52b0d3fb0ee54311a6b91a7b",
+    "delta": "{\"command\": \"find . -maxdepth 1 -type f -printf \\\"%s %p\\\\n\\\" | sort -nr | head -5\", \"explanation\": \"Lists regular files in the current directory with their sizes in bytes, sorts descending, and shows the top five.\", \"risk\": \"safe\"}"
+   }
+  },
+  {
+   "t": 9.996,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_END",
+    "toolCallId": "tooluse_52b0d3fb0ee54311a6b91a7b"
+   }
+  },
+  {
+   "t": 10.079,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_RESULT",
+    "messageId": "371a3afa-466a-4227-9475-6e2924209cc6",
+    "toolCallId": "tooluse_52b0d3fb0ee54311a6b91a7b",
+    "content": "Proposal shown to the user. It has NOT been run. Stop and wait for the user's decision.",
+    "role": "tool"
+   }
+  },
+  {
+   "t": 10.358,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_START",
+    "messageId": "f9ad4b0d-a4f4-4d4d-bd73-77897d360c9c",
+    "role": "assistant"
+   }
+  },
+  {
+   "t": 10.361,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "f9ad4b0d-a4f4-4d4d-bd73-77897d360c9c",
+    "delta": "Waiting"
+   }
+  },
+  {
+   "t": 10.364,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "f9ad4b0d-a4f4-4d4d-bd73-77897d360c9c",
+    "delta": " for your"
+   }
+  },
+  {
+   "t": 10.381,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "f9ad4b0d-a4f4-4d4d-bd73-77897d360c9c",
+    "delta": " approval to"
+   }
+  },
+  {
+   "t": 10.381,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "f9ad4b0d-a4f4-4d4d-bd73-77897d360c9c",
+    "delta": " run"
+   }
+  },
+  {
+   "t": 10.388,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "f9ad4b0d-a4f4-4d4d-bd73-77897d360c9c",
+    "delta": " the proposed"
+   }
+  },
+  {
+   "t": 10.393,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "f9ad4b0d-a4f4-4d4d-bd73-77897d360c9c",
+    "delta": " command."
+   }
+  },
+  {
+   "t": 10.475,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_END",
+    "messageId": "f9ad4b0d-a4f4-4d4d-bd73-77897d360c9c"
+   }
+  },
+  {
+   "t": 10.475,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_RESULT",
+    "messageId": "c98bb1a7-61f1-41ed-94fd-225d872aef07",
+    "toolCallId": "tooluse_e3aa88a9ea98448599351836",
+    "content": "Waiting for your approval to run the proposed command.",
+    "role": "tool"
+   }
+  },
+  {
+   "t": 10.476,
+   "kind": "event",
+   "event": {
+    "type": "RUN_FINISHED",
+    "threadId": "7ad6f0a6-7d85-420b-93cd-5e1622e87eec",
+    "runId": "b1a29879-9b78-4766-8e1e-5d613990173a",
+    "outcome": {
+     "type": "interrupt",
+     "interrupts": [
+      {
+       "id": "approve-tooluse_52b0d3fb0ee54311a6b91a7b",
+       "reason": "tool_call",
+       "message": "Run this command?  find . -maxdepth 1 -type f -printf \"%s %p\\n\" | sort -nr | head -5",
+       "toolCallId": "tooluse_52b0d3fb0ee54311a6b91a7b",
+       "responseSchema": {
+        "type": "object",
+        "properties": {
+         "approved": {
+          "type": "boolean"
+         },
+         "command": {
+          "type": "string",
+          "description": "only when the user edited the command"
+         }
+        },
+        "required": [
+         "approved"
+        ]
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "t": 12.217,
+   "kind": "resume",
+   "entries": [
+    {
+     "interruptId": "approve-tooluse_52b0d3fb0ee54311a6b91a7b",
+     "status": "resolved",
+     "payload": {
+      "approved": true
+     }
+    }
+   ]
+  },
+  {
+   "t": 12.224,
+   "kind": "event",
+   "event": {
+    "type": "RUN_STARTED",
+    "threadId": "7ad6f0a6-7d85-420b-93cd-5e1622e87eec",
+    "runId": "9f226f3a-506e-4693-8b82-fc6ae7796114"
+   }
+  },
+  {
+   "t": 12.224,
+   "kind": "event",
+   "event": {
+    "type": "STATE_SNAPSHOT",
+    "snapshot": {
+     "plan": []
+    }
+   }
+  },
+  {
+   "t": 12.516,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_START",
+    "messageId": "8aba7bac-39c1-4d48-9d7b-51800b318249"
+   }
+  },
+  {
+   "t": 12.516,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_START",
+    "messageId": "8aba7bac-39c1-4d48-9d7b-51800b318249",
+    "role": "reasoning"
+   }
+  },
+  {
+   "t": 12.519,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "8aba7bac-39c1-4d48-9d7b-51800b318249",
+    "delta": "We have"
+   }
+  },
+  {
+   "t": 12.524,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "8aba7bac-39c1-4d48-9d7b-51800b318249",
+    "delta": " approval."
+   }
+  },
+  {
+   "t": 12.53,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "8aba7bac-39c1-4d48-9d7b-51800b318249",
+    "delta": " Need to run"
+   }
+  },
+  {
+   "t": 12.55,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "8aba7bac-39c1-4d48-9d7b-51800b318249",
+    "delta": " command with approval"
+   }
+  },
+  {
+   "t": 12.55,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "8aba7bac-39c1-4d48-9d7b-51800b318249",
+    "delta": "_id."
+   }
+  },
+  {
+   "t": 12.619,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_END",
+    "messageId": "8aba7bac-39c1-4d48-9d7b-51800b318249"
+   }
+  },
+  {
+   "t": 12.621,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_END",
+    "messageId": "8aba7bac-39c1-4d48-9d7b-51800b318249"
+   }
+  },
+  {
+   "t": 12.621,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_START",
+    "toolCallId": "tooluse_bdb372e8be094db3bb6b3445",
+    "toolCallName": "run_command"
+   }
+  },
+  {
+   "t": 12.637,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_ARGS",
+    "toolCallId": "tooluse_bdb372e8be094db3bb6b3445",
+    "delta": "{\"approval_id\": \"tooluse_52b0d3fb0ee54311a6b91a7b\"}"
+   }
+  },
+  {
+   "t": 12.637,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_END",
+    "toolCallId": "tooluse_bdb372e8be094db3bb6b3445"
+   }
+  },
+  {
+   "t": 12.705,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_RESULT",
+    "messageId": "4beccf19-6bba-4553-8358-1e3942695326",
+    "toolCallId": "tooluse_bdb372e8be094db3bb6b3445",
+    "content": "{\"command\": \"find . -maxdepth 1 -type f -printf \\\"%s %p\\\\n\\\" | sort -nr | head -5\", \"exit_code\": 0, \"timed_out\": false, \"truncated\": false, \"output\": \"210712 ./uv.lock\\n3818 ./README.md\\n900 ./.env.example\\n721 ./pyproject.toml\\n5 ./.python-version\\n\"}",
+    "role": "tool"
+   }
+  },
+  {
+   "t": 12.981,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_START",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180"
+   }
+  },
+  {
+   "t": 12.981,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_START",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "role": "reasoning"
+   }
+  },
+  {
+   "t": 12.998,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": "We have"
+   }
+  },
+  {
+   "t": 12.999,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": " sizes in"
+   }
+  },
+  {
+   "t": 12.999,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": " bytes for"
+   }
+  },
+  {
+   "t": 12.999,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": " each file. Need to plot"
+   }
+  },
+  {
+   "t": 13.004,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": " as"
+   }
+  },
+  {
+   "t": 13.01,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": " bar chart using"
+   }
+  },
+  {
+   "t": 13.027,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": " show"
+   }
+  },
+  {
+   "t": 13.027,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": "_chart."
+   }
+  },
+  {
+   "t": 13.03,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": " Provide"
+   }
+  },
+  {
+   "t": 13.035,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": " series data"
+   }
+  },
+  {
+   "t": 13.042,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": ". Use labels"
+   }
+  },
+  {
+   "t": 13.047,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": " as"
+   }
+  },
+  {
+   "t": 13.054,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": " filenames,"
+   }
+  },
+  {
+   "t": 13.059,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": " values"
+   }
+  },
+  {
+   "t": 13.068,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": " as sizes"
+   }
+  },
+  {
+   "t": 13.073,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": ". Chart"
+   }
+  },
+  {
+   "t": 13.079,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": " title"
+   }
+  },
+  {
+   "t": 13.086,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": ":"
+   }
+  },
+  {
+   "t": 13.092,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": " \"Size"
+   }
+  },
+  {
+   "t": 13.098,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": " of 5 Largest Files"
+   }
+  },
+  {
+   "t": 13.104,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": "\". Type"
+   }
+  },
+  {
+   "t": 13.11,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": " bar"
+   }
+  },
+  {
+   "t": 13.118,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": ". Use"
+   }
+  },
+  {
+   "t": 13.123,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": " x as"
+   }
+  },
+  {
+   "t": 13.131,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": " filenames"
+   }
+  },
+  {
+   "t": 13.144,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": ","
+   }
+  },
+  {
+   "t": 13.144,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": " y as sizes"
+   }
+  },
+  {
+   "t": 13.148,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": ". Provide y"
+   }
+  },
+  {
+   "t": 13.155,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": "_label \""
+   }
+  },
+  {
+   "t": 13.161,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": "Size"
+   }
+  },
+  {
+   "t": 13.17,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": " (bytes)\". Let's"
+   }
+  },
+  {
+   "t": 13.174,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180",
+    "delta": " do that."
+   }
+  },
+  {
+   "t": 13.362,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_END",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180"
+   }
+  },
+  {
+   "t": 13.363,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_END",
+    "messageId": "c33eeb64-f3dd-4c0c-9f82-8d21dd4c8180"
+   }
+  },
+  {
+   "t": 13.364,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_START",
+    "toolCallId": "tooluse_1d1cad4bb8d640aa81bd298b",
+    "toolCallName": "show_chart"
+   }
+  },
+  {
+   "t": 13.383,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_ARGS",
+    "toolCallId": "tooluse_1d1cad4bb8d640aa81bd298b",
+    "delta": "{\"type\": \"bar\", \"title\": \"Size of 5 Largest Files\", \"x\": [\"uv.lock\", \"README.md\", \".env.example\", \"pyproject.toml\", \".python-version\"], \"series\": [{\"name\": \"Size (bytes)\", \"values\": [210712, 3818, 900, 721, 5]}], \"x_label\": \"File\", \"y_label\": \"Size (bytes)\"}"
+   }
+  },
+  {
+   "t": 13.383,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_END",
+    "toolCallId": "tooluse_1d1cad4bb8d640aa81bd298b"
+   }
+  },
+  {
+   "t": 13.468,
+   "kind": "event",
+   "event": {
+    "type": "TOOL_CALL_RESULT",
+    "messageId": "01f4f000-02be-4311-9388-cda9a21624a8",
+    "toolCallId": "tooluse_1d1cad4bb8d640aa81bd298b",
+    "content": "Chart 'Size of 5 Largest Files' (bar) shown to the user.",
+    "role": "tool"
+   }
+  },
+  {
+   "t": 13.751,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_START",
+    "messageId": "26003f86-5cbb-4a22-a992-9c8ba7958ccc",
+    "role": "assistant"
+   }
+  },
+  {
+   "t": 13.768,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "26003f86-5cbb-4a22-a992-9c8ba7958ccc",
+    "delta": "Here’s a"
+   }
+  },
+  {
+   "t": 13.77,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "26003f86-5cbb-4a22-a992-9c8ba7958ccc",
+    "delta": " bar chart of"
+   }
+  },
+  {
+   "t": 13.77,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "26003f86-5cbb-4a22-a992-9c8ba7958ccc",
+    "delta": " the five largest files and"
+   }
+  },
+  {
+   "t": 13.772,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "26003f86-5cbb-4a22-a992-9c8ba7958ccc",
+    "delta": " their sizes in"
+   }
+  },
+  {
+   "t": 13.784,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "26003f86-5cbb-4a22-a992-9c8ba7958ccc",
+    "delta": " bytes:\n\n!["
+   }
+  },
+  {
+   "t": 13.787,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "26003f86-5cbb-4a22-a992-9c8ba7958ccc",
+    "delta": "Size"
+   }
+  },
+  {
+   "t": 13.796,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "26003f86-5cbb-4a22-a992-9c8ba7958ccc",
+    "delta": " of 5 Largest Files bar"
+   }
+  },
+  {
+   "t": 13.888,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "26003f86-5cbb-4a22-a992-9c8ba7958ccc",
+    "delta": " chart](attachment://"
+   }
+  },
+  {
+   "t": 13.896,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "26003f86-5cbb-4a22-a992-9c8ba7958ccc",
+    "delta": "chart.png)"
+   }
+  },
+  {
+   "t": 13.897,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_END",
+    "messageId": "26003f86-5cbb-4a22-a992-9c8ba7958ccc"
+   }
+  },
+  {
+   "t": 13.897,
+   "kind": "event",
+   "event": {
+    "type": "RUN_FINISHED",
+    "threadId": "7ad6f0a6-7d85-420b-93cd-5e1622e87eec",
+    "runId": "9f226f3a-506e-4693-8b82-fc6ae7796114"
+   }
+  },
+  {
+   "t": 14.089,
+   "kind": "user",
+   "text": "Summarise what you found in two sentences"
+  },
+  {
+   "t": 14.112,
+   "kind": "event",
+   "event": {
+    "type": "RUN_STARTED",
+    "threadId": "7ad6f0a6-7d85-420b-93cd-5e1622e87eec",
+    "runId": "7e526fa8-11c3-432d-bd78-d89b7804feeb"
+   }
+  },
+  {
+   "t": 14.112,
+   "kind": "event",
+   "event": {
+    "type": "STATE_SNAPSHOT",
+    "snapshot": {
+     "plan": []
+    }
+   }
+  },
+  {
+   "t": 14.384,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_START",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7"
+   }
+  },
+  {
+   "t": 14.384,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_START",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7",
+    "role": "reasoning"
+   }
+  },
+  {
+   "t": 14.4,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7",
+    "delta": "User"
+   }
+  },
+  {
+   "t": 14.401,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7",
+    "delta": " asks"
+   }
+  },
+  {
+   "t": 14.401,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7",
+    "delta": " to summarize findings"
+   }
+  },
+  {
+   "t": 14.401,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7",
+    "delta": " in two sentences. We have"
+   }
+  },
+  {
+   "t": 14.405,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7",
+    "delta": " the"
+   }
+  },
+  {
+   "t": 14.412,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7",
+    "delta": " data: five"
+   }
+  },
+  {
+   "t": 14.418,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7",
+    "delta": " largest files: uv"
+   }
+  },
+  {
+   "t": 14.424,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7",
+    "delta": ".lock 210"
+   }
+  },
+  {
+   "t": 14.43,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7",
+    "delta": ","
+   }
+  },
+  {
+   "t": 14.443,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7",
+    "delta": "712 bytes"
+   }
+  },
+  {
+   "t": 14.443,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7",
+    "delta": " (~206"
+   }
+  },
+  {
+   "t": 14.451,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7",
+    "delta": "KB), README.md 381"
+   }
+  },
+  {
+   "t": 14.455,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7",
+    "delta": "8 bytes (~3"
+   }
+  },
+  {
+   "t": 14.462,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7",
+    "delta": ".8KB), ."
+   }
+  },
+  {
+   "t": 14.469,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7",
+    "delta": "env.example 900 bytes"
+   }
+  },
+  {
+   "t": 14.473,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7",
+    "delta": ", py"
+   }
+  },
+  {
+   "t": 14.481,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7",
+    "delta": "project.toml 721"
+   }
+  },
+  {
+   "t": 14.486,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7",
+    "delta": " bytes, .python-version"
+   }
+  },
+  {
+   "t": 14.493,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7",
+    "delta": " 5 bytes"
+   }
+  },
+  {
+   "t": 14.572,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7",
+    "delta": ". Summ"
+   }
+  },
+  {
+   "t": 14.572,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7",
+    "delta": "arize in"
+   }
+  },
+  {
+   "t": 14.572,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_CONTENT",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7",
+    "delta": " two sentences."
+   }
+  },
+  {
+   "t": 14.573,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_MESSAGE_END",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7"
+   }
+  },
+  {
+   "t": 14.574,
+   "kind": "event",
+   "event": {
+    "type": "REASONING_END",
+    "messageId": "fc79deee-f8bd-4262-9e01-bd377075bec7"
+   }
+  },
+  {
+   "t": 14.574,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_START",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "role": "assistant"
+   }
+  },
+  {
+   "t": 14.577,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": "The"
+   }
+  },
+  {
+   "t": 14.578,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": " directory"
+   }
+  },
+  {
+   "t": 14.579,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": "’s"
+   }
+  },
+  {
+   "t": 14.579,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": " five"
+   }
+  },
+  {
+   "t": 14.579,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": " biggest regular"
+   }
+  },
+  {
+   "t": 14.58,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": " files are `"
+   }
+  },
+  {
+   "t": 14.58,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": "uv.lock` (≈210"
+   }
+  },
+  {
+   "t": 14.58,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": " KB), `"
+   }
+  },
+  {
+   "t": 14.581,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": "README.md` (≈3"
+   }
+  },
+  {
+   "t": 14.582,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": ".8 KB), `."
+   }
+  },
+  {
+   "t": 14.583,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": "env.example` (900"
+   }
+  },
+  {
+   "t": 14.588,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": " B), `"
+   }
+  },
+  {
+   "t": 14.594,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": "pyproject.toml` ("
+   }
+  },
+  {
+   "t": 14.621,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": "721"
+   }
+  },
+  {
+   "t": 14.622,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": " B)"
+   }
+  },
+  {
+   "t": 14.623,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": " and `."
+   }
+  },
+  {
+   "t": 14.624,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": "python-version` (5 "
+   }
+  },
+  {
+   "t": 14.626,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": "B). Their"
+   }
+  },
+  {
+   "t": 14.636,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": " sizes drop"
+   }
+  },
+  {
+   "t": 14.638,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": " sharply from the "
+   }
+  },
+  {
+   "t": 14.644,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": "200"
+   }
+  },
+  {
+   "t": 14.665,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": "‑"
+   }
+  },
+  {
+   "t": 14.672,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": "KB "
+   }
+  },
+  {
+   "t": 14.673,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": "uv.lock"
+   }
+  },
+  {
+   "t": 14.674,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": " down"
+   }
+  },
+  {
+   "t": 14.675,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": " to just"
+   }
+  },
+  {
+   "t": 14.686,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": " a few bytes for"
+   }
+  },
+  {
+   "t": 14.689,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": " the smallest"
+   }
+  },
+  {
+   "t": 14.695,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": " file"
+   }
+  },
+  {
+   "t": 14.727,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9",
+    "delta": "."
+   }
+  },
+  {
+   "t": 14.807,
+   "kind": "event",
+   "event": {
+    "type": "TEXT_MESSAGE_END",
+    "messageId": "d671daf9-1c6f-45f8-802f-6186fbd9f7f9"
+   }
+  },
+  {
+   "t": 14.807,
+   "kind": "event",
+   "event": {
+    "type": "RUN_FINISHED",
+    "threadId": "7ad6f0a6-7d85-420b-93cd-5e1622e87eec",
+    "runId": "7e526fa8-11c3-432d-bd78-d89b7804feeb"
+   }
+  }
+ ]
+}
