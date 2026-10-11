@@ -375,7 +375,8 @@ class GentuiApp(App[None]):
         elif t == EventType.TOOL_CALL_RESULT:
             self.transcript.tool_result(ev.tool_call_id, ev.content)
             if w := self._tool_widgets.get(ev.tool_call_id):
-                w.on_result(ev.content)
+                failed = isinstance(ev.raw_event, dict) and ev.raw_event.get("status") == "error"
+                (w.on_error if failed else w.on_result)(ev.content)
         elif t == EventType.STATE_SNAPSHOT:
             self.state = ev.snapshot
             await self._on_state_changed()

@@ -1,6 +1,6 @@
 [project]
 name = "gentui"
-version = "0.1.5"
+version = "0.1.6"
 description = "A terminal interface for prototyping agents really quickly, for any AG-UI backend"
 readme = "README.md"
 license = "MIT"
@@ -42,6 +42,15 @@ tui = "gentui.cli:main"
 agentcore = [
     "boto3>=1.40",
 ]
+strands = [
+    "strands-agents>=1.57",  # the version the in-process adapter was built and tested against
+]
+ollama = [
+    "strands-agents[ollama]>=1.57",  # Strands' Ollama model provider (brings the ollama client)
+]
+harness = [
+    "strands-harness>=0.2.0",  # create_harness(), used by examples/strands_native
+]
 
 [build-system]
 requires = ["uv_build>=0.12.22,<0.13.0"]
@@ -51,6 +60,7 @@ build-backend = "uv_build"
 dev = [
     "boto3>=1.43.108",
     "pytest>=9.1.1",
+    "strands-agents>=1.57",
     "pytest-asyncio>=1.4.0",
 ]
 docs = [
