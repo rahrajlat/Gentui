@@ -1,5 +1,7 @@
 # Run a set of prompts: `--prompts`
 
+![Running a set of prompts from a YAML file](assets/prompts.gif)
+
 Put the messages in a YAML file and Gentui sends them for you, one after the other, each when the previous answer is
 complete:
 

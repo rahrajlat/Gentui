@@ -1,5 +1,7 @@
 # Record and replay
 
+![Recording and replaying a session](assets/replay.gif)
+
 ```bash
 gentui http://localhost:8000/agent --record my_session   # chat as usual; quit when done
 gentui --replay my_session                               # no backend needed

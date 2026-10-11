@@ -1,5 +1,7 @@
 # Judges: score how well two runs match
 
+![A judge scoring each prompt in compare mode](assets/judges.gif)
+
 In the compare view, the **Judge** drop-down turns a judge on. Each prompt's section then opens with a boxed **Judge panel**: a match score
 (0 to 100%) with a bar, and the judge's comment on the key difference. The box is green from 80%, yellow from 50% and red
 below; the summary shows the average. Prompts whose answers and tool calls are

@@ -1,5 +1,7 @@
 # Compare runs: `--compare`
 
+![Comparing two recorded runs](assets/compare.gif)
+
 Record the same prompts against two versions of an agent (a new system prompt, a different model), then diff them:
 
 ```bash
