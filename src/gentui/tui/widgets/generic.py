@@ -14,6 +14,8 @@ from gentui.tui.widgets.registry import register_widget
 class GenericToolWidget(ToolWidget):
     """Any tool without a dedicated widget: show its name, args and result as JSON."""
 
+    ended = False  # the call is fully requested; until its result arrives it is running
+
     def on_start(self) -> None:
         self._draw(None)
 
@@ -23,12 +25,16 @@ class GenericToolWidget(ToolWidget):
 
     def on_end(self, args: dict[str, Any]) -> None:
         super().on_end(args)
+        self.ended = True
         self._draw(None)
 
     def on_result(self, text: str) -> None:
         self._draw(text)
 
-    def _draw(self, result: str | None) -> None:
+    def on_error(self, text: str) -> None:
+        self._draw(text, failed=True)
+
+    def _draw(self, result: str | None, failed: bool = False) -> None:
         head = Text.assemble((f"{TOOL_MARK} ", "bold"), (self.tool_name, "bold"))
         if self.args:
             summary = ", ".join(f"{k}={json.dumps(v, ensure_ascii=False)}" for k, v in self.args.items())
@@ -38,7 +44,12 @@ class GenericToolWidget(ToolWidget):
             first = next((line for line in result.strip().splitlines() if line.strip()), "(no output)")
             more = len(result.strip().splitlines()) - 1
             tail = f"  (+{more} lines)" if more > 0 else ""
-            parts.append(Text(f"  {RESULT_MARK}  {first[:110]}{tail}", style="dim"))
+            if failed:
+                parts.append(Text(f"  ✖ failed: {first[:110]}{tail}", style="red"))
+            else:
+                parts.append(Text(f"  {RESULT_MARK}  {first[:110]}{tail}", style="dim"))
+        elif self.ended:
+            parts.append(Text("  … running", style="dim italic"))
         self.show(Group(*parts))
 
 

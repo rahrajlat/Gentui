@@ -25,6 +25,7 @@ class ToolWidget(Vertical):
         on_args(args)      TOOL_CALL_ARGS    -> args parsed so far (may be called repeatedly)
         on_end(args)       TOOL_CALL_END     -> final args
         on_result(text)    TOOL_CALL_RESULT  -> what the tool returned
+        on_error(text)     TOOL_CALL_RESULT  -> the same, when the backend flagged the tool as failed
         on_interrupt(i)    RUN_FINISHED      -> the run is waiting for a decision on this call
 
     Subclasses override what they need. To talk back to the agent (button clicks, forms),
@@ -90,6 +91,10 @@ class ToolWidget(Vertical):
         self.args = args
 
     def on_result(self, text: str) -> None: ...
+
+    def on_error(self, text: str) -> None:
+        """The tool failed (the backend marked its result as an error). Widgets that don't care show it as a result."""
+        self.on_result(text)
 
     def on_interrupt(self, interrupt: Any) -> bool:
         """The run ended waiting on this tool call (RUN_FINISHED outcome "interrupt"). Return True

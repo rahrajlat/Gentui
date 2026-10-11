@@ -7,6 +7,11 @@ All notable changes to Gentui are documented here. The format follows
 ## [Unreleased]
 
 ### Added
+- Native Strands Agents integration: `GentUI.from_strands(agent).run()` runs a Strands agent in-process (no server) through the
+  normal AG-UI pipeline, with tool cards (running / done / failed), reasoning, `approval_hook` for Approve / Reject, and the
+  event inspector. Install with `pip install 'gentui[strands]'`. Examples in `examples/strands_native/`.
+- `GentUI(adapter)`: the terminal UI around any client that yields AG-UI events.
+- A tool card now shows "running" until its result arrives, and "failed" when the backend flags the result as an error.
 - Export a comparison: `e` in the compare view, or `gentui --compare a,b [--judge J] --export report.html`, writes one
   self-contained HTML page with every prompt, the judge's scores and comments, both sides' answers, tool calls, tables and all
   charts (inline SVG). Changed text is marked word by word. No scripts, nothing loaded from the web.
