@@ -43,7 +43,33 @@ gentui --compare v1,v2 --plugin my_judge.py --judge mine
 
 Return `{"score": 0..1, "reason": "..."}` (or a `(score, reason)` tuple). A judge that raises shows "judge failed" on that
 prompt and nothing else is affected. Verdicts are cached in `~/.cache/gentui/judge.json`, keyed by the judge and both
-answers, so judging the same pair again is instant and free.
+answers, so judging the same pair again is instant and free. If you change a judge's logic but keep its name, rename it
+(or delete the cache file) so old verdicts are not reused.
+
+## Example judges
+
+[`examples/judges/`](https://github.com/rahrajlat/Gentui/tree/main/examples/judges) has three ready-made judges to copy from:
+
+| File | Judge name | What it does | Needs |
+|---|---|---|---|
+| `same_numbers.py` | `same-numbers` | share of numbers that appear in both answers | nothing |
+| `same_tools.py` | `same-tools` | same tool calls, same arguments, same order? | nothing |
+| `strands_judge.py` | `strands` | a Strands agent (an LLM) returns a structured verdict | `gentui[strands,harness,ollama]` and Ollama |
+
+Try them on the sample recordings in `examples/compare/`:
+
+```bash
+# one judge
+gentui --compare examples/compare/v1,examples/compare/v2 --plugin examples/judges/same_numbers.py --judge same-numbers
+
+# several plugins at once; pick the judge in the Judge drop-down (or with --judge)
+gentui --compare examples/compare/v1,examples/compare/v2 \
+  -p examples/judges/same_numbers.py -p examples/judges/same_tools.py --judge same-tools
+
+# write the HTML report without opening the UI
+gentui --compare examples/compare/v1,examples/compare/v2 -p examples/judges/same_tools.py \
+  --judge same-tools --export report.html
+```
 
 **Privacy:** a judge is sent the prompt, the answers and the tool output. With a hosted judge that leaves your machine, and
 recordings can contain secrets. Judging only happens when you turn a judge on.
