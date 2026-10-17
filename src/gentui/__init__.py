@@ -2,6 +2,7 @@
 
     from gentui import GentUI
     GentUI.from_strands(agent).run()      # a Strands agent, in this process, no server
+    GentUI.from_langchain(agent).run()    # a LangChain / LangGraph agent, same idea
 """
 
 from typing import TYPE_CHECKING, Any
@@ -29,6 +30,13 @@ class GentUI:
         from gentui.adapters.strands import StrandsAGUIAdapter
 
         return cls(StrandsAGUIAdapter(agent), config, **options)
+
+    @classmethod
+    def from_langchain(cls, agent: Any, config: "Config | None" = None, **options: Any) -> "GentUI":
+        """Chat with a LangChain / LangGraph agent (a compiled graph) in this process: no server, no HTTP."""
+        from gentui.adapters.langchain import LangChainAGUIAdapter
+
+        return cls(LangChainAGUIAdapter(agent), config, **options)
 
     def build(self):
         """The Textual app (for `run_test` or embedding); `run()` builds and runs it."""
