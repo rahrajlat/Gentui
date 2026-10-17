@@ -49,6 +49,7 @@ nav:
       - Backend contract: tool-contract.md
       - AgentCore Runtime: agentcore.md
       - Native Strands agents: strands-native.md
+      - Native LangChain agents: langchain-native.md
   - Project:
       - How it works: architecture.md
       - Development and status: development.md

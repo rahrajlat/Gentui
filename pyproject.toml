@@ -51,6 +51,13 @@ ollama = [
 harness = [
     "strands-harness>=0.2.0",  # create_harness(), used by examples/strands_native
 ]
+langchain = [
+    "langchain>=1.0",
+    "langgraph>=1.0",
+]
+langchain-ollama = [
+    "langchain-ollama>=1.0",
+]
 
 [build-system]
 requires = ["uv_build>=0.12.22,<0.13.0"]
