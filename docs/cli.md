@@ -26,7 +26,20 @@ Options can also live in `gentui.toml` ([customising](customising.md)). Run `gen
 | `--plugin`, `-p MODULE\|FILE` | load a [plugin](plugins.md) (repeatable) |
 | `--no-reasoning` | hide the model's chain of thought |
 | `--dev` | open the AG-UI event inspector at start |
+| `--serve` | open the UI in a web browser instead of the terminal (needs `pip install 'gentui[web]'`) |
+| `--host ADDR`, `--port N` | with `--serve`: where to listen [default: `localhost`, `8080`] |
 | `--version` | print the version |
+
+## In the browser
+
+```bash
+pip install 'gentui[web]'
+gentui http://localhost:8000/agent --serve       # then open http://localhost:8080
+```
+
+`--serve` runs the same command in a browser tab ([textual-serve](https://github.com/Textualize/textual-serve)). Every
+tab starts its own Gentui. It listens on `localhost` by default; with `--host 0.0.0.0` anyone who can reach the port
+can use the agent and its tools, so only do that on a network you trust.
 
 ## Demo, record and replay
 

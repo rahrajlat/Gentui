@@ -80,6 +80,11 @@ AG-UI events.
 **Multi-turn.** Memory is the graph's checkpointer, keyed by Gentui's thread id. If the graph has none, Gentui gives it
 an in-memory one. `/new` starts a fresh thread.
 
+## In the browser
+
+`gentui --serve` serves the same UI in a web page (`pip install 'gentui[web]'`). For a native agent, serve your script
+with textual-serve: `Server("python my_agent.py").serve()`. See the [command-line reference](cli.md#in-the-browser).
+
 ## Limitations
 
 - No reasoning is shown unless the model returns it.
