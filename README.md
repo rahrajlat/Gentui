@@ -92,6 +92,10 @@ Run the same prompts against two versions of your agent, diff the results side b
 
 Gentui is **alpha**: tested with the Strands Agents framework over AG-UI and with AgentCore Runtime; other setups are untested. The details are in [Development and status](https://rahrajlat.github.io/Gentui/development/).
 
+## Support the project
+
+If Gentui saves you time, please **[star the repo on GitHub](https://github.com/rahrajlat/Gentui)** ⭐. It helps other people find it, and it is the easiest way to say thanks.
+
 ## Contributing
 
 Issues and pull requests are welcome. Please run the tests (`uv run pytest -q`) before opening a PR, and add a test with any behaviour change. See [Development and status](https://rahrajlat.github.io/Gentui/development/).
