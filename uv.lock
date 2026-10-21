@@ -691,7 +691,7 @@ wheels = [
 
 [[package]]
 name = "gentui"
-version = "0.1.7"
+version = "0.1.8"
 source = { editable = "." }
 dependencies = [
     { name = "ag-ui-protocol" },
