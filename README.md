@@ -35,6 +35,15 @@ gentui --demo                                    # no backend yet? watch a tour 
 
 Requires Python 3.12 or newer.
 
+No server needed for Strands or LangChain agents: run them inside Gentui in a few lines.
+
+```python
+from gentui import GentUI
+
+GentUI.from_strands(agent).run()      # pip install 'gentui[strands]'
+GentUI.from_langchain(agent).run()    # pip install 'gentui[langchain]'
+```
+
 ## Documentation
 
 **Full docs, with search: [rahrajlat.github.io/Gentui](https://rahrajlat.github.io/Gentui/)**
@@ -52,6 +61,9 @@ Requires Python 3.12 or newer.
 | add widgets, commands or event hooks | [Plugins](https://rahrajlat.github.io/Gentui/plugins/) |
 | build my own backend in any language | [Backend contract](https://rahrajlat.github.io/Gentui/tool-contract/) |
 | talk to an agent on Amazon Bedrock AgentCore | [AgentCore Runtime](https://rahrajlat.github.io/Gentui/agentcore/) |
+| run a Strands agent in my own process, no server | [Native Strands agents](https://rahrajlat.github.io/Gentui/strands-native/) |
+| run a LangChain / LangGraph agent in my own process | [Native LangChain agents](https://rahrajlat.github.io/Gentui/langchain-native/) |
+| open the UI in a web browser | [In the browser](https://rahrajlat.github.io/Gentui/cli/#in-the-browser) |
 | understand the internals | [How it works](https://rahrajlat.github.io/Gentui/architecture/) |
 
 ## See it

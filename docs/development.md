@@ -9,6 +9,9 @@ Gentui is **alpha**. What has been verified, and what has not:
   [`ag-ui-strands`](https://pypi.org/project/ag-ui-strands/) adapter (with `send_history = true`).
 - AgentCore Runtime support works against a real runtime (confirmed by the author with a plain runtime ARN) and only
   covers runtimes using the AG-UI protocol. Other setups are covered by tests with a fake boto3 client and botocore's `Stubber`.
+- The native adapters ([Strands](strands-native.md), [LangChain / LangGraph](langchain-native.md)) are covered by tests that
+  drive a real agent with a scripted model. The LangChain adapter has not been run against a real model provider yet.
+- `--serve` is tested for how it builds the browser command; how the UI looks and behaves in different browsers is **untested**.
 - Backends on other frameworks, the interrupt flow against a backend other than the example, other model
   providers than Ollama, and native Windows are **untested**.
 - The look relies on Unicode box-drawing and block characters. If glyphs are missing, try a terminal

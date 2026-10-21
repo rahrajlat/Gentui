@@ -28,6 +28,44 @@ def parse_headers(items: list[str] | None) -> dict[str, str] | None:
     return headers
 
 
+_SERVE_FLAGS = {"--serve": 0, "--host": 1, "--port": 1}
+
+
+def _without_serve_flags(argv: list[str]) -> list[str]:
+    """The arguments each browser session runs gentui with: everything except the serve flags themselves."""
+    kept, skip = [], 0
+    for arg in argv:
+        if skip:
+            skip -= 1
+        elif arg.split("=", 1)[0] in _SERVE_FLAGS:
+            skip = 0 if "=" in arg else _SERVE_FLAGS[arg]
+        else:
+            kept.append(arg)
+    return kept
+
+
+def _run_serve(argv: list[str], host: str, port: int) -> None:
+    """--serve: the same command in a browser. textual-serve starts one gentui per browser tab."""
+    import shlex
+
+    try:
+        from textual_serve.server import Server
+    except ImportError:
+        sys.exit(
+            "gentui: --serve needs textual-serve. Install it with:\n"
+            "    pip install 'gentui[web]'\n"
+            "    uv tool install 'gentui[web]'\n"
+            "    uv sync --extra web               (from a clone)"
+        )
+    if host not in ("localhost", "127.0.0.1", "::1"):
+        print(
+            f"gentui: warning: {host} is reachable by others. Anyone who opens the page can use the agent and its tools.",
+            file=sys.stderr,
+        )
+    command = shlex.join([sys.executable, "-m", "gentui.cli", *_without_serve_flags(argv)])
+    Server(command, host=host, port=port, title="Gentui").serve()
+
+
 def _run(app, record: str | None, prompts: list[str] | None = None) -> None:
     """Run the app, saving the session when --record was given and sending the --prompts."""
     app.queued_prompts = prompts or []
@@ -150,8 +188,15 @@ def main(argv: list[str] | None = None) -> None:
         "--export", metavar="FILE.html",
         help="with --compare: write the comparison (every chart, the judge's verdicts) to an HTML page instead of opening it",
     )
+    parser.add_argument("--serve", action="store_true", help="open the UI in a web browser instead of the terminal (needs gentui[web])")
+    parser.add_argument("--host", default="localhost", help="with --serve: address to listen on [default: localhost]")
+    parser.add_argument("--port", type=int, default=8080, help="with --serve: port to listen on [default: 8080]")
     parser.add_argument("--dev", action="store_true", help="open the AG-UI event inspector at start")
+    argv = sys.argv[1:] if argv is None else argv
     args = parser.parse_args(argv)
+    if args.serve:
+        _run_serve(argv, args.host, args.port)
+        return
     if args.demo and args.demo_speed <= 0:
         parser.error("--demo-speed must be above 0")
 

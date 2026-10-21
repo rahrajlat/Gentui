@@ -7,6 +7,12 @@ All notable changes to Gentui are documented here. The format follows
 ## [Unreleased]
 
 ### Added
+- Native LangChain / LangGraph integration: `GentUI.from_langchain(agent).run()` runs a compiled LangGraph graph (what
+  `create_agent` returns) in-process, with streaming text and reasoning, tool cards, and `approval_middleware` for
+  Approve / Reject through LangGraph's `interrupt()`. Memory is the graph's checkpointer. Install with
+  `pip install 'gentui[langchain]'` (plus `langchain-ollama` for the examples). Examples in `examples/langchain_native/`.
+- `gentui <url> --serve` shows the same UI in a web browser (via textual-serve), with `--host` and `--port`. It listens on
+  `localhost` by default. Install with `pip install 'gentui[web]'`.
 - Native Strands Agents integration: `GentUI.from_strands(agent).run()` runs a Strands agent in-process (no server) through the
   normal AG-UI pipeline, with tool cards (running / done / failed), reasoning, `approval_hook` for Approve / Reject, and the
   event inspector. Install with `pip install 'gentui[strands]'`. Examples in `examples/strands_native/`.

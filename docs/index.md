@@ -29,6 +29,13 @@ pip install gentui                               # or: uv tool install gentui
 gentui http://localhost:8000/agent               # your AG-UI endpoint
 ```
 
+Or skip the server and run your agent inside Gentui, in a few lines:
+
+```python
+GentUI.from_strands(agent).run()       # Strands Agents:  pip install 'gentui[strands]'
+GentUI.from_langchain(agent).run()     # LangChain / LangGraph:  pip install 'gentui[langchain]'
+```
+
 Requires Python 3.12 or newer. No backend yet? Try `gentui --demo`, which plays a tour of every feature by itself.
 
 ## What do you want to do?
@@ -46,6 +53,9 @@ Requires Python 3.12 or newer. No backend yet? Try `gentui --demo`, which plays 
 | add widgets, commands, event hooks or a judge | [Plugins](plugins.md) |
 | build my own backend in any language | [Backend contract](tool-contract.md) |
 | talk to an agent on Amazon Bedrock AgentCore | [AgentCore Runtime](agentcore.md) |
+| run a Strands agent in my own process, no server | [Native Strands agents](strands-native.md) |
+| run a LangChain / LangGraph agent in my own process | [Native LangChain agents](langchain-native.md) |
+| open the UI in a web browser | [In the browser](cli.md#in-the-browser) |
 | understand the internals | [How it works](architecture.md) |
 | contribute, run the tests, see what is verified | [Development and status](development.md) |
 | cut a release | [Releasing](releasing.md) |

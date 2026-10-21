@@ -92,6 +92,12 @@ are the AG-UI events produced from them.
 **Multi-turn.** The agent keeps its own conversation, so each message continues it. `/new` clears the agent's
 messages and starts over. An agent that already has history keeps it for the first chat.
 
+## In the browser
+
+`gentui --serve` serves the same UI in a web page (`pip install 'gentui[web]'`). For a native agent, serve your script
+with textual-serve: `Server("python my_agent.py").serve()`. See the [command-line reference](cli.md#in-the-browser).
+Using LangChain instead? See [Native LangChain agents](langchain-native.md).
+
 ## HTTP AG-UI or native?
 
 | | Native (`GentUI.from_strands`) | HTTP (`gentui <url>`) |

@@ -39,3 +39,19 @@ gentui --demo all --demo-speed 2    # twice as fast
 
 Inside the demo, `/demo <scene>` switches scene and `/quit` leaves. Nothing is sent anywhere.
 
+## Run your agent without a server
+
+If your agent is a Strands or LangChain / LangGraph agent in Python, Gentui can run it in the same process: no endpoint,
+no FastAPI. See [Native Strands agents](strands-native.md) and [Native LangChain agents](langchain-native.md).
+
+```python
+from gentui import GentUI
+
+GentUI.from_strands(agent).run()       # pip install 'gentui[strands]'
+GentUI.from_langchain(agent).run()     # pip install 'gentui[langchain]'
+```
+
+## Open it in a browser
+
+`pip install 'gentui[web]'`, then add `--serve` to any command: `gentui http://localhost:8000/agent --serve`. See the
+[command-line reference](cli.md#in-the-browser).
