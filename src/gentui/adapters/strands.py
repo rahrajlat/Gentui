@@ -27,6 +27,7 @@ the pause into an AG-UI interrupt, Gentui shows Approve / Reject, and the answer
 
 import asyncio
 import json
+import os
 import uuid
 from collections.abc import AsyncIterator, Callable, Iterable, Iterator
 from typing import Any
@@ -61,6 +62,103 @@ APPROVAL_SCHEMA = {
 
 # the Strands events shown in the dev pane; the rest are bookkeeping or duplicates of these
 _RAW_KEYS = ("event", "message", "tool_stream_event", "tool_interrupt_event", "tool_cancel_event", "force_stop")
+
+
+_OLLAMA_REASONING: type | None = None
+
+
+def ollama_model(model_id: str, *, think: bool | str | None = True, host: str | None = None, **config: Any) -> Any:
+    """A Strands `OllamaModel` that streams the model's thinking, so Gentui can show it.
+
+        agent = Agent(model=ollama_model("gpt-oss:20b"), tools=[...])
+        agent = create_harness(model=ollama_model("gpt-oss:120b-cloud"), ...)     # also takes this
+
+    Strands' own `OllamaModel` (and so `model="ollama/..."` in the harness) discards the `thinking` that Ollama streams,
+    so a reasoning model shows no thoughts at all. This one forwards them as reasoning blocks. `think` is passed to Ollama
+    (`True`, or a level such as "low" / "medium" / "high" for gpt-oss; `None` leaves it to the model). Models that cannot
+    think need `think=None`. `host` defaults to `OLLAMA_HOST`, and `OLLAMA_API_KEY` is sent as a bearer token. Other
+    keyword arguments are Strands' OllamaModel config (`temperature`, `max_tokens`, ...).
+    """
+    global _OLLAMA_REASONING
+    try:
+        import ollama
+        from strands.models.ollama import OllamaModel
+    except ImportError as exc:
+        raise ImportError(
+            "ollama_model needs Strands with Ollama. Install it with: pip install 'gentui[strands,ollama]'"
+        ) from exc
+
+    if _OLLAMA_REASONING is None:
+
+        class OllamaReasoningModel(OllamaModel):
+            think: bool | str | None = True
+
+            def _format_request_message_contents(self, role, content):
+                if "reasoningContent" in content:  # Ollama has no place for earlier thoughts: drop them from the history
+                    return []
+                return super()._format_request_message_contents(role, content)
+
+            def format_request(self, messages, tool_specs=None, system_prompt=None):
+                request = super().format_request(messages, tool_specs, system_prompt)
+                if self.think is not None:
+                    request.setdefault("think", self.think)
+                return request
+
+            async def stream(self, messages, tool_specs=None, system_prompt=None, *, tool_choice=None, **kwargs):
+                request = self.format_request(messages, tool_specs, system_prompt)
+                client = ollama.AsyncClient(self.host, **self.client_args)
+                block: str | None = None  # the open block: "thinking" or "text"
+                tool_requested, event = False, None
+                try:
+                    response = await client.chat(**request)
+                    yield self.format_chunk({"chunk_type": "message_start"})
+                    async for event in response:
+                        message = event.message
+                        if message.thinking:
+                            if block != "thinking":
+                                if block:
+                                    yield self.format_chunk({"chunk_type": "content_stop", "data_type": block})
+                                block = "thinking"
+                            yield {"contentBlockDelta": {"delta": {"reasoningContent": {"text": message.thinking}}}}
+                        if message.content:
+                            if block != "text":
+                                if block:
+                                    yield {"contentBlockStop": {}}
+                                block = "text"
+                                yield self.format_chunk({"chunk_type": "content_start", "data_type": "text"})
+                            yield self.format_chunk({"chunk_type": "content_delta", "data_type": "text", "data": message.content})
+                        for call in message.tool_calls or []:
+                            if block:
+                                yield {"contentBlockStop": {}}
+                                block = None
+                            yield self.format_chunk({"chunk_type": "content_start", "data_type": "tool", "data": call})
+                            yield self.format_chunk({"chunk_type": "content_delta", "data_type": "tool", "data": call})
+                            yield self.format_chunk({"chunk_type": "content_stop", "data_type": "tool", "data": call})
+                            tool_requested = True
+                except ollama.ResponseError as error:
+                    if any(m in str(error).lower() for m in self.OVERFLOW_MESSAGES):
+                        from strands.types.exceptions import ContextWindowOverflowException
+
+                        raise ContextWindowOverflowException(str(error)) from error
+                    raise
+                if block:
+                    yield {"contentBlockStop": {}}
+                reason = "tool_use" if tool_requested else (event.done_reason if event else None)
+                yield self.format_chunk({"chunk_type": "message_stop", "data": reason})
+                if event is not None:
+                    yield self.format_chunk({"chunk_type": "metadata", "data": event})
+
+        _OLLAMA_REASONING = OllamaReasoningModel
+
+    api_key = os.environ.get("OLLAMA_API_KEY")
+    model = _OLLAMA_REASONING(
+        host or os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434"),
+        ollama_client_args={"headers": {"Authorization": f"Bearer {api_key}"}} if api_key else None,
+        model_id=model_id,
+        **config,
+    )
+    model.think = think
+    return model
 
 
 def approval_hook(*tool_names: str, message: str | Callable[[str, dict[str, Any]], str] | None = None) -> Callable:

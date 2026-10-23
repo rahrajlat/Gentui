@@ -10,6 +10,7 @@ import html
 import json
 import math
 import re
+import statistics
 from collections.abc import Iterable
 from datetime import datetime
 from difflib import SequenceMatcher
@@ -23,7 +24,7 @@ from gentui.judge import Verdict
 from gentui.session import Session
 from gentui.tui.compare import Block, Pair, align, blocks_of, verdict_for
 
-KINDS = ("line", "bar", "scatter", "histogram")
+KINDS = ("line", "bar", "hbar", "stacked_bar", "area", "scatter", "histogram", "box", "heatmap", "pie")
 PALETTE = ["#4FD6C8", "#A78BFA", "#F2C46D", "#F27C86", "#7DD3FC", "#7BD88F"]
 _md = MarkdownIt("commonmark", {"html": False}).enable("table")  # raw HTML in an answer is escaped, not passed on
 
@@ -60,7 +61,7 @@ def _numbers(values: list[Any]) -> list[float]:
 
 
 def chart_svg(spec: dict[str, Any]) -> str:
-    """The `show_chart` arguments as an inline SVG (bar, line, scatter or histogram). Raises ValueError if unusable."""
+    """The `show_chart` arguments as an inline SVG (any chart type of the `show_chart` tool). Raises ValueError if unusable."""
     kind = str(spec.get("type", "line")).lower()
     if kind not in KINDS:
         raise ValueError(f"unknown chart type {kind!r}")
@@ -70,6 +71,8 @@ def chart_svg(spec: dict[str, Any]) -> str:
     names = [str(s.get("name", f"series {i + 1}")) for i, s in enumerate(series)]
     data = [_numbers(s["values"]) for s in series]
 
+    if kind in ("hbar", "box", "heatmap", "pie"):
+        return _own_layout_svg(kind, spec, names, data)
     if kind == "histogram":
         values, bins = data[0], max(int(spec.get("bins") or 10), 1)
         lo, hi = min(values), max(values)
@@ -88,6 +91,8 @@ def chart_svg(spec: dict[str, Any]) -> str:
     W, H, L, R, T, B = 640, 350, 56, 16, 48, 56
     pw, ph = W - L - R, H - T - B
     flat = [v for ys in data for v in ys]
+    if kind == "stacked_bar":
+        flat = [sum(col) for col in zip(*data)]
     lo, hi = min(0.0, min(flat)), max(flat)
     ticks = _ticks(lo, hi)
     lo, hi = ticks[0], ticks[-1]
@@ -99,7 +104,7 @@ def chart_svg(spec: dict[str, Any]) -> str:
         out.append(f'<text x="{L - 6}" y="{y(t) + 4:.1f}" class="tick" text-anchor="end">{_fmt(t)}</text>')
     out.append(f'<line x1="{L}" x2="{L}" y1="{T}" y2="{T + ph}" class="axis"/><line x1="{L}" x2="{W - R}" y1="{y(0 if lo <= 0 else lo):.1f}" y2="{y(0 if lo <= 0 else lo):.1f}" class="axis"/>')
 
-    numeric_x = kind in ("line", "scatter") and all(isinstance(v, Number) and not isinstance(v, bool) for v in x)
+    numeric_x = kind in ("line", "scatter", "area") and all(isinstance(v, Number) and not isinstance(v, bool) for v in x)
     if numeric_x:
         xlo, xhi = min(x), max(x)
         px = lambda i: L + (x[i] - xlo) / ((xhi - xlo) or 1) * pw  # noqa: E731
@@ -108,7 +113,14 @@ def chart_svg(spec: dict[str, Any]) -> str:
         px = lambda i: L + slot * (i + 0.5)  # noqa: E731
     base = y(0 if lo <= 0 else lo)
 
-    if kind == "bar":
+    if kind == "stacked_bar":
+        below = [0.0] * len(x)
+        for s, ys in enumerate(data):
+            for i, v in enumerate(ys):
+                bx, top, bottom = L + slot * i + slot * 0.1, y(below[i] + v), y(below[i])
+                out.append(f'<rect x="{bx:.1f}" y="{min(top, bottom):.1f}" width="{slot * 0.8:.1f}" height="{abs(bottom - top):.1f}" fill="{PALETTE[s % 6]}"><title>{esc(names[s])}, {esc(x[i])}: {_fmt(v)}</title></rect>')
+                below[i] += v
+    elif kind == "bar":
         group = slot * 0.8 / len(data)
         for s, ys in enumerate(data):
             for i, v in enumerate(ys):
@@ -118,8 +130,10 @@ def chart_svg(spec: dict[str, Any]) -> str:
     else:
         for s, ys in enumerate(data):
             colour = PALETTE[s % 6]
-            if kind == "line":
+            if kind in ("line", "area"):
                 points = " ".join(f"{px(i):.1f},{y(v):.1f}" for i, v in enumerate(ys))
+                if kind == "area":
+                    out.append(f'<polygon points="{px(0):.1f},{base:.1f} {points} {px(len(ys) - 1):.1f},{base:.1f}" fill="{colour}" fill-opacity="0.25"/>')
                 out.append(f'<polyline points="{points}" fill="none" stroke="{colour}" stroke-width="2"/>')
             for i, v in enumerate(ys):
                 out.append(f'<circle cx="{px(i):.1f}" cy="{y(v):.1f}" r="{4 if kind == "scatter" else 3}" fill="{colour}"><title>{esc(names[s])}, {esc(x[i])}: {_fmt(v)}</title></circle>')
@@ -137,6 +151,111 @@ def chart_svg(spec: dict[str, Any]) -> str:
         for s, name in enumerate(names):
             out.append(f'<rect x="{L + 8 + s * 120}" y="{T - 16}" width="10" height="10" fill="{PALETTE[s % 6]}"/>'
                        f'<text x="{L + 22 + s * 120}" y="{T - 7}" class="tick">{esc(name)}</text>')
+    out.append("</svg>")
+    return "".join(out)
+
+
+def _frame(spec: dict[str, Any], width: int, height: int) -> list[str]:
+    return [f'<svg class="chart" viewBox="0 0 {width} {height}" role="img" aria-label="{esc(spec.get("title", "chart"))}">',
+            f'<text x="{width / 2}" y="20" class="ctitle" text-anchor="middle">{esc(spec.get("title", ""))}</text>']
+
+
+def _labels_for(spec: dict[str, Any], data: list[list[float]], names: list[str]) -> list[Any]:
+    x = list(spec.get("x") or range(1, len(data[0]) + 1))
+    for name, ys in zip(names, data):
+        if len(ys) != len(x):
+            raise ValueError(f"series {name!r} has {len(ys)} values for {len(x)} x points")
+    return x
+
+
+def _short(value: Any, n: int = 14) -> str:
+    text = str(value)
+    return text if len(text) <= n else text[: n - 1] + "…"
+
+
+def _own_layout_svg(kind: str, spec: dict[str, Any], names: list[str], data: list[list[float]]) -> str:
+    """The chart types that do not share the vertical axes of bars and lines: hbar, box, heatmap and pie."""
+    W, H = 640, 350
+    out = _frame(spec, W, H)
+    if kind == "box":
+        if not all(data):
+            raise ValueError("each box needs at least one value")
+        L, R, T, B = 56, 16, 48, 48
+        pw, ph = W - L - R, H - T - B
+        ticks = _ticks(min(v for ys in data for v in ys), max(v for ys in data for v in ys))
+        lo, hi = ticks[0], ticks[-1]
+        y = lambda v: T + ph - (v - lo) / (hi - lo) * ph  # noqa: E731
+        for t in ticks:
+            out.append(f'<line x1="{L}" x2="{W - R}" y1="{y(t):.1f}" y2="{y(t):.1f}" class="grid"/>'
+                       f'<text x="{L - 6}" y="{y(t) + 4:.1f}" class="tick" text-anchor="end">{_fmt(t)}</text>')
+        slot = pw / len(data)
+        for i, (name, ys) in enumerate(zip(names, data)):
+            ys = sorted(ys)
+            q1, q2, q3 = statistics.quantiles(ys, n=4, method="inclusive") if len(ys) > 1 else (ys[0],) * 3
+            reach = 1.5 * (q3 - q1)
+            inside = [v for v in ys if q1 - reach <= v <= q3 + reach]
+            cx, half, colour = L + slot * (i + 0.5), min(slot * 0.25, 40), PALETTE[i % 6]
+            out.append(f'<line x1="{cx:.1f}" x2="{cx:.1f}" y1="{y(min(inside)):.1f}" y2="{y(max(inside)):.1f}" stroke="{colour}" stroke-width="2"/>')
+            out.append(f'<rect x="{cx - half:.1f}" y="{y(q3):.1f}" width="{half * 2:.1f}" height="{max(y(q1) - y(q3), 1):.1f}" fill="{colour}" fill-opacity="0.35" stroke="{colour}" stroke-width="2"><title>{esc(name)}: median {_fmt(q2)}, quartiles {_fmt(q1)} to {_fmt(q3)}</title></rect>')
+            out.append(f'<line x1="{cx - half:.1f}" x2="{cx + half:.1f}" y1="{y(q2):.1f}" y2="{y(q2):.1f}" stroke="{colour}" stroke-width="3"/>')
+            out.extend(f'<circle cx="{cx:.1f}" cy="{y(v):.1f}" r="3" fill="{colour}"/>' for v in ys if v not in inside)
+            out.append(f'<text x="{cx:.1f}" y="{T + ph + 16}" class="tick" text-anchor="middle">{esc(_short(name))}</text>')
+    elif kind == "pie":
+        labels = _labels_for(spec, data, names)
+        total = sum(data[0])
+        if total <= 0 or any(v < 0 for v in data[0]):
+            raise ValueError("pie values must be positive")
+        cx, cy, r, angle = 190.0, 190.0, 120.0, -math.pi / 2
+        for i, v in enumerate(data[0]):
+            sweep = 2 * math.pi * v / total
+            if sweep >= 2 * math.pi - 1e-9:
+                out.append(f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{PALETTE[i % 6]}"/>')
+            else:
+                x1, y1 = cx + r * math.cos(angle), cy + r * math.sin(angle)
+                x2, y2 = cx + r * math.cos(angle + sweep), cy + r * math.sin(angle + sweep)
+                out.append(f'<path d="M{cx},{cy} L{x1:.1f},{y1:.1f} A{r},{r} 0 {1 if sweep > math.pi else 0} 1 {x2:.1f},{y2:.1f} Z" fill="{PALETTE[i % 6]}"><title>{esc(labels[i])}: {_fmt(v)} ({100 * v / total:.0f}%)</title></path>')
+            angle += sweep
+            out.append(f'<rect x="360" y="{60 + i * 24}" width="10" height="10" fill="{PALETTE[i % 6]}"/>'
+                       f'<text x="378" y="{69 + i * 24}" class="tick">{esc(_short(labels[i], 24))}: {100 * v / total:.0f}%</text>')
+    elif kind == "heatmap":
+        columns = _labels_for(spec, data, names)
+        flat = [v for row in data for v in row]
+        lo, hi = min(flat), max(flat)
+        L, T = 90, 48
+        cw, ch = min((W - L - 16) / len(columns), 80), min((H - T - 30) / len(data), 40)
+        for j, column in enumerate(columns):
+            out.append(f'<text x="{L + cw * (j + 0.5):.1f}" y="{T - 6}" class="tick" text-anchor="middle">{esc(_short(column, 10))}</text>')
+        for i, (name, row) in enumerate(zip(names, data)):
+            out.append(f'<text x="{L - 6}" y="{T + ch * (i + 0.5) + 4:.1f}" class="tick" text-anchor="end">{esc(_short(name, 12))}</text>')
+            for j, v in enumerate(row):
+                t = (v - lo) / ((hi - lo) or 1)
+                red, green, blue = (int(a + (b - a) * t) for a, b in zip((33, 40, 80), (242, 196, 109)))
+                ink = "#000" if 0.299 * red + 0.587 * green + 0.114 * blue > 140 else "#fff"
+                out.append(f'<rect x="{L + cw * j:.1f}" y="{T + ch * i:.1f}" width="{cw - 1:.1f}" height="{ch - 1:.1f}" fill="rgb({red},{green},{blue})"/>'
+                           f'<text x="{L + cw * (j + 0.5):.1f}" y="{T + ch * (i + 0.5) + 4:.1f}" class="tick" text-anchor="middle" fill="{ink}">{_fmt(v)}</text>')
+    else:  # hbar
+        labels = _labels_for(spec, data, names)
+        L, R, T, B = 96, 24, 48, 36
+        pw, ph = W - L - R, H - T - B
+        ticks = _ticks(min(0.0, min(v for ys in data for v in ys)), max(v for ys in data for v in ys))
+        lo, hi = ticks[0], ticks[-1]
+        px = lambda v: L + (v - lo) / (hi - lo) * pw  # noqa: E731
+        for t in ticks:
+            out.append(f'<line x1="{px(t):.1f}" x2="{px(t):.1f}" y1="{T}" y2="{T + ph}" class="grid"/>'
+                       f'<text x="{px(t):.1f}" y="{T + ph + 16}" class="tick" text-anchor="middle">{_fmt(t)}</text>')
+        slot = ph / len(labels)
+        group = slot * 0.8 / len(data)
+        for i, label in enumerate(labels):
+            out.append(f'<text x="{L - 6}" y="{T + slot * (i + 0.5) + 4:.1f}" class="tick" text-anchor="end">{esc(_short(label, 14))}</text>')
+            for s, ys in enumerate(data):
+                v = ys[i]
+                out.append(f'<rect x="{min(px(v), px(0)):.1f}" y="{T + slot * i + slot * 0.1 + group * s:.1f}" width="{abs(px(v) - px(0)):.1f}" height="{group - 1:.1f}" fill="{PALETTE[s % 6]}"><title>{esc(names[s])}, {esc(label)}: {_fmt(v)}</title></rect>')
+    if kind in ("box", "hbar") and spec.get("x_label"):
+        out.append(f'<text x="{W / 2}" y="{H - 8}" class="tick" text-anchor="middle">{esc(spec.get("x_label", ""))}</text>')
+    if kind == "hbar" and len(data) > 1:
+        for s, name in enumerate(names):
+            out.append(f'<rect x="{96 + 8 + s * 120}" y="{32}" width="10" height="10" fill="{PALETTE[s % 6]}"/>'
+                       f'<text x="{96 + 22 + s * 120}" y="{41}" class="tick">{esc(name)}</text>')
     out.append("</svg>")
     return "".join(out)
 

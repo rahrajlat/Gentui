@@ -28,8 +28,9 @@ def delete_file(name: str) -> str:
     return f"deleted {name}"
 
 
+# reasoning=True makes the Ollama model return its thinking, so Gentui can show it
 agent = create_agent(
-    init_chat_model("ollama:gpt-oss:120b-cloud"),
+    init_chat_model("ollama:gpt-oss:120b-cloud", reasoning=True),
     tools=[list_files, delete_file],
     middleware=[approval_middleware("delete_file")],  # the agent pauses here until you decide
 )

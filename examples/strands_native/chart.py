@@ -8,6 +8,7 @@ from strands import tool
 from strands_harness import create_harness
 
 from gentui import GentUI
+from gentui.adapters.strands import ollama_model
 
 SALES = {"Jan": 120, "Feb": 150, "Mar": 90, "Apr": 180, "May": 210}
 
@@ -26,7 +27,7 @@ def show_chart(type: str, title: str, x: list, series: list[dict], x_label: str 
 
 
 agent = create_harness(
-    model="ollama/gpt-oss:120b-cloud",
+    model=ollama_model("gpt-oss:120b-cloud"),  # unlike model="ollama/...", this one streams the thinking
     tools=[get_sales, show_chart],
     builtin_tools=[], memory=False, session=False, skills=False,
 )

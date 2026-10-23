@@ -9,6 +9,7 @@ from strands import tool
 from strands_harness import create_harness
 
 from gentui import GentUI
+from gentui.adapters.strands import ollama_model
 
 
 @tool
@@ -19,7 +20,7 @@ def multiply(a: float, b: float) -> float:
 
 
 agent = create_harness(
-    model="ollama/gpt-oss:120b-cloud",
+    model=ollama_model("gpt-oss:120b-cloud"),  # unlike model="ollama/...", this one streams the thinking
     tools=[multiply],
     builtin_tools=[], memory=False, session=False, skills=False,
 )

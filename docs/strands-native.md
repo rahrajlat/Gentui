@@ -44,6 +44,23 @@ GentUI.from_strands(Agent(tools=[multiply])).run()
 Several tool calls in one turn each get their own card. A tool request is never shown as finished until Strands
 reports its result.
 
+## Showing the model's thinking
+
+Gentui shows reasoning when Strands streams it. **Strands' own Ollama provider drops the thinking Ollama sends**, so with
+`Agent(model=OllamaModel(...))`, or `model="ollama/..."` in the harness, a reasoning model shows no thoughts. Use Gentui's
+`ollama_model` instead, which forwards them:
+
+```python
+from gentui.adapters.strands import ollama_model
+
+agent = Agent(model=ollama_model("gpt-oss:20b"), tools=[multiply])
+agent = create_harness(model=ollama_model("gpt-oss:120b-cloud"), ...)     # the harness takes it too
+```
+
+It needs `pip install 'gentui[strands,ollama]'`. `think=True` is sent to Ollama by default (or a level such as `"low"` /
+`"high"` for gpt-oss); models that cannot think need `think=None`. Bedrock, Anthropic and other providers stream their
+thinking through Strands themselves, once you turn extended thinking on for the model.
+
 ## Human approval
 
 `approval_hook` makes chosen tools wait for the user. The agent pauses *before* the tool body runs.
@@ -125,7 +142,7 @@ the event inspector.
 
 **Limitations:**
 
-- No reasoning is shown unless the model returns it. Nothing is invented.
+- No reasoning is shown unless the model returns it (see [Showing the model's thinking](#showing-the-models-thinking)). Nothing is invented.
 - A synchronous tool already running cannot be forced to stop when you stop a run; it may finish in the background.
   The agent's history is repaired so the next message works.
 - Interrupts are answered as yes / no. Hooks that need free-form input are not supported yet.

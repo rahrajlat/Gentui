@@ -698,6 +698,7 @@ dependencies = [
     { name = "httpx" },
     { name = "jsonpatch" },
     { name = "pyyaml" },
+    { name = "strands-harness" },
     { name = "textual" },
     { name = "textual-plotext" },
 ]
@@ -750,6 +751,7 @@ requires-dist = [
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "strands-agents", marker = "extra == 'strands'", specifier = ">=1.57" },
     { name = "strands-agents", extras = ["ollama"], marker = "extra == 'ollama'", specifier = ">=1.57" },
+    { name = "strands-harness", specifier = ">=0.2.0" },
     { name = "strands-harness", marker = "extra == 'harness'", specifier = ">=0.2.0" },
     { name = "textual", specifier = ">=8.2.8" },
     { name = "textual-plotext", specifier = ">=1.0.1" },

@@ -108,6 +108,15 @@ async def test_reasoning_comes_before_the_answer():
     ]
 
 
+async def test_reasoning_content_from_additional_kwargs_is_shown():
+    """What langchain-ollama (reasoning=True) and other providers send: the thought next to an empty content."""
+    thought = [AIMessageChunk(content="", additional_kwargs={"reasoning_content": "hm"}),
+               AIMessageChunk(content="", additional_kwargs={"reasoning_content": "mm"})]
+    events = await collect(LangChainAGUIAdapter(make(thought + text("ok"))))
+    assert body(events, T.REASONING_MESSAGE_CONTENT) == "hmmm" and body(events, T.TEXT_MESSAGE_CONTENT) == "ok"
+    assert types(events).index(T.REASONING_END) < types(events).index(T.TEXT_MESSAGE_START)
+
+
 async def test_conversation_is_kept_per_thread():
     agent = make(text("one"), text("two"))
     adapter = LangChainAGUIAdapter(agent)

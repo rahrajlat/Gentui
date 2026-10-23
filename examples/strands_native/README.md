@@ -15,5 +15,5 @@ uv run python examples/strands_native/tool_call.py
 | `tool_call_approval.py` | a tool that waits for Approve / Reject |
 | `chart.py` | a terminal chart drawn from a `show_chart` call |
 
-They use an Ollama model (`ollama/gpt-oss:120b-cloud`): Ollama must be running and signed in for that cloud model.
+They use `ollama_model(...)` from Gentui, which (unlike `model="ollama/..."`) streams the model's thinking. They use an Ollama model (`ollama/gpt-oss:120b-cloud`): Ollama must be running and signed in for that cloud model.
 Change the `model=` string to use another one.
