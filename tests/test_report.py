@@ -17,7 +17,7 @@ def chart(values, kind="bar"):
                  args='{"type": "%s", "title": "T <b>", "x": ["a", "b", "c"], "series": [{"name": "s", "values": %s}]}' % (kind, values))
 
 
-@pytest.mark.parametrize("kind", ["bar", "line", "scatter", "histogram"])
+@pytest.mark.parametrize("kind", ["bar", "line", "scatter", "histogram", "hbar", "stacked_bar", "area", "box", "heatmap", "pie"])
 def test_every_chart_type_becomes_an_svg(kind):
     svg = report.chart_svg({"type": kind, "title": "T", "x": [1, 2, 3], "series": [{"name": "s", "values": [3, 1, 2]}, {"name": "u", "values": [1, 2, 3]}]})
     assert svg.startswith("<svg") and svg.endswith("</svg>") and ("<rect" in svg or "<circle" in svg)
@@ -25,8 +25,8 @@ def test_every_chart_type_becomes_an_svg(kind):
 
 def test_a_bad_chart_is_reported_not_fatal():
     with pytest.raises(ValueError):
-        report.chart_svg({"type": "pie", "series": [{"values": [1]}]})
-    page = report.render("a", "b", align([Block("tool", name="show_chart", args='{"type": "pie"}')], []), {}, None)
+        report.chart_svg({"type": "donut", "series": [{"values": [1]}]})
+    page = report.render("a", "b", align([Block("tool", name="show_chart", args='{"type": "donut"}')], []), {}, None)
     assert "Could not draw" in page
 
 

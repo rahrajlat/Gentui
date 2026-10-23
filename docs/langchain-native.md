@@ -37,6 +37,18 @@ def multiply(a: float, b: float) -> float:
 GentUI.from_langchain(create_agent(model, tools=[multiply])).run()
 ```
 
+## Showing the model's thinking
+
+Gentui shows the thinking that LangChain returns, but most chat models only return it when you ask. With Ollama, pass
+`reasoning=True`; without it, `langchain-ollama` leaves the thinking out (or mixes it into the answer):
+
+```python
+model = init_chat_model("ollama:gpt-oss:20b", reasoning=True)    # or ChatOllama(model=..., reasoning=True)
+```
+
+Other providers have their own switch (for example extended thinking on Anthropic models). Gentui reads thinking blocks in
+the message content and `additional_kwargs["reasoning_content"]`.
+
 ## Human approval
 
 `approval_middleware` makes chosen tools wait for the user. The graph pauses *before* the tool body runs.
@@ -87,7 +99,7 @@ with textual-serve: `Server("python my_agent.py").serve()`. See the [command-lin
 
 ## Limitations
 
-- No reasoning is shown unless the model returns it.
+- No reasoning is shown unless the model returns it (see [Showing the model's thinking](#showing-the-models-thinking)).
 - Interrupts are answered as yes / no; free-form input is not supported yet.
 - A tool's result is shown as text; images and files appear as `[image]` / `[file]`.
 - Shared state (`STATE_SNAPSHOT`, the plan widget) is not produced.

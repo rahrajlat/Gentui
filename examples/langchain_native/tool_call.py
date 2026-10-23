@@ -19,7 +19,8 @@ def multiply(a: float, b: float) -> float:
     return a * b
 
 
-agent = create_agent(init_chat_model("ollama:gpt-oss:120b-cloud"), tools=[multiply])
+# reasoning=True makes the Ollama model return its thinking, so Gentui can show it
+agent = create_agent(init_chat_model("ollama:gpt-oss:120b-cloud", reasoning=True), tools=[multiply])
 
 if __name__ == "__main__":
     GentUI.from_langchain(agent).run()

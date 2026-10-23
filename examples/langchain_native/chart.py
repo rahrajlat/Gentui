@@ -26,7 +26,8 @@ def show_chart(type: str, title: str, x: list, series: list[dict], x_label: str 
     return "chart shown"
 
 
-agent = create_agent(init_chat_model("ollama:gpt-oss:120b-cloud"), tools=[get_sales, show_chart])
+# reasoning=True makes the Ollama model return its thinking, so Gentui can show it
+agent = create_agent(init_chat_model("ollama:gpt-oss:120b-cloud", reasoning=True), tools=[get_sales, show_chart])
 
 if __name__ == "__main__":
     GentUI.from_langchain(agent).run()

@@ -361,3 +361,66 @@ async def test_the_default_printing_handler_is_silenced_so_the_ui_is_not_scribbl
     agent = Agent(model=ScriptedModel(text("quiet")))  # no callback_handler=None: Strands prints by default
     events = await collect(StrandsAGUIAdapter(agent))
     assert body(events, T.TEXT_MESSAGE_CONTENT) == "quiet" and capsys.readouterr().out == ""
+
+
+# -- Ollama thinking ---------------------------------------------------------------------------
+
+
+class _FakeOllama:
+    """Stands in for ollama.AsyncClient: plays scripted streams of (thinking, content, tool_calls) pieces."""
+
+    requests: list = []
+    scripts: list = []
+
+    def __init__(self, host=None, **kwargs): ...
+
+    async def chat(self, **request):
+        from types import SimpleNamespace as NS
+
+        _FakeOllama.requests.append(request)
+        pieces = _FakeOllama.scripts.pop(0)
+
+        async def stream():
+            for thinking, content, tool_calls in pieces:
+                yield NS(message=NS(thinking=thinking, content=content, tool_calls=tool_calls), done_reason=None,
+                         prompt_eval_count=1, eval_count=1, total_duration=1_000_000)
+            yield NS(message=NS(thinking=None, content="", tool_calls=None), done_reason="stop",
+                     prompt_eval_count=1, eval_count=1, total_duration=1_000_000)
+
+        return stream()
+
+
+async def test_ollama_model_streams_thinking_then_answer_and_survives_a_second_turn(monkeypatch):
+    pytest.importorskip("ollama")
+    import ollama
+
+    from gentui.adapters.strands import ollama_model
+
+    monkeypatch.setattr(ollama, "AsyncClient", _FakeOllama)
+    _FakeOllama.requests = []
+    _FakeOllama.scripts = [[("Let me ", None, None), ("think.", None, None), (None, "It is ", None), (None, "5", None)],
+                           [(None, "Fine.", None)]]
+    adapter = StrandsAGUIAdapter(Agent(model=ollama_model("m"), callback_handler=None))
+    events = await collect(adapter)
+    assert types(events) == [
+        T.RUN_STARTED, T.REASONING_START, T.REASONING_MESSAGE_START, T.REASONING_MESSAGE_CONTENT, T.REASONING_MESSAGE_CONTENT,
+        T.REASONING_MESSAGE_END, T.REASONING_END, T.TEXT_MESSAGE_START, T.TEXT_MESSAGE_CONTENT, T.TEXT_MESSAGE_CONTENT,
+        T.TEXT_MESSAGE_END, T.RUN_FINISHED,
+    ]
+    assert body(events, T.REASONING_MESSAGE_CONTENT) == "Let me think." and body(events, T.TEXT_MESSAGE_CONTENT) == "It is 5"
+    assert _FakeOllama.requests[0]["think"] is True
+    # the earlier thought is in the history now; sending it back must not break the request
+    assert types(await collect(adapter, "again"))[-1] == T.RUN_FINISHED
+    assert all(m.get("role") != "reasoning" for m in _FakeOllama.requests[1]["messages"])
+
+
+async def test_ollama_model_thinking_can_be_switched_off(monkeypatch):
+    pytest.importorskip("ollama")
+    import ollama
+
+    from gentui.adapters.strands import ollama_model
+
+    monkeypatch.setattr(ollama, "AsyncClient", _FakeOllama)
+    _FakeOllama.requests, _FakeOllama.scripts = [], [[(None, "hi", None)]]
+    await collect(StrandsAGUIAdapter(Agent(model=ollama_model("m", think=None), callback_handler=None)))
+    assert "think" not in _FakeOllama.requests[0]

@@ -7,6 +7,9 @@ All notable changes to Gentui are documented here. The format follows
 ## [Unreleased]
 
 ### Added
+- `gentui.adapters.strands.ollama_model(...)`: a Strands Ollama model that streams the model's thinking. Strands' own
+  `OllamaModel` (and `model="ollama/..."` in the harness) discards it, so reasoning models showed no thoughts in the
+  native Strands mode. The Strands examples use it; the LangChain examples now pass `reasoning=True`.
 - Native LangChain / LangGraph integration: `GentUI.from_langchain(agent).run()` runs a compiled LangGraph graph (what
   `create_agent` returns) in-process, with streaming text and reasoning, tool cards, and `approval_middleware` for
   Approve / Reject through LangGraph's `interrupt()`. Memory is the graph's checkpointer. Install with

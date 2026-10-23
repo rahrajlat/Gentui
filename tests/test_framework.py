@@ -336,6 +336,13 @@ def chart_run(spec):
     {"type": "bar", "x": ["a", "b"], "series": [{"name": "p", "values": [1, 2]}, {"name": "q", "values": [2, 3]}]},
     {"type": "scatter", "x": [1, 2, 3], "series": [{"name": "s", "values": [3, 1, 2]}]},
     {"type": "histogram", "bins": 4, "series": [{"name": "h", "values": [1, 2, 2, 3, 3, 3, 4]}]},
+    {"type": "hbar", "x": ["a", "b", "c"], "series": [{"name": "n", "values": [3, 1, 2]}]},
+    {"type": "hbar", "x": ["a", "b"], "series": [{"name": "p", "values": [1, 2]}, {"name": "q", "values": [2, 3]}]},
+    {"type": "stacked_bar", "x": ["a", "b"], "series": [{"name": "p", "values": [1, 2]}, {"name": "q", "values": [2, 3]}]},
+    {"type": "area", "x": ["2026-01", "2026-02", "2026-03"], "series": [{"name": "n", "values": [3, 1, 4]}]},
+    {"type": "area", "x": [1, 2, 3], "series": [{"name": "n", "values": [3, 1, 4]}]},
+    {"type": "box", "series": [{"name": "g1", "values": [1, 2, 3, 4, 9]}, {"name": "g2", "values": [2, 3, 3, 5, 6]}]},
+    {"type": "pie", "x": ["a", "b", "c"], "series": [{"name": "n", "values": [50, 30, 20]}]},
 ])
 async def test_chart_types_render(spec):
     from textual_plotext import PlotextPlot
@@ -348,8 +355,25 @@ async def test_chart_types_render(spec):
         assert plot.display, [str(s.render()) for s in app.query("#body")]
 
 
+async def test_heatmap_is_drawn_as_a_shaded_table():
+    from textual_plotext import PlotextPlot
+
+    spec = {"type": "heatmap", "title": "corr", "x": ["a", "b"], "series": [{"name": "r1", "values": [1, 2]}, {"name": "r2", "values": [4, 3]}]}
+    app = GentuiApp(ScriptClient(*chart_run(spec)))
+    async with app.run_test(size=(120, 50)) as pilot:
+        await pilot.press(*"c", "enter")
+        await pilot.pause(0.5)
+        assert not app.query_one(PlotextPlot).display
+        table = app.query_one("#body").visual._renderable
+        assert [c.header for c in table.columns] == ["", "a", "b"]
+        assert [str(cell) for cell in table.columns[0].cells] == ["r1", "r2"]
+
+
 @pytest.mark.parametrize("spec,message", [
-    ({"type": "pie", "series": [{"values": [1]}]}, "unknown chart type"),
+    ({"type": "pie", "x": ["a", "b"], "series": [{"values": [1, -1]}]}, "must be positive"),
+    ({"type": "box", "series": [{"name": "g", "values": []}]}, "at least one value"),
+    ({"type": "heatmap", "x": ["a", "b"], "series": [{"name": "r", "values": [1]}]}, "1 values for 2 x points"),
+    ({"type": "donut", "series": [{"values": [1]}]}, "unknown chart type"),
     ({"type": "line", "series": []}, "series is empty"),
     ({"type": "line", "x": [1, 2], "series": [{"name": "a", "values": [1]}]}, "1 values for 2 x points"),
     ({"type": "bar", "x": ["a"], "series": [{"name": "a", "values": ["many"]}]}, "must be numbers"),
